@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>무제 문서</title>
+<link rel="stylesheet" type="text/css" href="../resources/css/layout.css">
+<script src="../resources/js/jquery-1.11.3.min.js"></script>
+<script src="../resources/js/jquery-ui.js"></script>
+<script src="../resources/js/common.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+	var win_height = $(window).height();
+	var wh = $(".login_area").height();
+	$(".login_area").css({"margin-top":(win_height - wh)/3,"z-index":10000});
+	$(window).resize(function() {
+		var win_height = $(window).height();
+		var wh = $(".login_area").height();
+		$(".login_area").css({"margin-top":(win_height - wh)/3,"z-index":10000});
+	});
+});
+</script>
+
+</head>
+
+<body>
+
+<form>
+<div class="login_area">
+	<h1><img src="../resources/img/login/login_logo.png" alt="CISCO Cloud Management Portal"></h1>
+    <dl>
+    	<dt><label for="id">아이디</label></dt>
+        <dd><input type="text" id="id"></dd>
+        
+        <dt><label for="pw">비밀번호</label></dt>
+        <dd><input type="password" id="pw"></dd>
+    </dl>
+    <p><label for="save"><input type="checkbox" id="save"> 아이디저장</label></p>
+    <p><input type="submit" class="btn_common01 btn_login" value="로그인"></p>
+</div>
+</form>
+
+<p class="notice">※ 불법적인 접근 또는 허가되지 않은 사용자가 접속을 시도 할 경우 관계법령에 의해 처벌을 받을 수 있습니다.</p>
+
+
+<script type="text/javascript">
+    $('input[type=checkbox], input[type=radio]').customRadioCheck();
+</script>
+
+</body>
+</html>

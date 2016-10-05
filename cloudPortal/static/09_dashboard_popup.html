@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>무제 문서</title>
+<link rel="stylesheet" type="text/css" href="../resources/css/layout.css">
+<script src="../resources/js/jquery-1.11.3.min.js"></script>
+<script src="../resources/js/jquery-ui.js"></script>
+<script src="../resources/js/common.js"></script>
+</head>
+
+<body>
+
+<div class="wrap">
+
+    <!-- 레이어 팝업 띄우는 스크립트 -->
+    <script>
+    $(document).ready(function() {	
+        layer_popup(".your_info")
+    });
+    
+    </script>
+    <!-- <a href="javaScript:layer_popup('.your_info');" class="btn_common28">레이어팝업 띄우기</a> -->
+    
+	<!-- lay_pop -->
+    <div class="lay_pop your_info">
+        <div class="lay_header">
+            <h1>Your personal info</h1>
+            <a href="#nond" class="btn_close"><img src="../resources/img/content/lay_closed.png" alt="닫기"></a>
+        </div>
+        
+        <div class="lay_content">
+            <table>
+                <colgroup>
+                    <col width="110px">
+                    <col width="*">
+                </colgroup>
+                <tbody>
+                    <tr>
+                        <th>Name</th>
+                        <td><strong>홍길동</strong></td>
+                    </tr>
+                    <tr>
+                        <th>ID</th>
+                        <td><strong>LOVE1004</strong></td>
+                    </tr>
+                    <tr>
+                        <th>Tenant</th>
+                        <td><strong>개발그룹</strong></td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td><input type="text"></td>
+                    </tr>
+                    <tr>
+                        <th>Phone</th>
+                        <td><input type="text"></td>
+                    </tr>
+                    <tr>
+                        <th>Password</th>
+                        <td><input type="text"></td>
+                    </tr>
+                    <tr>
+                        <th>Password <br>Again</th>
+                        <td><input type="text"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="lay_footer">
+            <a href="#" class="btn_common01">수정하기</a>
+        </div>
+    </div>
+	<!-- //lay_pop -->
+
+
+</div>
+</body>
+</html>

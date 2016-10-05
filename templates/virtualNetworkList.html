@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+
+            {% block title %}
+            <div class="title">
+                <div>
+                    <h3>Virtual Network List</h3>
+                    <p>Home > Server > <strong>Virtual Network List</strong></p>
+                </div>
+            </div>
+            {% endblock %}
+                
+            {% block content %}
+
+                <!-- cat_left -->
+                <div class="cat_left">
+                    <h4>표준가상스위치</h4>
+                    <div class="tree">
+                        <ul>
+                            <li>
+                                <a href="#">Platinum</a>
+                                <ul>
+                                    <li><a href="#">WEB</a></li>
+                                    <li><a href="#">WAS</a></li>
+                                    <li><a href="#">DB</a></li>
+                                    <li><a href="#">NoSQL</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#">GOLD</a>
+                                <ul>
+                                    <li><a href="#">WEB</a></li>
+                                    <li><a href="#">WAS</a></li>
+                                    <li><a href="#">RDB</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- //cat_left -->
+
+                <!-- cat_right -->
+                <div class="cat_right">
+                    <!-- inner -->
+                    <div class="inner">
+                        <h4>Virtual Network List</h4>
+                        <table>
+                          <colgroup>
+                              <col width="20%">
+                              <col width="15%">
+                              <col width="*">
+                              <col width="20%">
+                          </colgroup>
+                          <thead>
+                              <tr>
+                                  <th>Port Group</th>
+                                  <th>VLAN</th>
+                                  <th>HOST</th>
+                                  <th>VM</th>
+                                  <th>VMNIC</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <tr>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                              </tr>
+                              <tr>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                              </tr>
+                              <tr>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                              </tr>
+                              <tr>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                              </tr>
+                          </tbody>
+                        </table>
+                    
+                        <div class="paginate">
+                            <p class="total">Total <strong>350</strong></p>
+                            
+                            <a href="#none" class="first">처음</a>
+                            <a href="#none" class="prev">이전</a>
+                                <span>
+                                    <a href="#none">1</a>
+                                    <a href="#none">2</a>
+                                    <a href="#none">3</a>
+                                    <strong>4</strong>
+                                    <a href="#none">5</a>
+                                    <a href="#none">6</a>
+                                    <a href="#none">7</a>
+                                    <a href="#none">8</a>
+                                    <a href="#none">9</a>
+                                    <a href="#none">10</a>
+                                </span>
+                            <a href="#none" class="next">다음</a>
+                            <a href="#none" class="last">마지막</a>
+                        </div>
+                    </div>
+                    <!-- //inner -->
+                </div>
+                <!-- cat_right -->
+                
+            {% endblock %}

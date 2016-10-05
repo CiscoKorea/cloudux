@@ -1,0 +1,194 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>무제 문서</title>
+<link rel="stylesheet" type="text/css" href="../resources/css/layout.css">
+<script src="../resources/js/jquery-1.11.3.min.js"></script>
+<script src="../resources/js/jquery-ui.js"></script>
+<script src="../resources/js/common.js"></script>
+</head>
+
+<body>
+
+<div class="wrap">
+	<!-- col_left -->
+    <div class="col_left">
+    	<h1><a href="#"><img src="../resources/img/content/logo.png" alt="CISCO Cloud Management Portal"></a></h1>
+        <h2><a href="#">Dashboard</a></h2>
+
+        <!-- nav -->
+        <div class="nav">
+        	<p>Servers</p>
+            <ul>
+            	<li class="ico02"><a href="#">Host List</a></li>
+            	<li class="ico03"><a href="#" class="on">VM List</a></li>
+            </ul>
+
+        	<p>Network</p>
+            <ul>
+            	<li class="ico04"><a href="#">Virtual Network List</a></li>
+            </ul>
+
+        	<p>Storage</p>
+            <ul>
+            	<li class="ico05"><a href="#">Volume List</a></li>
+            	<li class="ico06"><a href="#">VM Disk List</a></li>
+            </ul>
+
+            <ul>
+            	<li class="ico07"><a href="#">Monitoring</a></li>
+            	<li class="ico08"><a href="#">사용자관리</a></li>
+            </ul>
+        </div>
+        <!-- //nav -->
+    </div>
+	<!-- //col_left -->
+    
+	<!-- col_right -->
+    <div class="col_right">
+        
+        <!-- header -->
+    	<div class="header">
+        	<div>
+                <p>관리자(Admin) 님이 로그인되었습니다.</p>
+                <ul>
+                    <li><a href="#">Your personal info</a></li>
+                    <li><a href="#">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+        <!-- //header -->
+        
+        <!-- body -->
+        <div class="body">
+        	
+            <div class="title">
+                <div>
+                    <h3>VM List</h3>
+                    <p>Home > Server > <strong>VM List</strong></p>
+                </div>
+            </div>
+                
+            <!-- content -->
+            <div class="content">
+
+                <!-- inner -->
+                <div class="inner">
+                    <div class="title_area">
+                        <h4>VM List</h4>
+                        
+                        <div class="search">
+                            <select>
+                                <option>Name</option>
+                            </select> 
+                            <input type="text">
+                        </div>
+                    </div>
+                    <table>
+                      <colgroup>
+                          <col width="5%">
+                          <col width="7%">
+                          <col width="7%">
+                          <col width="10%">
+                          <col width="13%">
+                          <col width="10%">
+                          <col width="15%">
+                          <col width="11%">
+                          <col width="11%">
+                          <col width="*">
+                      </colgroup>
+                      <thead>
+                          <tr>
+                              <th><label><input type="checkbox"></label></th>
+                              <th>Tenant</th>
+                              <th>VMName</th>
+                              <th>IPAddress</th>
+                              <th>MACAddress</th>
+                              <th>CPU Usage</th>
+                              <th>Memory Usag</th>
+                              <th>NetworkUsage</th>
+                              <th>StorageUsage</th>
+                              <th>Status</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr>
+                            <td><label><input type="checkbox"></label></td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td><span class="box blue">Normal</span></td>
+                          </tr>
+                          <tr>
+                            <td><label><input type="checkbox"></label></td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td><span class="box gray">Power Off</span></td>
+                          </tr>
+                      </tbody>
+                    </table>
+                
+                    <div class="paginate">
+                        <p class="total">Total <strong>350</strong></p>
+                        
+                        <a href="#none" class="first">처음</a>
+                        <a href="#none" class="prev">이전</a>
+                            <span>
+                                <a href="#none">1</a>
+                                <a href="#none">2</a>
+                                <a href="#none">3</a>
+                                <strong>4</strong>
+                                <a href="#none">5</a>
+                                <a href="#none">6</a>
+                                <a href="#none">7</a>
+                                <a href="#none">8</a>
+                                <a href="#none">9</a>
+                                <a href="#none">10</a>
+                            </span>
+                        <a href="#none" class="next">다음</a>
+                        <a href="#none" class="last">마지막</a>
+                    </div>
+                </div>
+                <!-- //inner -->
+                
+                <div class="btn_area">
+                	<p class="left">
+                    	<a href="#" class="btn_common02">Stop</a>
+                    	<a href="#" class="btn_common02">Delete</a>
+                    	<a href="#" class="btn_common02">Restart</a>
+                    	<a href="#" class="btn_common02">Modify</a>
+                    </p>
+                    
+                    <p class="right">
+                    	<a href="#" class="btn_common01">Create</a>
+                    </p>
+                </div>
+
+            </div>
+            <!-- //content -->
+        
+        </div>
+        <!-- //body -->
+
+    </div>
+	<!-- //col_right -->
+
+</div>
+
+<script type="text/javascript">
+    $('input[type=checkbox], input[type=radio]').customRadioCheck();
+</script>
+</body>
+</html>

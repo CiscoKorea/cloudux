@@ -1,0 +1,67 @@
+/* CSS Document */
+@import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
+
+/* reset */
+html, body, div, span, object, iframe, p, blockquote, pre, a, abbr,
+address, big, cite, code, del, dfn, em, font, img, ins,
+q, s, samp, small, strike, strong, sub, sup, tt, var, b,
+u, i, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {margin:0; padding:0;}
+body {background-color:#fff; -webkit-text-size-adjust:none;}
+body, input, button, textarea {font-size:13px; line-height:13px; font-family:"NanumGothic", Helvetica, Apple-Gothic, Droid Sans, sans-serif,"돋움", Dotum, Tahoma, '맑은 고딕', 'Malgun Gothic'; color:#333;}
+h1, h2, h3, h4, h5, h6 {font-size:13px; text-align:left;}
+img, fieldset, iframe {border:0 none;}
+table{border-spacing: 0; line-height:150%; table-layout:fixed; border-spacing:inherit;}
+div {border-collapse: collapse;  border-spacing: 0;}
+select, textarea {border:1px solid #B7B6B6; background:#FFFFFF; color:#333; font-size:12px; vertical-align:middle;}
+textarea {overflow:auto;}
+select, input, img, li {vertical-align:middle; text-align:left;}
+address, caption, cite, code, dfn, em, var {font-style:normal; font-weight:normal;}
+ul, li, ol {list-style: none outside none;}
+legend, caption {display:none;}
+form {margin:0;padding:0;border:none;}
+fieldset {margin:0;padding:0;border:none;}
+caption {position:absolute;top:0;left:-1000em;width:0;height:0;line-height:0;}
+legend {position:absolute;top:0;left:-1000em;width:0;height:0;line-height:0;}
+hr {border-collapse:collapse; display:none;}
+* {margin:0; padding:0; -webkit-text-size-adjust:none; box-sizing:border-box; word-break:break-all; font-family:"NanumGothic", Helvetica, Apple-Gothic, Droid Sans, sans-serif,"돋움", Dotum, Tahoma, '맑은 고딕', 'Malgun Gothic';}      
+a{color:#333;}
+a:link, a:visited {text-decoration:none;}
+a:hover {text-decoration:none; cursor:pointer;}
+a, textarea{-webkit-tap-highlight-color:transparent;}
+a, textarea{-webkit-tap-highlight-color:transparent;}
+input{border-radius:0; box-sizing:border-box}
+input, textarea { vertical-align:middle; -webkit-appearance:none; outline:none;}
+
+input[type='email'],
+input[type='text'],
+input[type='tel'],
+input[type='number'],
+input[type='date'],
+input[type=password]{height:35px; line-height:35px; background-color:#fafafa; border:1px solid #e3e8f0; border-radius:2px; padding:0 10px;}
+
+
+.mask {position:fixed; left:0; top:0; background-color:#000; display:none; z-index:8; overflow:hidden; width:100%;}
+
+
+/* custom Input */
+.custom-label {display: inline-block; cursor: pointer;}
+.custom-check,
+.custom-check.focus {vertical-align: middle; display: inline-block; position: relative; top: -.15em; width: 20px; height: 20px; background:url(../img/content/check_off.png) no-repeat;}
+.custom-check.checked ,
+.custom-check.checked.focus {background:url(../img/content/check_on.png) no-repeat;}
+
+.custom-radio,
+.custom-radio.focus {vertical-align: middle; display: inline-block; position: relative; top: -.15em; width: 20px; height: 20px; background:url(../img/content/radio_off.png) no-repeat;}
+.custom-radio.checked ,
+.custom-radio.checked.focus {background:url(../img/content/radio_on.png) no-repeat;}
+
+
+.styled-select{background:url(../img/content/select.png) no-repeat 100% 50% #fafafa; border:1px solid #e3e8f0; -webkit-border-style:solid; border-radius:2px; display:inline-block; overflow:hidden; vertical-align:middle; padding:0 10px; height:35px; line-height:35px; min-width:100px;}
+.styled-select select{background:transparent; line-height:1; font-size:1em; border:none; padding:0; margin:0; border-radius:0; -webkit-appearance: none; width:150%; text-align:left; height:33px; line-height:33px;}
+.styled-select option{padding:0; text-align:left;}
+
+/* Button */
+.btn_common01{background-color:#70b9eb; color:#fff; font-weight:500; height:35px; line-height:35px; border:0; border-radius:2px; text-align:center; display:inline-block; min-width:100px;}
+.btn_common02{background-color:#fff; color:#666; font-weight:500; height:35px; line-height:35px; border:0; border-radius:2px; text-align:center; display:inline-block; min-width:100px; border:1px solid #dddddd;}
+.btn_common03{background-color:#999; color:#fff; font-weight:500; height:35px; line-height:35px; border:0; border-radius:2px; text-align:center; display:inline-block; min-width:100px;}
+.btn_common04{background-color:#00bcd4; color:#fff; font-weight:500; height:35px; line-height:35px; border:0; border-radius:2px; text-align:center; display:inline-block; min-width:100px;}

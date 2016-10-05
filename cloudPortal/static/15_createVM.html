@@ -1,0 +1,344 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>무제 문서</title>
+<link rel="stylesheet" type="text/css" href="../resources/css/layout.css">
+<script src="../resources/js/jquery-1.11.3.min.js"></script>
+<script src="../resources/js/jquery-ui.js"></script>
+<script src="../resources/js/common.js"></script>
+</head>
+
+<body>
+
+<div class="wrap">
+	<!-- col_left -->
+    <div class="col_left">
+    	<h1><a href="#"><img src="../resources/img/content/logo.png" alt="CISCO Cloud Management Portal"></a></h1>
+        <h2><a href="#">Dashboard</a></h2>
+
+        <!-- nav -->
+        <div class="nav">
+        	<p>Servers</p>
+            <ul>
+            	<li class="ico02"><a href="#">Host List</a></li>
+            	<li class="ico03"><a href="#" class="on">VM List</a></li>
+            </ul>
+
+        	<p>Network</p>
+            <ul>
+            	<li class="ico04"><a href="#">Virtual Network List</a></li>
+            </ul>
+
+        	<p>Storage</p>
+            <ul>
+            	<li class="ico05"><a href="#">Volume List</a></li>
+            	<li class="ico06"><a href="#">VM Disk List</a></li>
+            </ul>
+
+            <ul>
+            	<li class="ico07"><a href="#">Monitoring</a></li>
+            	<li class="ico08"><a href="#">사용자관리</a></li>
+            </ul>
+        </div>
+        <!-- //nav -->
+    </div>
+	<!-- //col_left -->
+    
+	<!-- col_right -->
+    <div class="col_right">
+        
+        <!-- header -->
+    	<div class="header">
+        	<div>
+                <p>관리자(Admin) 님이 로그인되었습니다.</p>
+                <ul>
+                    <li><a href="#">Your personal info</a></li>
+                    <li><a href="#">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+        <!-- //header -->
+        
+        <!-- body -->
+        <div class="body">
+        	
+            <div class="title">
+                <div>
+                    <h3>VM List</h3>
+                    <p>Home > Server > <strong>VM List</strong></p>
+                </div>
+            </div>
+                
+            <!-- content -->
+            <div class="content">
+
+                <!-- inner -->
+                <div class="inner">
+                    <div class="title_area">
+                        <h4>VM List</h4>
+                        
+                        <div class="search">
+                            <select>
+                                <option>Name</option>
+                            </select> 
+                            <input type="text">
+                        </div>
+                    </div>
+                    <table>
+                      <colgroup>
+                          <col width="5%">
+                          <col width="7%">
+                          <col width="7%">
+                          <col width="10%">
+                          <col width="13%">
+                          <col width="10%">
+                          <col width="15%">
+                          <col width="11%">
+                          <col width="11%">
+                          <col width="*">
+                      </colgroup>
+                      <thead>
+                          <tr>
+                              <th><label><input type="checkbox"></label></th>
+                              <th>Tenant</th>
+                              <th>VMName</th>
+                              <th>IPAddress</th>
+                              <th>MACAddress</th>
+                              <th>CPU Usage</th>
+                              <th>Memory Usag</th>
+                              <th>NetworkUsage</th>
+                              <th>StorageUsage</th>
+                              <th>Status</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr>
+                            <td><label><input type="checkbox"></label></td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td><span class="box blue">Normal</span></td>
+                          </tr>
+                          <tr>
+                            <td><label><input type="checkbox"></label></td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td><span class="box gray">Power Off</span></td>
+                          </tr>
+                      </tbody>
+                    </table>
+                
+                    <div class="paginate">
+                        <p class="total">Total <strong>350</strong></p>
+                        
+                        <a href="#none" class="first">처음</a>
+                        <a href="#none" class="prev">이전</a>
+                            <span>
+                                <a href="#none">1</a>
+                                <a href="#none">2</a>
+                                <a href="#none">3</a>
+                                <strong>4</strong>
+                                <a href="#none">5</a>
+                                <a href="#none">6</a>
+                                <a href="#none">7</a>
+                                <a href="#none">8</a>
+                                <a href="#none">9</a>
+                                <a href="#none">10</a>
+                            </span>
+                        <a href="#none" class="next">다음</a>
+                        <a href="#none" class="last">마지막</a>
+                    </div>
+                </div>
+                <!-- //inner -->
+                
+                <div class="btn_area">
+                	<p class="left">
+                    	<a href="#" class="btn_common02">Stop</a>
+                    	<a href="#" class="btn_common02">Delete</a>
+                    	<a href="#" class="btn_common02">Restart</a>
+                    	<a href="#" class="btn_common02">Modify</a>
+                    </p>
+                    
+                    <p class="right">
+                    	<a href="#" class="btn_common01">Create</a>
+                    </p>
+                </div>
+
+            </div>
+            <!-- //content -->
+        
+        </div>
+        <!-- //body -->
+
+    </div>
+	<!-- //col_right -->
+
+    <!-- 레이어 팝업 띄우는 스크립트 -->
+    <script>
+    $(document).ready(function() {	
+        layer_popup(".create")
+    });
+    
+    </script>
+    <!-- <a href="javaScript:layer_popup('.your_info');" class="btn_common28">레이어팝업 띄우기</a> -->
+    
+    <!-- lay_pop -->
+    <div class="lay_pop create">
+        <div class="lay_header">
+            <h1>Create VM</h1>
+            <a href="#nond" class="btn_close"><img src="../resources/img/content/lay_closed.png" alt="닫기"></a>
+        </div>
+
+        <div class="create_list">
+            <h3><a href="#">OS List <strong>Linux-CentOS 7</strong></a></h3>
+            <div class="sub">
+            	<ul>
+                	<li><label><input type="radio"> Linux-CentOS 7</label></li>
+                	<li><label><input type="radio"> Linux-CentOS 7</label></li>
+                	<li><label><input type="radio"> Linux-CentOS 7</label></li>
+                	<li><label><input type="radio"> Linux-CentOS 7</label></li>
+                	<li><label><input type="radio"> Linux-CentOS 7</label></li>
+                	<li><label><input type="radio"> Linux-CentOS 7</label></li>
+                	<li><label><input type="radio"> Linux-CentOS 7</label></li>
+                	<li><label><input type="radio"> Linux-CentOS 7</label></li>
+                </ul>
+            </div>
+
+            <h3><a href="#">VM Resource</a></h3>
+            <div class="sub">
+            	<ul>
+                	<li><label><input type="radio"> CPU. 1G Memory. 10G Disk</label></li>
+                	<li><label><input type="radio"> CPU. 1G Memory. 10G Disk</label></li>
+                	<li><label><input type="radio"> CPU. 1G Memory. 10G Disk</label></li>
+                	<li><label><input type="radio"> CPU. 1G Memory. 10G Disk</label></li>
+                	<li><label><input type="radio"> CPU. 1G Memory. 10G Disk</label></li>
+                	<li><label><input type="radio"> CPU. 1G Memory. 10G Disk</label></li>
+                	<li><label><input type="radio"> CPU. 1G Memory. 10G Disk</label></li>
+                	<li><label><input type="radio"> CPU. 1G Memory. 10G Disk</label></li>
+                	<li><label><input type="radio"> CPU. 1G Memory. 10G Disk</label></li>
+                </ul>
+            </div>
+
+            <h3><a href="#">Interface</a></h3>
+            <div class="sub">
+            	<h4>Platinum</h4>
+                <p><label><input type="radio"> Platinum</label> <label><input type="radio"> Gold</label> <label><input type="radio"> Sliver</label> <label><input type="radio"> Bronze</label></p>
+
+            	<h4>인터페이스개수</h4>
+                <p><label><input type="radio"> 1개</label> <label><input type="radio"> 2개</label></p>
+                <div class="box">
+                    <h5>인터페이스포트그룹</h5>
+                	<div class="main_group">
+                        <p>
+                            <span>eth0</span> 
+                            <select>
+                            	<option>Web</option>
+                            </select> 
+                            <a href="#none"><em>DHCP</em> <span></span> <em>Static</em></a>
+                        </p>
+                    </div>
+                    
+                    <div class="sub_group">
+                    	<table>
+                        	<colgroup>
+                            	<col width="135px">
+                            	<col width="*">
+                            </colgroup>
+                            <tbody>
+                            	<tr>
+                                	<th>IP Address</th>
+                                    <td><input type="text"></td>
+                                </tr>
+                            	<tr>
+                                	<th>Subnet Mask</th>
+                                    <td><input type="text"></td>
+                                </tr>
+                            	<tr>
+                                	<th>Basic Gateway</th>
+                                    <td><input type="text"></td>
+                                </tr>
+                            	<tr>
+                                	<th>기본설정DNS 서버</th>
+                                    <td><input type="text"></td>
+                                </tr>
+                            	<tr>
+                                	<th>보조DNS 서버</th>
+                                    <td><input type="text"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                	<div class="main_group">
+                        <p>
+                            <span>eth0</span> 
+                            <select>
+                            	<option>Web</option>
+                            </select> 
+                            <a href="#none"><em>DHCP</em> <span></span> <em>Static</em></a>
+                        </p>
+                    </div>
+                    
+                    <div class="sub_group">
+                    	<table>
+                        	<colgroup>
+                            	<col width="135px">
+                            	<col width="*">
+                            </colgroup>
+                            <tbody>
+                            	<tr>
+                                	<th>IP Address</th>
+                                    <td><input type="text"></td>
+                                </tr>
+                            	<tr>
+                                	<th>Subnet Mask</th>
+                                    <td><input type="text"></td>
+                                </tr>
+                            	<tr>
+                                	<th>Basic Gateway</th>
+                                    <td><input type="text"></td>
+                                </tr>
+                            	<tr>
+                                	<th>기본설정DNS 서버</th>
+                                    <td><input type="text"></td>
+                                </tr>
+                            	<tr>
+                                	<th>보조DNS 서버</th>
+                                    <td><input type="text"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="lay_footer">
+            <a href="#" class="btn_common01">생성하기</a>
+        </div>
+    </div>
+    <!-- //lay_pop -->
+
+
+</div>
+
+
+
+
+<script type="text/javascript">
+    $('input[type=checkbox], input[type=radio]').customRadioCheck();
+</script>
+</body>
+</html>

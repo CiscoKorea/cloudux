@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+        	
+            {% block title %}
+            <div class="title">
+                <div>
+                    <h3>Host List</h3>
+                    <p>Home > Server > <strong>Host List</strong></p>
+                </div>
+            </div>
+            {% endblock title %}
+                
+            {% block content %}
+
+                <!-- inner -->
+              <div class="inner">
+                <h4>Host List</h4>
+                  <table>
+                      <colgroup>
+                          <col width="7%">
+                          <col width="7%">
+                          <col width="7%">
+                          <col width="10%">
+                          <col width="13%">
+                          <col width="10%">
+                          <col width="15%">
+                          <col width="11%">
+                          <col width="11%">
+                          <col width="*">
+                      </colgroup>
+                      <thead>
+                          <tr>
+                              <th colspan="2">Datacenter/Cluster</th>
+                              <th>Host</th>
+                              <th>OS Version</th>
+                              <th>MgmtIP</th>
+                              <th>vNIC</th>
+                              <th>Virtual switch</th>
+                              <th>StorageVolume</th>
+                              <th>CreationTime</th>
+                              <th>Status</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr>
+                            <td rowspan="2">-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td><span class="box blue">Online</span></td>
+                          </tr>
+                          <tr>
+                              <td>-</td>
+                              <td>-</td>
+                              <td>-</td>
+                              <td>-</td>
+                              <td>-</td>
+                              <td>-</td>
+                              <td>-</td>
+                              <td>-</td>
+                              <td><span class="box red">Error</span></td>
+                          </tr>
+                          <tr>
+                            <td rowspan="2">-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td><span class="box gray">Offline</span></td>
+                          </tr>
+                          <tr>
+                              <td>-</td>
+                              <td>-</td>
+                              <td>-</td>
+                              <td>-</td>
+                              <td>-</td>
+                              <td>-</td>
+                              <td>-</td>
+                              <td>-</td>
+                              <td><span class="box orange">Warning</span></td>
+                          </tr>
+                      </tbody>
+                  </table>
+                </div>
+                <!-- //inner -->
+
+            {% endblock content %}
+            <!-- //content -->

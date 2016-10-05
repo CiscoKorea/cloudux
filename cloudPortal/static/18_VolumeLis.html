@@ -1,0 +1,138 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>무제 문서</title>
+<link rel="stylesheet" type="text/css" href="../resources/css/layout.css">
+<script src="../resources/js/jquery-1.11.3.min.js"></script>
+<script src="../resources/js/jquery-ui.js"></script>
+<script src="../resources/js/common.js"></script>
+</head>
+
+<body>
+
+<div class="wrap">
+	<!-- col_left -->
+    <div class="col_left">
+    	<h1><a href="#"><img src="../resources/img/content/logo.png" alt="CISCO Cloud Management Portal"></a></h1>
+        <h2><a href="#">Dashboard</a></h2>
+
+        <!-- nav -->
+        <div class="nav">
+        	<p>Servers</p>
+            <ul>
+            	<li class="ico02"><a href="#">Host List</a></li>
+            	<li class="ico03"><a href="#">VM List</a></li>
+            </ul>
+
+        	<p>Network</p>
+            <ul>
+            	<li class="ico04"><a href="#">Virtual Network List</a></li>
+            </ul>
+
+        	<p>Storage</p>
+            <ul>
+            	<li class="ico05"><a href="#" class="on">Volume List</a></li>
+            	<li class="ico06"><a href="#">VM Disk List</a></li>
+            </ul>
+
+            <ul>
+            	<li class="ico07"><a href="#">Monitoring</a></li>
+            	<li class="ico08"><a href="#">사용자관리</a></li>
+            </ul>
+        </div>
+        <!-- //nav -->
+    </div>
+	<!-- //col_left -->
+    
+	<!-- col_right -->
+    <div class="col_right">
+        
+        <!-- header -->
+    	<div class="header">
+        	<div>
+                <p>관리자(Admin) 님이 로그인되었습니다.</p>
+                <ul>
+                    <li><a href="#">Your personal info</a></li>
+                    <li><a href="#">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+        <!-- //header -->
+        
+        <!-- body -->
+        <div class="body">
+        	
+            <div class="title">
+                <div>
+                    <h3>Volume List</h3>
+                    <p>Home > Server > <strong>Volume List</strong></p>
+                </div>
+            </div>
+                
+            <!-- content -->
+            <div class="content">
+
+                <!-- inner -->
+                <div class="inner">
+                    <h4>Volume List</h4>
+                    <table>
+                        <colgroup>
+                            <col width="15%">
+                            <col width="15%">
+                            <col width="15%">
+                            <col width="*">
+                            <col width="23%">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>Status</th>
+                                <th>Volume Name</th>
+                                <th>Size</th>
+                                <th>Create Date</th>
+                                <th>Connected Hosts</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="box gray">Offline </span></td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <td><span class="box blue">Online </span></td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <td><span class="box orange">Online with events</span></td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- //inner -->
+                
+            </div>
+            <!-- //content -->
+        
+        </div>
+        <!-- //body -->
+
+    </div>
+	<!-- //col_right -->
+
+</div>
+
+<script type="text/javascript">
+    $('input[type=checkbox], input[type=radio]').customRadioCheck();
+</script>
+</body>
+</html>

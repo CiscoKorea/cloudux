@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+
+            {% block title %}
+            <div class="title">
+                <div>
+                    <h3>User list</h3>
+                    <p>Home > Server > <strong>User list</strong></p>
+                </div>
+            </div>
+            {% endblock %}
+                
+            {% block content %}
+
+                <!-- inner -->
+                <div class="inner">
+                    <div class="title_area">
+                        <h4>User list</h4>
+                        
+                        <div class="search">
+                            <select>
+                                <option>Name</option>
+                            </select> 
+                            <input type="text">
+                        </div>
+                    </div>
+                    <table>
+                        <colgroup>
+                            <col width="18%">
+                            <col width="18%">
+                            <col width="*">
+                            <col width="18%">
+                            <col width="18%">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>성명</th>
+                                <th>아이디</th>
+                                <th>이메일</th>
+                                <th>연락처</th>
+                                <th>Tenant</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                
+                    <div class="paginate">
+                        <p class="total">Total <strong>350</strong></p>
+                        
+                        <a href="#none" class="first">처음</a>
+                        <a href="#none" class="prev">이전</a>
+                            <span>
+                                <a href="#none">1</a>
+                                <a href="#none">2</a>
+                                <a href="#none">3</a>
+                                <strong>4</strong>
+                                <a href="#none">5</a>
+                                <a href="#none">6</a>
+                                <a href="#none">7</a>
+                                <a href="#none">8</a>
+                                <a href="#none">9</a>
+                                <a href="#none">10</a>
+                            </span>
+                        <a href="#none" class="next">다음</a>
+                        <a href="#none" class="last">마지막</a>
+                    </div>
+                
+                </div>
+                <!-- //inner -->
+
+                <div class="btn_area">
+                    <p class="right">
+                    	<a href="javaScript:layer_popup('.Profile');" class="btn_common01">사용자 등록</a>
+                    </p>
+                </div>
+                
+            {% endblock %}
+
+
+	<!-- lay_pop -->
+    <div class="lay_pop Profile">
+        <div class="lay_header">
+            <h1>사용자 등록</h1>
+            <a href="#nond" class="btn_close"><img src="../resources/img/content/lay_closed.png" alt="닫기"></a>
+        </div>
+        
+        <div class="lay_content">
+            <table>
+                <colgroup>
+                    <col width="110px">
+                    <col width="*">
+                </colgroup>
+                <tbody>
+                    <tr>
+                        <th>아이디</th>
+                        <td><input type="text"> <a href="#" class="btn_check">Check</a></td>
+                    </tr>
+                    <tr>
+                        <th>이름</th>
+                        <td><input type="text"></td>
+                    </tr>
+                    <tr>
+                        <th>이메일</th>
+                        <td><input type="text"></td>
+                    </tr>
+                    <tr>
+                        <th>연락처</th>
+                        <td><input type="text"></td>
+                    </tr>
+                    <tr>
+                        <th>권한</th>
+                        <td><label for="per1"><input type="radio" id="per1" name="permission"> 사용자</label> <label for="per2"><input type="radio" id="per2" name="permission"> 관리자</label></td>
+                    </tr>
+                    <tr>
+                        <th>Tenant</th>
+                        <td><select><option>개발그룹</option></select></td>
+                    </tr>
+                    <tr class="none_tr">
+                        <th>Name</th>
+                        <td><input type="text"></td>
+                    </tr>
+                    <tr class="none_tr">
+                        <th>vDC Name</th>
+                        <td><input type="text"> <a href="#" class="btn_check">Check</a></td>
+                    </tr>
+                    <tr>
+                        <th>비밀번호</th>
+                        <td><input type="text"></td>
+                    </tr>
+                    <tr>
+                        <th>비밀번호 확인</th>
+                        <td><input type="text"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="lay_footer">
+            <a href="#" class="btn_common01">등록하기</a>
+        </div>
+    </div>
+	<!-- //lay_pop -->
+

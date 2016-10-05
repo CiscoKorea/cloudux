@@ -1,0 +1,120 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>무제 문서</title>
+<link rel="stylesheet" type="text/css" href="../resources/css/layout.css">
+<script src="../resources/js/jquery-1.11.3.min.js"></script>
+<script src="../resources/js/jquery-ui.js"></script>
+<script src="../resources/js/common.js"></script>
+</head>
+
+<body>
+
+<div class="wrap">
+    <!-- Installer -->
+    <div class="Installer">
+        <h1>Installer Wizard</h1>
+            
+        <!-- step -->
+        <ul class="step">
+            <li>
+                <p>Step1</p>
+                <p>Credential</p>
+            </li>
+            <li class="active">
+                <p>Step2</p>
+                <p>Service profile</p>
+            </li>
+            <li>
+                <p>Step3</p>
+                <p>Storage</p>
+            </li>
+            <li>
+                <p>Step4</p>
+                <p>vCenter</p>
+            </li>
+        </ul>
+        <!-- //step -->
+        
+        <!-- service -->
+        <ul class="box service">
+        	<li>
+            	<h2>Service Profile Design <span>*</span></h2>
+                <div class="tbl">
+                    <table>
+                      <colgroup>
+                      	<col width="25%">
+                      	<col width="25%">
+                      	<col width="25%">
+                      	<col width="25%">
+                      </colgroup>
+                      <tbody>
+                          <tr>
+                            <td colspan="2"><h3>Service Profile Design Name Prefix</h3> <input type="text"></td>
+                            <td colspan="2"><h3>Number of Service Profile</h3> <input type="text"></td>
+                          </tr>
+                          <tr>
+                            <td><h3>Number of HBA</h3> <input type="text"></td>
+                            <td><h3>Start of WWPN Address</h3> <input type="text"></td>
+                            <td><h3>Start of KVM IP Address</h3> <input type="text"></td>
+                            <td><h3>Start of MAC Address</h3> <input type="text"></td>
+                          </tr>
+                          <tr>
+                            <td><h3>Number of vNIC</h3> <input type="text"></td>
+                            <td colspan="3"><h3>VLAN Group Prefix</h3> <input type="text"> <input type="submit" value="설정" class="btn_setup"></td>
+                          </tr>
+                      </tbody>
+                    </table>
+                </div>
+            </li>
+        	<li>
+            	<h2>Boot Policy <span>*</span></h2>
+                <ol>
+                	<li>
+                        <span>1</span> 
+                        <input type="text"> 
+                        <a href="#none" class="type01"><span>위로</span></a> 
+                        <a href="#none" class="type02"><span>아래로</span></a>
+                    </li>
+
+                	<li>
+                        <span>2</span> 
+                        <input type="text"> 
+                        <a href="#none" class="type01"><span>위로</span></a> 
+                        <a href="#none" class="type02"><span>아래로</span></a>
+                    </li>
+
+                	<li>
+                        <span>3</span> 
+                        <input type="text"> 
+                        <a href="#none" class="type01"><span>위로</span></a> 
+                        <a href="#none" class="type02"><span>아래로</span></a>
+                    </li>
+
+                	<li>
+                        <span>4</span> 
+                        <input type="text"> 
+                        <a href="#none" class="type01"><span>위로</span></a> 
+                        <a href="#none" class="type02"><span>아래로</span></a>
+                    </li>
+                </ol>
+            </li>
+        </ul>
+        <!-- //service -->
+        
+        <div class="next">
+            <p><span>*</span> 필수입력</p>
+            <a href="#" class="btn_common01">Next</a>
+        </div>
+    
+    </div>
+    <!-- //Installer -->
+
+</div>
+
+<script type="text/javascript">
+    $('input[type=checkbox], input[type=radio]').customRadioCheck();
+</script>
+</body>
+</html>
