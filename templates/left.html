@@ -1,31 +1,32 @@
+{% load i18n %}
 {{ request.GET.mid }}
 {% if request.GET.mid == "01" %}"TEST"{% endif %}
 {% block left %}
-    	<h1><a href="#"><img src="../resources/img/content/logo.png" alt="CISCO Cloud Management Portal"></a></h1>
-        <h2><a href="/" class="on">Dashboard</a></h2>
+    	<h1><a href="#"><img src="../resources/img/content/logo.png" alt="{% trans "site.title" %}"></a></h1>
+        <h2><a href="/" class="on">{% trans "menu.dashboard" %}</a></h2>
 
         <!-- nav -->
         <div class="nav">
         	<p>Servers</p>
             <ul>
-            	<li class="ico02"><a href="/hosts">Host List</a></li>
-            	<li class="ico03"><a href="/vms">VM List</a></li>
+            	<li class="ico02"><a href="/hosts">{% trans "menu.hostlist" %}</a></li>
+            	<li class="ico03"><a href="/vms">{% trans "menu.vmlist" %}</a></li>
             </ul>
 
         	<p>Network</p>
             <ul>
-            	<li class="ico04"><a href="/vnets">Virtual Network List</a></li>
+            	<li class="ico04"><a href="/vnets">{% trans "menu.vnetlist" %}</a></li>
             </ul>
 
         	<p>Storage</p>
             <ul>
-            	<li class="ico05"><a href="/volumes">Volume List</a></li>
-            	<li class="ico06"><a href="/disks">VM Disk List</a></li>
+            	<li class="ico05"><a href="/volumes">{% trans "site.volumelist" %}</a></li>
+            	<li class="ico06"><a href="/disks">{% trans "menu.disklist" %}</a></li>
             </ul>
 
             <ul>
-            	<li class="ico07"><a href="#">Monitoring</a></li>
-            	<li class="ico08"><a href="/users">사용자관리</a></li>
+            	<!-- <li class="ico07"><a href="#">Monitoring</a></li> -->
+            	<li class="ico08"><a href="/users">{% trans "menu.userlist" %}</a></li>
             </ul>
         </div>
         <!-- //nav -->
