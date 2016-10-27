@@ -42,18 +42,35 @@
                           </tr>
                       </thead>
                       <tbody>
+                          {% for host in list %}
                           <tr>
-                            <td rowspan="2">-</td>
                             <td>-</td>
                             <td>-</td>
+                            <td>{{ host.summary.host }}</td>
+                            <td>{{ host.summary.config.product.osType }} <br/> {{ host.summary.config.product.version }}</td>
+                            <td>{{ host.summary.managementServerIp }}</td>
+                            <td>
+                                {% for nic in host.configManager.networkSystem.networkConfig.vnic %}
+                                    {{ nic.device }} / {{ nic.spec.ip.ipAddress }}
+                                    <br/>
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% for swc in host.configManager.networkSystem.networkConfig.vswitch %}
+                                    {{ swc.name }}
+                                    <br/>
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% for vol in host.configManager.storageSystem.fileSystemVolumeInfo.mountInfo %}
+                                    {{ vol.volume.name }}
+                                    <br/>
+                                {% endfor %}
+                            </td>
                             <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td><span class="box blue">Online</span></td>
+                            <td><span class="box blue">{{ host.summary.overallStatus }}</span></td>
                           </tr>
+                          {% endfor %}
                           <tr>
                               <td>-</td>
                               <td>-</td>

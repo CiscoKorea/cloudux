@@ -54,18 +54,20 @@
                           </tr>
                       </thead>
                       <tbody>
+                        {% for vm in list %}
                           <tr>
                             <td><label><input type="checkbox"></label></td>
+                            <td></td>
+                            <td>{{ vm.summary.config.name }}</td>
+                            <td>{{ vm.summary.guest.ipAddress }}</td>
                             <td>-</td>
+                            <td>{{ vm.summary.quickStats.overallCpuUsage }}</td>
+                            <td>{{ vm.summary.quickStats.guestMemoryUsage }}</td>
                             <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
+                            <td>{{ vm.summary.storage.committed }}</td>
                             <td><span class="box blue">Normal</span></td>
                           </tr>
+                        {% endfor %}
                           <tr>
                             <td><label><input type="checkbox"></label></td>
                             <td>-</td>
@@ -116,6 +118,28 @@
                     	<a href="#" class="btn_common01">Create</a>
                     </p>
                 </div>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+       var list = {};
+        $.ajax({
+           url : "/vms",
+            datatype: "json",
+            data: {
+                csrfmiddlewaretoken:'{{ csrf_token }}'
+            }
+        }).done(function(msg){
+            if(msg.length>0) {
+                msg.forEach(function(v,i){
+                    $("body").append("<div>"+v.Name+"</div>");
+                })
+            }
+
+        }).fail(function(err){
+            alert(err);
+        });
+    });
+</script>
 
             {% endblock %}
             <!-- //content -->
