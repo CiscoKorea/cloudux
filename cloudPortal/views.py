@@ -56,20 +56,20 @@ def hosts(request):
                 n = BiVnic()
                 n.device = vnic.device
                 n.ipAddress = vnic.spec.ip.ipAddress
-                n.host.add(h)
                 n.save()
+                n.host.add(h)
 
             for vswitch in child.summary.host.configManager.networkSystem.networkConfig.vswitch:
                 s = BiVswitch()
                 s.name = vswitch.name
-                s.host.add(h)
                 s.save()
+                s.host.add(h)
 
             for vol in child.summary.host.configManager.storageSystem.fileSystemVolumeInfo.mountInfo:
                 v = BiVolume()
                 v.name = vol.volume.name
-                v.host.add(h)
                 v.save()
+                v.host.add(h)
         # print_vm_info(child)
         #     jsonObject = {}
         #     jsonObject['Name'] = child.summary.config.name
@@ -119,7 +119,7 @@ def vms(request):
             vm.ipAddress = child.summary.guest.ipAddress
             vm.macAddress = None
             vm.cpuUsage = child.summary.quickStats.overallCpuUsage
-            vm.memUsage = child.quickStats.guestMemoryUsage
+            vm.memUsage = child.summary.quickStats.guestMemoryUsage
             vm.netUsage = None
             vm.stgUsage = child.summary.storage.committed
             vm.status = None
