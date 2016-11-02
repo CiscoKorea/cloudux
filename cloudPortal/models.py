@@ -43,7 +43,24 @@ class BiVnic(models.Model):
 
 class BiVswitch(models.Model):
     name = models.CharField(max_length=100, blank=True, null=True)
-    host = models.ManyToManyField(BiHost)
+    host = models.ForeignKey(BiHost, blank=True, null=True, on_delete=models.CASCADE)
+
+    def __unicode__(self):
+        return self.name
+
+
+class BiPnic(models.Model):
+    device = models.CharField(max_length=100, blank=True, null=True)
+    vswitch = models.ManyToManyField(BiVswitch)
+
+    def __unicode__(self):
+        return self.device
+
+
+class BiPortgroup(models.Model):
+    name = models.CharField(max_length=100, blank=True, null=True)
+    vlanId = models.CharField(max_length=100, blank=True, null=True)
+    vswitch = models.ManyToManyField(BiVswitch)
 
     def __unicode__(self):
         return self.name

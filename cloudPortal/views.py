@@ -7,7 +7,7 @@ from pyVim import connect
 from pyVmomi import vmodl
 from pyVmomi import vim
 
-from models import GlobalConfig, BiHost, BiVnic, BiVolume, BiVswitch, BiVirtualMachine
+from models import GlobalConfig, BiHost, BiVnic, BiVolume, BiVswitch, BiVirtualMachine, BiPnic, BiPortgroup
 
 import tools.cli as cli
 
@@ -63,7 +63,7 @@ def hosts(request):
                 s = BiVswitch()
                 s.name = vswitch.name
                 s.save()
-                s.host.add(h)
+                s.host = h
 
             for vol in child.summary.host.configManager.storageSystem.fileSystemVolumeInfo.mountInfo:
                 v = BiVolume()
@@ -162,7 +162,9 @@ def vmsAjax(request):
 
 
 def vnets(request):
-    return render(request, 'virtualNetworkList.html', {})
+    dcs = getVcenterInfo()
+    slist = BiVswitch.objects.all()
+    return render(request, 'virtualNetworkList.html', {'list':slist})
 
 
 def volumes(request):
@@ -245,3 +247,153 @@ def print_vm_info(virtual_machine):
     if summary.runtime.question is not None:
         print("Question  : ", summary.runtime.question.text)
     print("")
+
+
+
+def getVcenterInfo():
+    # global content, hosts, hostPgDict#
+    config = GlobalConfig.objects.all()
+    # host, user, password = GetArgs()
+    context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
+    context.verify_mode = ssl.CERT_NONE
+    service_instance = connect.SmartConnect(host=config[0].vc_host,
+                                            user=config[0].vc_user,
+                                            pwd=config[0].vc_pass,
+                                            port=int(config[0].vc_port), sslContext=context)
+    atexit.register(connect.Disconnect, service_instance)
+    content = service_instance.RetrieveContent()
+    dcs = GetDatacenters(content)
+
+    return dcs
+
+
+def GetUplink(uplinks):
+    vals = []
+    for nic in uplinks:
+        # vals.append(pnicmap.get(nic))
+        vals.append('')
+    return "[" + ",".join(vals) + "]"
+
+
+def GetPortgroup(portgroups):
+    vals = []
+    for pg in portgroups:
+        # vals.append(pnicmap.get(pg))
+        vals.append('')
+    return "[" + ",".join(vals) + "]"
+
+
+def GetNetwork(network):
+    # global pnicmap
+    dpnic = {}
+    dpg = {}
+    for nic in network.pnic:
+        # print("pnic key: %s name: %s " %(nic.key, nic.device))
+        # pnicmap[nic.key] = nic.device
+        dpnic[nic.key] = nic.device
+    for pg in network.portgroup:
+        # pnicmap[pg.key] = pg.spec.name + ":" + str(pg.spec.vlanId)
+        dpg[pg.key] = pg.spec.name + ":" + str(pg.spec.vlanId)
+    for nic in network.vnic:
+        print("vnic name: %s connected portgroup: %s" %(nic.device, nic.portgroup))
+    for sw in network.vswitch:
+        #    	print("vSwitch name: %s, numPort: %d pnics: %s" %(sw.name, sw.numPorts, sw.pnic))
+        #print("vSwicth name: %s uplink: %s portgroup: %s" % (sw.name, GetUplink(sw.pnic), GetPortgroup(sw.portgroup)))
+        print("vSwicth name: %s uplink: %s portgroup: %s" % (sw.name, dpnic, dpg))
+
+
+def GetHost(hosts):
+    for host in hosts:
+        print("Host Name=%s" % (host.name))
+        GetNetwork(host.config.network)
+
+
+def GetCluster(folder):
+    for entity in folder.childEntity:
+        print("Cluster name = %s" % (entity.name))
+        GetHost(entity.host)
+
+
+# def GetDatacenters(content):
+#     print("Getting all Datacenter...")
+#     dc_view = content.viewManager.CreateContainerView(content.rootFolder, [vim.Datacenter], True)
+#     obj = [ dc for dc in dc_view.view]
+#     for dc in obj:
+#        print("Datacenter %s" %(dc.name))
+#        GetCluster( dc.hostFolder)
+#     dc_view.Destroy()
+#     return obj
+
+
+def GetDatacenters(content):
+    deleteAll()
+    print("Getting all Datacenter...")
+    dc_view = content.viewManager.CreateContainerView(content.rootFolder, [vim.Datacenter], True)
+    obj = [ dc for dc in dc_view.view]
+    for dc in obj:
+        print("Datacenter %s" % (dc.name))
+        for entity in dc.hostFolder.childEntity:
+            print("Cluster name = %s" % (entity.name))
+            for host in entity.host:
+                print("Host Name=%s" % (host.name))
+                h = BiHost()
+                h.datacenter = dc.name
+                h.cluster = entity.name
+                h.host = host.name
+                h.os = host.summary.config.product.osType
+                h.version = host.summary.config.product.version
+                h.ip = host.summary.managementServerIp
+                h.status = host.summary.overallStatus
+                h.save()
+
+                dpnic = {}
+                dpg = {}
+                network = host.config.network
+                for nic in network.pnic:
+                    # print("pnic key: %s name: %s " %(nic.key, nic.device))
+                    # pnicmap[nic.key] = nic.device
+                    dpnic[nic.key] = nic.device
+                    # pnic = BiPnic()
+                    # pnic.device = nic.device
+                    # pnic.save()
+                for pg in network.portgroup:
+                    # pnicmap[pg.key] = pg.spec.name + ":" + str(pg.spec.vlanId)
+                    dpg[pg.key] = pg.spec.name + ":" + str(pg.spec.vlanId)
+                    # vportgroup = BiPortgroup()
+                    # vportgroup.name = pg.spec.name
+                    # vportgroup.vlanId = pg.spec.vlanId
+                    # vportgroup.save()
+                for nic in network.vnic:
+                    print("vnic name: %s connected portgroup: %s" % (nic.device, nic.portgroup))
+                for sw in network.vswitch:
+                    #    	print("vSwitch name: %s, numPort: %d pnics: %s" %(sw.name, sw.numPorts, sw.pnic))
+                    # print("vSwicth name: %s uplink: %s portgroup: %s" % (sw.name, GetUplink(sw.pnic), GetPortgroup(sw.portgroup)))
+                    # print("vSwicth name: %s uplink: %s portgroup: %s" % (sw.name, dpnic, dpg))
+                    bsw = BiVswitch()
+                    bsw.name = sw.name
+                    bsw.save()
+                    bsw.host = h
+                    for p in sw.pnic:
+                        pnic = BiPnic()
+                        pnic.device = dpnic[p]
+                        pnic.save()
+                        pnic.vswitch.add(bsw)
+                    for g in sw.portgroup:
+                        vportgroup = BiPortgroup()
+                        vportgroup.name = dpg[g]
+                        vportgroup.vlanId = dpg[g]
+                        vportgroup.save()
+                        vportgroup.vswitch.add(bsw)
+
+    dc_view.Destroy()
+    return obj
+
+
+def deleteAll():
+    BiVirtualMachine.objects.all().delete()
+    BiVolume.objects.all().delete()
+    BiPortgroup.objects.all().delete()
+    BiPnic.objects.all().delete()
+    BiVswitch.objects.all().delete()
+    BiVnic.objects.all().delete()
+    BiHost.objects.all().delete()

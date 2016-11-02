@@ -18,15 +18,19 @@
                     <h4>표준가상스위치</h4>
                     <div class="tree">
                         <ul>
+                            {% for vswitch in list %}
                             <li>
-                                <a href="#">Platinum</a>
+                                <a href="#">{{ vswitch.name }}</a>
                                 <ul>
+                                    {% for vswitch in vswitch %}
                                     <li><a href="#">WEB</a></li>
+                                    {% endfor %}
                                     <li><a href="#">WAS</a></li>
                                     <li><a href="#">DB</a></li>
                                     <li><a href="#">NoSQL</a></li>
                                 </ul>
                             </li>
+                            {% endfor %}
                             <li>
                                 <a href="#">GOLD</a>
                                 <ul>
