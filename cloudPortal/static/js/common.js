@@ -134,14 +134,14 @@ $(document).ready(function() {
 	$("body").find("select").wrap("<span class='styled-select'></span>")
 
 
-	var col_right = $(window).width() - 230;  
-	var Height = $(window).height();  
+	var col_right = $(document).width() - 238;
+	var Height = $(document).height();
 	var Height_doc = $(document).height();  
 	$('.col_left').css({'height':Height_doc});  
 	$('.col_right').css({'min-height':Height}).css({'width':col_right});  
 	$(window).resize(function() {
-		var col_right = $(window).width() - 230;  
-		var Height = $(window).height();  
+		var col_right = $(document).width() - 238;
+		var Height = $(document).height();
 		var Height_doc = $(document).height();  
 		$('.col_left').css({'height':Height_doc});  
 		$('.col_right').css({'min-height':Height}).css({'width':col_right});  

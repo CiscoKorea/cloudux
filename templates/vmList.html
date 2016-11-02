@@ -30,13 +30,13 @@
                       <colgroup>
                           <col width="5%">
                           <col width="7%">
-                          <col width="7%">
-                          <col width="10%">
-                          <col width="13%">
-                          <col width="10%">
+                          <col width="20%">
                           <col width="15%">
-                          <col width="11%">
-                          <col width="11%">
+                          <col width="10%">
+                          <col width="8%">
+                          <col width="8%">
+                          <col width="9%">
+                          <col width="9%">
                           <col width="*">
                       </colgroup>
                       <thead>
@@ -47,8 +47,8 @@
                               <th>IPAddress</th>
                               <th>MACAddress</th>
                               <th>CPU Usage</th>
-                              <th>Memory Usag</th>
-                              <th>NetworkUsage</th>
+                              <th>Mem Usag</th>
+                              <th>Net Usage</th>
                               <th>StorageUsage</th>
                               <th>Status</th>
                           </tr>
@@ -58,28 +58,28 @@
                           <tr>
                             <td><label><input type="checkbox"></label></td>
                             <td></td>
-                            <td>{{ vm.summary.config.name }}</td>
-                            <td>{{ vm.summary.guest.ipAddress }}</td>
-                            <td>-</td>
-                            <td>{{ vm.summary.quickStats.overallCpuUsage }}</td>
-                            <td>{{ vm.summary.quickStats.guestMemoryUsage }}</td>
-                            <td>-</td>
-                            <td>{{ vm.summary.storage.committed }}</td>
-                            <td><span class="box blue">Normal</span></td>
+                            <td>{{ vm.name }}</td>
+                            <td>{{ vm.ipAddress }}</td>
+                            <td>{{ vm.macAddress }}</td>
+                            <td>{{ vm.cpuUsage }}</td>
+                            <td>{{ vm.memUsage }}</td>
+                            <td>{{ vm.netUsage }}</td>
+                            <td>{{ vm.stgUsage }}</td>
+                            <td><span class="box blue">{{ vm.status }}</span></td>
                           </tr>
                         {% endfor %}
-                          <tr>
-                            <td><label><input type="checkbox"></label></td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td><span class="box gray">Power Off</span></td>
-                          </tr>
+{#                          <tr>#}
+{#                            <td><label><input type="checkbox"></label></td>#}
+{#                            <td>-</td>#}
+{#                            <td>-</td>#}
+{#                            <td>-</td>#}
+{#                            <td>-</td>#}
+{#                            <td>-</td>#}
+{#                            <td>-</td>#}
+{#                            <td>-</td>#}
+{#                            <td>-</td>#}
+{#                            <td><span class="box gray">Power Off</span></td>#}
+{#                          </tr>#}
                       </tbody>
                     </table>
                 
@@ -120,6 +120,7 @@
                 </div>
 
 <script type="text/javascript">
+/*
     $(document).ready(function(){
        var list = {};
         $.ajax({
@@ -139,6 +140,7 @@
             alert(err);
         });
     });
+    */
 </script>
 
             {% endblock %}
