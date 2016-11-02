@@ -178,7 +178,6 @@ def vnets(request):
 
 
 def volumes(request):
-    dcs = getVcenterInfo()
     slist = BiVolume.objects.all()
     return render(request, 'volumeList.html', {'list':slist})
 
@@ -342,7 +341,7 @@ def GetCluster(folder):
 
 
 def GetDatacenters(content):
-    deleteAll()
+    deleteAll()     # delete all data !!!
     print("Getting all Datacenter...")
     dc_view = content.viewManager.CreateContainerView(content.rootFolder, [vim.Datacenter], True)
     obj = [ dc for dc in dc_view.view]
