@@ -17,6 +17,7 @@ import ssl
 
 
 def dashboard(request):
+    dcs = getVcenterInfo()  # get all data!!
     return render(request, 'dashboard.html', {})
 
 
@@ -172,7 +173,6 @@ def vmsAjax(request):
 
 
 def vnets(request):
-    dcs = getVcenterInfo()
     slist = BiVswitch.objects.all()
     return render(request, 'virtualNetworkList.html', {'list':slist})
 
