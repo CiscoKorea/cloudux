@@ -44,67 +44,67 @@
                       <tbody>
                           {% for host in list %}
                           <tr>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>{{ host.summary.host }}</td>
-                            <td>{{ host.summary.config.product.osType }} <br/> {{ host.summary.config.product.version }}</td>
-                            <td>{{ host.summary.managementServerIp }}</td>
+                            <td>{{ host.datacenter.name }}</td>
+                            <td>{{ host.cluster.name }}</td>
+                            <td>{{ host.host }}</td>
+                            <td>{{ host.os }} <br/> {{ host.version }}</td>
+                            <td>{{ host.ip }}</td>
                             <td>
-                                {% for nic in host.configManager.networkSystem.networkConfig.vnic %}
-                                    {{ nic.device }} / {{ nic.spec.ip.ipAddress }}
+                                {% for nic in host.bivnic_set.all %}
+                                    {{ nic.device }} / {{ nic.ipAddress }}
                                     <br/>
                                 {% endfor %}
                             </td>
                             <td>
-                                {% for swc in host.configManager.networkSystem.networkConfig.vswitch %}
-                                    {{ swc.name }}
+                                {% for vswc in host.bivswitch_set.all %}
+                                    {{ vswc.name }}
                                     <br/>
                                 {% endfor %}
                             </td>
                             <td>
-                                {% for vol in host.configManager.storageSystem.fileSystemVolumeInfo.mountInfo %}
-                                    {{ vol.volume.name }}
+                                {% for vol in host.bivolume_set.all %}
+                                    {{ vol.name }}
                                     <br/>
                                 {% endfor %}
                             </td>
                             <td>-</td>
-                            <td><span class="box blue">{{ host.summary.overallStatus }}</span></td>
+                            <td><span class="box blue">{{ host.status }}</span></td>
                           </tr>
                           {% endfor %}
-                          <tr>
-                              <td>-</td>
-                              <td>-</td>
-                              <td>-</td>
-                              <td>-</td>
-                              <td>-</td>
-                              <td>-</td>
-                              <td>-</td>
-                              <td>-</td>
-                              <td><span class="box red">Error</span></td>
-                          </tr>
-                          <tr>
-                            <td rowspan="2">-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td><span class="box gray">Offline</span></td>
-                          </tr>
-                          <tr>
-                              <td>-</td>
-                              <td>-</td>
-                              <td>-</td>
-                              <td>-</td>
-                              <td>-</td>
-                              <td>-</td>
-                              <td>-</td>
-                              <td>-</td>
-                              <td><span class="box orange">Warning</span></td>
-                          </tr>
+{#                          <tr>#}
+{#                              <td>-</td>#}
+{#                              <td>-</td>#}
+{#                              <td>-</td>#}
+{#                              <td>-</td>#}
+{#                              <td>-</td>#}
+{#                              <td>-</td>#}
+{#                              <td>-</td>#}
+{#                              <td>-</td>#}
+{#                              <td><span class="box red">Error</span></td>#}
+{#                          </tr>#}
+{#                          <tr>#}
+{#                            <td rowspan="2">-</td>#}
+{#                            <td>-</td>#}
+{#                            <td>-</td>#}
+{#                            <td>-</td>#}
+{#                            <td>-</td>#}
+{#                            <td>-</td>#}
+{#                            <td>-</td>#}
+{#                            <td>-</td>#}
+{#                            <td>-</td>#}
+{#                            <td><span class="box gray">Offline</span></td>#}
+{#                          </tr>#}
+{#                          <tr>#}
+{#                              <td>-</td>#}
+{#                              <td>-</td>#}
+{#                              <td>-</td>#}
+{#                              <td>-</td>#}
+{#                              <td>-</td>#}
+{#                              <td>-</td>#}
+{#                              <td>-</td>#}
+{#                              <td>-</td>#}
+{#                              <td><span class="box orange">Warning</span></td>#}
+{#                          </tr>#}
                       </tbody>
                   </table>
                 </div>

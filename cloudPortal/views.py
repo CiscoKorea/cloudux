@@ -21,6 +21,12 @@ def dashboard(request):
 
 
 def hosts(request):
+
+    hlist = BiHost.objects.all()
+    return render(request, 'hostList.html', {'list': hlist})
+
+
+def hosts_old(request):
     try:
 
         config = GlobalConfig.objects.all()
