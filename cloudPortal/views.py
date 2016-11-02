@@ -178,41 +178,47 @@ def vnets(request):
 
 
 def volumes(request):
-    try:
+    dcs = getVcenterInfo()
+    slist = BiVolume.objects.all()
+    return render(request, 'volumeList.html', {'list':slist})
 
-        config = GlobalConfig.objects.all()
-        context = ssl._create_unverified_context()
-        service_instance = connect.SmartConnect(host=config[0].vc_host,
-                                                user=config[0].vc_user,
-                                                pwd=config[0].vc_pass,
-                                                port=int(config[0].vc_port), sslContext=context)
 
-        atexit.register(connect.Disconnect, service_instance)
-
-        content = service_instance.RetrieveContent()
-
-        container = content.rootFolder  # starting point to look into
-        viewType = [vim.HostSystem]  # object types to look for
-        recursive = True  # whether we should look into it recursively
-        containerView = content.viewManager.CreateContainerView(
-            container, viewType, recursive)
-
-        children = containerView.view
-        results = []
-        for child in children:
-            print("mountInfo :", child.configManager.storageSystem.fileSystemVolumeInfo.mountInfo)
-            # print_vm_info(child)
-        #     jsonObject = {}
-        #     jsonObject['Name'] = child.summary.config.name
-        #     jsonObject['IP'] = child.summary.guest.ipAddress
-        #     results.append(jsonObject)
-
-    except vmodl.MethodFault as error:
-        print("Caught vmodl fault : " + error.msg)
-
-    if request.is_ajax():
-        return HttpResponse(json.dumps(results), 'application/json')
-    return render(request, 'volumeList.html', {'list': children})
+# def volumes_old(request):
+#     try:
+#
+#         config = GlobalConfig.objects.all()
+#         context = ssl._create_unverified_context()
+#         service_instance = connect.SmartConnect(host=config[0].vc_host,
+#                                                 user=config[0].vc_user,
+#                                                 pwd=config[0].vc_pass,
+#                                                 port=int(config[0].vc_port), sslContext=context)
+#
+#         atexit.register(connect.Disconnect, service_instance)
+#
+#         content = service_instance.RetrieveContent()
+#
+#         container = content.rootFolder  # starting point to look into
+#         viewType = [vim.HostSystem]  # object types to look for
+#         recursive = True  # whether we should look into it recursively
+#         containerView = content.viewManager.CreateContainerView(
+#             container, viewType, recursive)
+#
+#         children = containerView.view
+#         results = []
+#         for child in children:
+#             print("mountInfo :", child.configManager.storageSystem.fileSystemVolumeInfo.mountInfo)
+#             # print_vm_info(child)
+#         #     jsonObject = {}
+#         #     jsonObject['Name'] = child.summary.config.name
+#         #     jsonObject['IP'] = child.summary.guest.ipAddress
+#         #     results.append(jsonObject)
+#
+#     except vmodl.MethodFault as error:
+#         print("Caught vmodl fault : " + error.msg)
+#
+#     if request.is_ajax():
+#         return HttpResponse(json.dumps(results), 'application/json')
+#     return render(request, 'volumeList.html', {'list': children})
 
 
 def disks(request):
@@ -413,6 +419,14 @@ def GetDatacenters(content):
                     vvm.status = vm.summary.overallStatus
                     vvm.host = h
                     vvm.save()
+                for mnt in host.configManager.storageSystem.fileSystemVolumeInfo.mountInfo:
+                    vvol = BiVolume()
+                    vvol.name = mnt.volume.name
+                    vvol.capacity = mnt.volume.capacity
+                    vvol.type = mnt.volume.type
+                    vvol.host = h
+                    vvol.save()
+
 
     dc_view.Destroy()
     return obj

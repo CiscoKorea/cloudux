@@ -34,31 +34,29 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for host in list %}
-                                {% for vol in host.configManager.storageSystem.fileSystemVolumeInfo.mountInfo %}
+                            {% for vol in list %}
                             <tr>
                                 <td><!--<span class="box gray">Offline </span>--></td>
-                                <td>{{ vol.volume.name }}</td>
-                                <td>{{ vol.volume.capacity }}</td>
+                                <td>{{ vol.name }}</td>
+                                <td>{{ vol.capacity }}</td>
                                 <td>-</td>
-                                <td>{{ host.summary.host }}</td>
+                                <td>{{ vol.host.host }}</td>
                             </tr>
-                                {% endfor %}
                             {% endfor %}
-                            <tr>
-                                <td><span class="box blue">Online </span></td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                            </tr>
-                            <tr>
-                                <td><span class="box orange">Online with events</span></td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                            </tr>
+{#                            <tr>#}
+{#                                <td><span class="box blue">Online </span></td>#}
+{#                                <td>-</td>#}
+{#                                <td>-</td>#}
+{#                                <td>-</td>#}
+{#                                <td>-</td>#}
+{#                            </tr>#}
+{#                            <tr>#}
+{#                                <td><span class="box orange">Online with events</span></td>#}
+{#                                <td>-</td>#}
+{#                                <td>-</td>#}
+{#                                <td>-</td>#}
+{#                                <td>-</td>#}
+{#                            </tr>#}
                         </tbody>
                     </table>
                 </div>
