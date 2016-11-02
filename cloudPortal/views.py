@@ -7,7 +7,7 @@ from pyVim import connect
 from pyVmomi import vmodl
 from pyVmomi import vim
 
-from models import GlobalConfig, BiHost, BiVnic, BiVolume, BiVswitch, BiVirtualMachine, BiPnic, BiPortgroup
+from models import GlobalConfig, BiHost, BiVnic, BiVolume, BiVswitch, BiVirtualMachine, BiPnic, BiPortgroup, BiCluster, BiDatacenter
 
 import tools.cli as cli
 
@@ -332,13 +332,19 @@ def GetDatacenters(content):
     obj = [ dc for dc in dc_view.view]
     for dc in obj:
         print("Datacenter %s" % (dc.name))
+        vdc = BiDatacenter()
+        vdc.name = dc.name
+        vdc.save()
         for entity in dc.hostFolder.childEntity:
             print("Cluster name = %s" % (entity.name))
+            vcls = BiCluster()
+            vcls.name = entity.name
+            vcls.save()
             for host in entity.host:
                 print("Host Name=%s" % (host.name))
                 h = BiHost()
-                h.datacenter = dc.name
-                h.cluster = entity.name
+                h.datacenter = vdc
+                h.cluster = vcls
                 h.host = host.name
                 h.os = host.summary.config.product.osType
                 h.version = host.summary.config.product.version
@@ -371,19 +377,21 @@ def GetDatacenters(content):
                     # print("vSwicth name: %s uplink: %s portgroup: %s" % (sw.name, dpnic, dpg))
                     bsw = BiVswitch()
                     bsw.name = sw.name
-                    bsw.save()
                     bsw.host = h
+                    bsw.save()
+
                     for p in sw.pnic:
                         pnic = BiPnic()
                         pnic.device = dpnic[p]
+                        pnic.vswitch = bsw
                         pnic.save()
-                        pnic.vswitch.add(bsw)
                     for g in sw.portgroup:
                         vportgroup = BiPortgroup()
                         vportgroup.name = dpg[g]
                         vportgroup.vlanId = dpg[g]
+                        vportgroup.vswitch = bsw
                         vportgroup.save()
-                        vportgroup.vswitch.add(bsw)
+
 
     dc_view.Destroy()
     return obj

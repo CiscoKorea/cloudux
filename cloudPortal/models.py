@@ -13,9 +13,32 @@ class GlobalConfig(models.Model):
         return self.vc_host
 
 
-class BiHost(models.Model):
-    datacenter = models.CharField(max_length=100, blank=True, null=True)
-    cluster = models.CharField(max_length=100, blank=True, null=True)
+class Audited(models.Model):
+    created = models.DateTimeField(blank=True, null=True)
+    modified = models.DateTimeField(auto_now=True)
+    dbstatus = models.CharField(max_length=1, default='A')
+
+    class Meta:
+        abstract = True
+
+
+class BiDatacenter(Audited):
+    name = models.CharField(max_length=100, blank=True, null=True)
+
+    def __unicode__(self):
+        return self.name
+
+
+class BiCluster(Audited):
+    name = models.CharField(max_length=100, blank=True, null=True)
+
+    def __unicode__(self):
+        return self.name
+
+
+class BiHost(Audited):
+    datacenter = models.ForeignKey(BiDatacenter, blank=True, null=True, on_delete=models.CASCADE)
+    cluster = models.ForeignKey(BiCluster, blank=True, null=True, on_delete=models.CASCADE)
     host = models.CharField(max_length=100, blank=True, null=True)
     os = models.CharField(max_length=50, blank=True, null=True)
     version = models.CharField(max_length=20, blank=True, null=True)
@@ -29,10 +52,13 @@ class BiHost(models.Model):
         ordering = ('datacenter', 'cluster', 'host',)
 
 
-class BiVnic(models.Model):
+class BiVnic(Audited):
     device = models.CharField(max_length=100, blank=True, null=True)
+    key = models.CharField(max_length=100, blank=True, null=True)
     ipAddress = models.CharField(max_length=20, blank=True, null=True)
+    mac = models.CharField(max_length=30, blank=True, null=True)
     host = models.ManyToManyField(BiHost)
+    portgroup = models.CharField(max_length=100, blank=True, null=True)
 
     def __unicode__(self):
         return self.device
@@ -41,40 +67,47 @@ class BiVnic(models.Model):
         ordering = ('ipAddress',)
 
 
-class BiVswitch(models.Model):
+class BiVswitch(Audited):
     name = models.CharField(max_length=100, blank=True, null=True)
+    key = models.CharField(max_length=100, blank=True, null=True)
+    numPorts = models.IntegerField(default=0)
+    numPortsAvailable = models.IntegerField(default=0)
     host = models.ForeignKey(BiHost, blank=True, null=True, on_delete=models.CASCADE)
 
     def __unicode__(self):
         return self.name
 
 
-class BiPnic(models.Model):
+class BiPnic(Audited):
     device = models.CharField(max_length=100, blank=True, null=True)
-    vswitch = models.ManyToManyField(BiVswitch)
+    key = models.CharField(max_length=100, blank=True, null=True)
+    vswitch = models.ForeignKey(BiVswitch, blank=True, null=True, on_delete=models.CASCADE)
 
     def __unicode__(self):
         return self.device
 
 
-class BiPortgroup(models.Model):
+class BiPortgroup(Audited):
     name = models.CharField(max_length=100, blank=True, null=True)
+    key = models.CharField(max_length=100, blank=True, null=True)
     vlanId = models.CharField(max_length=100, blank=True, null=True)
-    vswitch = models.ManyToManyField(BiVswitch)
+    vswitch = models.ForeignKey(BiVswitch, blank=True, null=True, on_delete=models.CASCADE)
 
     def __unicode__(self):
         return self.name
 
 
-class BiVolume(models.Model):
+class BiVolume(Audited):
     name = models.CharField(max_length=100, blank=True, null=True)
+    type = models.CharField(max_length=100, blank=True, null=True)
+    capacity = models.BigIntegerField(default=0)
     host = models.ManyToManyField(BiHost)
 
     def __unicode__(self):
         return self.name
 
 
-class BiVirtualMachine(models.Model):
+class BiVirtualMachine(Audited):
     name = models.CharField(max_length=100, blank=True, null=True)
     ipAddress = models.CharField(max_length=20, blank=True, null=True)
     macAddress = models.CharField(max_length=20, blank=True, null=True)
@@ -83,6 +116,7 @@ class BiVirtualMachine(models.Model):
     netUsage = models.CharField(max_length=5, blank=True, null=True)
     stgUsage = models.CharField(max_length=30, blank=True, null=True)
     status = models.CharField(max_length=20, blank=True, null=True)
+    host = models.ForeignKey(BiHost, blank=True, null=True, on_delete=models.CASCADE)
 
     def __unicode__(self):
         return self.name

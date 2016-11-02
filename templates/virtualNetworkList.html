@@ -22,23 +22,23 @@
                             <li>
                                 <a href="#">{{ vswitch.name }}</a>
                                 <ul>
-                                    {% for vswitch in vswitch %}
-                                    <li><a href="#">WEB</a></li>
+                                    {% for pg in vswitch.biportgroup_set.all %}
+                                    <li><a href="#">{{ pg.name }}</a></li>
                                     {% endfor %}
-                                    <li><a href="#">WAS</a></li>
-                                    <li><a href="#">DB</a></li>
-                                    <li><a href="#">NoSQL</a></li>
+{#                                    <li><a href="#">WAS</a></li>#}
+{#                                    <li><a href="#">DB</a></li>#}
+{#                                    <li><a href="#">NoSQL</a></li>#}
                                 </ul>
                             </li>
                             {% endfor %}
-                            <li>
-                                <a href="#">GOLD</a>
-                                <ul>
-                                    <li><a href="#">WEB</a></li>
-                                    <li><a href="#">WAS</a></li>
-                                    <li><a href="#">RDB</a></li>
-                                </ul>
-                            </li>
+{#                            <li>#}
+{#                                <a href="#">GOLD</a>#}
+{#                                <ul>#}
+{#                                    <li><a href="#">WEB</a></li>#}
+{#                                    <li><a href="#">WAS</a></li>#}
+{#                                    <li><a href="#">RDB</a></li>#}
+{#                                </ul>#}
+{#                            </li>#}
                         </ul>
                     </div>
                 </div>
@@ -66,13 +66,17 @@
                               </tr>
                           </thead>
                           <tbody>
+                          {% for vswitch in list %}
+                              {% for pg in vswitch.biportgroup_set.all %}
                               <tr>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
+                                <td>{{ pg.name }}</td>
+                                <td>{{ pg.vlanId }}</td>
+                                <td>{{ pg.vswitch.host.host }}</td>
                                 <td>-</td>
                                 <td>-</td>
                               </tr>
+                                  {% endfor %}
+                          {% endfor %}
                               <tr>
                                 <td>-</td>
                                 <td>-</td>
