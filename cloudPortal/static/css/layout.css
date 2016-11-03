@@ -207,10 +207,10 @@ div.paginate .total > strong{margin:0; padding:0; color:#333;}
 
 .tree{padding:20px;}
 .tree ul li{margin-top:10px;}
-.tree ul li a{padding-left:25px; background:url(../img/content/tree_duf.jpg) no-repeat 0 50%; display:block; text-align:left; height:20px; line-height:20px; font-weight:500;}
-.tree ul > li.on > a{background-image:url(../img/content/tree_active.jpg); color:#03a9f4;}
+.tree ul li a{padding-left:15px; display:block; text-align:left; height:20px; line-height:20px; font-weight:500;}
+.tree ul > li.on > a{ color:#03a9f4;}
 .tree ul > li ul{padding-left:35px; display:none;}
-.tree > ul > li{background:url(../img/content/tree_plus.jpg) no-repeat 0 0; padding-left:35px;}
+.tree > ul > li{background:url(../img/content/tree_plus.jpg) no-repeat 0 0; padding-left:25px;}
 .tree > ul > li.on{background-image:url(../img/content/tree_minus.jpg);}
 
 

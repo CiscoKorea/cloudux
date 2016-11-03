@@ -166,7 +166,12 @@ $(document).ready(function() {
         $(this).next('ul').toggle();
         $(this).parent().toggleClass("on");
         return false;
-    })	
+    })
+
+	$(".tree.vswitch ul li a").click(function(){
+        searchVswitch(this);
+        return false;
+    })
 
     $("#per1").click(function(){
         $(".lay_pop .lay_content table .none_tr").hide();
@@ -179,3 +184,17 @@ $(document).ready(function() {
     })	
 
 });
+
+
+function searchVswitch(me) {
+	//console.log($(me).data("vswitchid"))
+	if($(".tree.vswitch ul li.on").length > 0) {
+		$("tr[class^='pgl']").hide()
+		$(".tree.vswitch ul li.on").each(function (index, element) {
+			var swid = $(element).data("vswitchid")
+			$(".pgl" + swid).show()
+		});
+	} else {
+		$("tr[class^='pgl']").show()
+	}
+}

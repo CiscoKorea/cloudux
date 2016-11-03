@@ -16,14 +16,14 @@
                 <!-- cat_left -->
                 <div class="cat_left">
                     <h4>표준가상스위치</h4>
-                    <div class="tree">
+                    <div class="tree vswitch">
                         <ul>
                             {% for vswitch in list %}
-                            <li>
+                            <li data-vswitchid="{{ vswitch.id }}">
                                 <a href="#">{{ vswitch.name }}</a>
                                 <ul>
                                     {% for pg in vswitch.biportgroup_set.all %}
-                                    <li><a href="#">{{ pg.name }}</a></li>
+                                    <li>{{ pg.name }}</li>
                                     {% endfor %}
 {#                                    <li><a href="#">WAS</a></li>#}
 {#                                    <li><a href="#">DB</a></li>#}
@@ -68,7 +68,7 @@
                           <tbody>
                           {% for vswitch in list %}
                               {% for pg in vswitch.biportgroup_set.all %}
-                              <tr>
+                              <tr class="pgl{{ pg.vswitch.id }}">
                                 <td>{{ pg.name }}</td>
                                 <td>{{ pg.vlanId }}</td>
                                 <td>{{ pg.vswitch.host.host }}</td>
@@ -77,27 +77,6 @@
                               </tr>
                                   {% endfor %}
                           {% endfor %}
-                              <tr>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                              </tr>
-                              <tr>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                              </tr>
-                              <tr>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                              </tr>
                           </tbody>
                         </table>
                     
