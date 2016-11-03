@@ -71,9 +71,25 @@
                               <tr class="pgl{{ pg.vswitch.id }}">
                                 <td>{{ pg.name }}</td>
                                 <td>{{ pg.vlanId }}</td>
-                                <td>{{ pg.vswitch.host.host }}</td>
-                                <td>-</td>
-                                <td>-</td>
+                                <td>
+                                    {% for host in pg.vswitch.host.all %}
+                                        {{ host.host }}<br/>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for host in pg.vswitch.host.all %}
+                                        {% for vm in host.bivirtualmachine_set.all %}
+                                            {{ vm.name }}<br/>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for host in pg.vswitch.host.all %}
+                                        {% for vnic in host.bivnic_set.all %}
+                                            {{ vnic.device }}<br/>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </td>
                               </tr>
                                   {% endfor %}
                           {% endfor %}
