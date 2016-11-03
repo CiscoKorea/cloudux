@@ -369,6 +369,7 @@ def GetDatacenters(content):
 
                 dpnic = {}
                 dpg = {}
+                dvlanid = {}
                 network = host.config.network
                 for nic in network.pnic:
                     # print("pnic key: %s name: %s " %(nic.key, nic.device))
@@ -379,7 +380,8 @@ def GetDatacenters(content):
                     # pnic.save()
                 for pg in network.portgroup:
                     # pnicmap[pg.key] = pg.spec.name + ":" + str(pg.spec.vlanId)
-                    dpg[pg.key] = pg.spec.name + ":" + str(pg.spec.vlanId)
+                    dpg[pg.key] = pg    # .spec.name
+                    dvlanid[pg.key] = pg.spec.vlanId
                     # vportgroup = BiPortgroup()
                     # vportgroup.name = pg.spec.name
                     # vportgroup.vlanId = pg.spec.vlanId
@@ -390,10 +392,12 @@ def GetDatacenters(content):
                     #    	print("vSwitch name: %s, numPort: %d pnics: %s" %(sw.name, sw.numPorts, sw.pnic))
                     # print("vSwicth name: %s uplink: %s portgroup: %s" % (sw.name, GetUplink(sw.pnic), GetPortgroup(sw.portgroup)))
                     # print("vSwicth name: %s uplink: %s portgroup: %s" % (sw.name, dpnic, dpg))
-                    bsw = BiVswitch()
-                    bsw.name = sw.name
-                    bsw.host = h
-                    bsw.save()
+
+                    if BiVswitch.objects.filter(name=sw.name).__len__() == 0:
+                        bsw = BiVswitch()
+                        bsw.name = sw.name
+                        bsw.host = h
+                        bsw.save()
 
                     for p in sw.pnic:
                         pnic = BiPnic()
@@ -401,11 +405,14 @@ def GetDatacenters(content):
                         pnic.vswitch = bsw
                         pnic.save()
                     for g in sw.portgroup:
-                        vportgroup = BiPortgroup()
-                        vportgroup.name = dpg[g]
-                        vportgroup.vlanId = dpg[g]
-                        vportgroup.vswitch = bsw
-                        vportgroup.save()
+                        # only one key
+                        if BiPortgroup.objects.filter(key=g).__len__() == 0:
+                            vportgroup = BiPortgroup()
+                            vportgroup.key = g
+                            vportgroup.name = dpg[g].spec.name
+                            vportgroup.vlanId = dvlanid[g]
+                            vportgroup.vswitch = bsw
+                            vportgroup.save()
                 for vm in host.vm:
                     vvm = BiVirtualMachine()
                     vvm.name = vm.config.name
@@ -418,14 +425,15 @@ def GetDatacenters(content):
                     vvm.status = vm.summary.overallStatus
                     vvm.host = h
                     vvm.save()
+                    print(vm.config.hardware)
                 for mnt in host.configManager.storageSystem.fileSystemVolumeInfo.mountInfo:
-                    vvol = BiVolume()
-                    vvol.name = mnt.volume.name
-                    vvol.capacity = mnt.volume.capacity
-                    vvol.type = mnt.volume.type
-                    vvol.host = h
-                    vvol.save()
-
+                    if len(mnt.volume.name) > 0 :
+                        vvol = BiVolume()
+                        vvol.name = mnt.volume.name
+                        vvol.capacity = mnt.volume.capacity
+                        vvol.type = mnt.volume.type
+                        vvol.host = h
+                        vvol.save()
 
     dc_view.Destroy()
     return obj

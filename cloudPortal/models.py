@@ -106,6 +106,9 @@ class BiVolume(Audited):
     def __unicode__(self):
         return self.name
 
+    class Meta:
+        ordering = ('name',)
+
 
 class BiVirtualMachine(Audited):
     name = models.CharField(max_length=100, blank=True, null=True)
