@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'cloudPortal',
     'cisco02',
-    'djcelery',
+   # 'djcelery',
 ]
 
 MIDDLEWARE = [

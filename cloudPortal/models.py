@@ -58,7 +58,7 @@ class BiVnic(Audited):
     ipAddress = models.CharField(max_length=20, blank=True, null=True)
     mac = models.CharField(max_length=30, blank=True, null=True)
     host = models.ManyToManyField(BiHost)
-    portgroup = models.CharField(max_length=100, blank=True, null=True)
+    portgroup = models.CharField(max_length=100, blank=True, null=True) #FIXME
 
     def __unicode__(self):
         return self.device
@@ -72,7 +72,7 @@ class BiVswitch(Audited):
     key = models.CharField(max_length=100, blank=True, null=True)
     numPorts = models.IntegerField(default=0)
     numPortsAvailable = models.IntegerField(default=0)
-    host = models.ForeignKey(BiHost, blank=True, null=True, on_delete=models.CASCADE)
+    host = models.ManyToManyField(BiHost)
 
     def __unicode__(self):
         return self.name

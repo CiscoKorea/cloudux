@@ -372,9 +372,10 @@ def GetDatacenters(content):
                 h.datacenter = vdc
                 h.cluster = vcls
                 h.host = host.name
-                h.os = host.summary.config.product.osType
-                h.version = host.summary.config.product.version
-                h.ip = host.summary.managementServerIp
+                h.os = host.config.product.licenseProductName
+                h.version = host.config.product.licenseProductVersion
+                if len(host.config.network.vnic) > 0:
+                    h.ip = host.config.network.vnic[0].spec.ip.ipAddress
                 h.status = host.summary.overallStatus
                 h.save()
 
@@ -398,17 +399,28 @@ def GetDatacenters(content):
                     # vportgroup.vlanId = pg.spec.vlanId
                     # vportgroup.save()
                 for nic in network.vnic:
-                    print("vnic name: %s connected portgroup: %s" % (nic.device, nic.portgroup))
+                    # print("vnic name: %s connected portgroup: %s" % (nic.device, nic.portgroup))
+                    vnic = BiVnic()
+                    vnic.device = nic.device
+                    vnic.key = nic.key
+                    vnic.ipAddress = nic.spec.ip.ipAddress
+                    vnic.mac = nic.spec.mac
+                    vnic.save()
+                    vnic.host.add(h)
                 for sw in network.vswitch:
                     #    	print("vSwitch name: %s, numPort: %d pnics: %s" %(sw.name, sw.numPorts, sw.pnic))
                     # print("vSwicth name: %s uplink: %s portgroup: %s" % (sw.name, GetUplink(sw.pnic), GetPortgroup(sw.portgroup)))
                     # print("vSwicth name: %s uplink: %s portgroup: %s" % (sw.name, dpnic, dpg))
 
-                    if BiVswitch.objects.filter(name=sw.name).__len__() == 0:
+                    if BiVswitch.objects.filter(key=sw.key).__len__() == 0:
                         bsw = BiVswitch()
                         bsw.name = sw.name
-                        bsw.host = h
+                        bsw.key = sw.key
                         bsw.save()
+                        bsw.host.add(h)
+                    else:
+                        bsw = BiVswitch.objects.get(key=sw.key)
+                        bsw.host.add(h)
 
                     for p in sw.pnic:
                         pnic = BiPnic()
