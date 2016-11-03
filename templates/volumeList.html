@@ -40,7 +40,11 @@
                                 <td>{{ vol.name }}</td>
                                 <td>{{ vol.capacity }}</td>
                                 <td>-</td>
-                                <td>{{ vol.host.host }}</td>
+                                <td>
+                                    {% for host in vol.host.all %}
+                                        {{ host.host }}<br/>
+                                    {% endfor %}
+                                </td>
                             </tr>
                             {% endfor %}
 {#                            <tr>#}

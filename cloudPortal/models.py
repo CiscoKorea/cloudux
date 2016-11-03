@@ -101,7 +101,7 @@ class BiVolume(Audited):
     name = models.CharField(max_length=100, blank=True, null=True)
     type = models.CharField(max_length=100, blank=True, null=True)
     capacity = models.BigIntegerField(default=0)
-    host = models.ForeignKey(BiHost, blank=True, null=True, on_delete=models.CASCADE)
+    host = models.ManyToManyField(BiHost)
 
     def __unicode__(self):
         return self.name

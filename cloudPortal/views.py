@@ -450,13 +450,17 @@ def GetDatacenters(content):
                     vvm.save()
                     print(vm.config.hardware)
                 for mnt in host.configManager.storageSystem.fileSystemVolumeInfo.mountInfo:
-                    if len(mnt.volume.name) > 0 :
-                        vvol = BiVolume()
-                        vvol.name = mnt.volume.name
-                        vvol.capacity = mnt.volume.capacity
-                        vvol.type = mnt.volume.type
-                        vvol.host = h
-                        vvol.save()
+                    if len(mnt.volume.name) > 0:
+                        if BiVolume.objects.filter(name=mnt.volume.name).__len__() == 0:
+                            vvol = BiVolume()
+                            vvol.name = mnt.volume.name
+                            vvol.capacity = mnt.volume.capacity
+                            vvol.type = mnt.volume.type
+                            vvol.save()
+                            vvol.host.add(h)
+                        else:
+                            vvol = BiVolume.objects.get(name=mnt.volume.name)
+                            vvol.host.add(h)
 
     dc_view.Destroy()
     return obj
