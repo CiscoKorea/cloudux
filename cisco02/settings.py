@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'cloudPortal',
+    'cisco02',
+    'djcelery',
 ]
 
 MIDDLEWARE = [
@@ -138,3 +140,31 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
      # ('resources', os.path.join(BASE_DIR, 'resources'),),
 )
+
+# #### Celery CONFIGURATION
+## Broker settings.
+BROKER_URL = 'amqp://guest:guest@localhost//'
+
+## Using the database to store task state and results.
+CELERY_RESULT_BACKEND = 'amqp://'
+
+CELERY_ANNOTATIONS = {'cisco02.tasks.add': {'rate_limit': '10/s'}}
+
+from datetime import timedelta
+
+t1 = 20
+t2 = 10
+
+CELERYBEAT_SCHEDULE = {
+      'add-every-20-seconds': {
+        'task': 'cisco02.tasks.add',
+        'schedule': timedelta(seconds=t1),
+        'args': (16, 16)
+    },
+    'mul-every-10-seconds': {
+        'task': 'cisco02.tasks.mul',
+        'schedule': timedelta(seconds=t2),
+        'args': (6, 6)
+    },
+}
+# #### END Celery CONFIGURATION

@@ -6,6 +6,9 @@ import atexit
 from pyVim import connect
 from pyVmomi import vmodl
 from pyVmomi import vim
+#######
+from cisco02.settings import *
+#######
 
 from models import GlobalConfig, BiHost, BiVnic, BiVolume, BiVswitch, BiVirtualMachine, BiPnic, BiPortgroup, BiCluster, BiDatacenter
 
@@ -244,6 +247,14 @@ def print_vm_info(virtual_machine):
     print("Guest      : ", summary.config.guestFullName)
     print("Instance UUID : ", summary.config.instanceUuid)
     print("Bios UUID     : ", summary.config.uuid)
+
+
+    ##################
+
+    settings.t1=2
+
+    ##################
+     
     annotation = summary.config.annotation
     if annotation:
         print("Annotation : ", annotation)

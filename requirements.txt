@@ -1,2 +1,4 @@
 pyvmomi
 Django
+celery
+installation RabbitMQ
