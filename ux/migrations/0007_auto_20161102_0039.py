@@ -9,7 +9,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cloudPortal', '0006_auto_20161102_0033'),
+        ('ux', '0006_auto_20161102_0033'),
     ]
 
     operations = [
@@ -42,11 +42,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='bihost',
             name='cluster',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='cloudPortal.BiCluster'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='ux.BiCluster'),
         ),
         migrations.AlterField(
             model_name='bihost',
             name='datacenter',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='cloudPortal.BiDatacenter'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='ux.BiDatacenter'),
         ),
     ]

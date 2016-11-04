@@ -9,13 +9,13 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cloudPortal', '0008_auto_20161102_0436'),
+        ('ux', '0008_auto_20161102_0436'),
     ]
 
     operations = [
         migrations.AddField(
             model_name='bivirtualmachine',
             name='host',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='cloudPortal.BiHost'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='ux.BiHost'),
         ),
     ]

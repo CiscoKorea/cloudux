@@ -9,7 +9,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cloudPortal', '0007_auto_20161102_0039'),
+        ('ux', '0007_auto_20161102_0039'),
     ]
 
     operations = [
@@ -70,7 +70,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='bipnic',
             name='vswitch',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='cloudPortal.BiVswitch'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='ux.BiVswitch'),
         ),
         migrations.RemoveField(
             model_name='biportgroup',
@@ -79,6 +79,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='biportgroup',
             name='vswitch',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='cloudPortal.BiVswitch'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='ux.BiVswitch'),
         ),
     ]

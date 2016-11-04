@@ -7,10 +7,10 @@ from celery import Celery
 
 # djano 에서 쓰일 setting 지정 아래의 경우 proj/settings.py 를 사용한다는 뜻
 import os
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cisco02.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cloudmgmt.settings')
 from django.conf import settings  # noqa
 
-app = Celery('cisco02')
+app = Celery('cloudmgmt')
 
 # Optional configuration, see the application user guide.
 # django.conf:settings 로 django setting 을 celery 의 config 로 불러온다.

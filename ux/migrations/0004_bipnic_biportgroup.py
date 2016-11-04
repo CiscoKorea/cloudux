@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cloudPortal', '0003_auto_20161027_0825'),
+        ('ux', '0003_auto_20161027_0825'),
     ]
 
     operations = [
@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('device', models.CharField(blank=True, max_length=100, null=True)),
-                ('vswitch', models.ManyToManyField(to='cloudPortal.BiVswitch')),
+                ('vswitch', models.ManyToManyField(to='ux.BiVswitch')),
             ],
         ),
         migrations.CreateModel(
@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(blank=True, max_length=100, null=True)),
                 ('vlanId', models.CharField(blank=True, max_length=100, null=True)),
-                ('vswitch', models.ManyToManyField(to='cloudPortal.BiVswitch')),
+                ('vswitch', models.ManyToManyField(to='ux.BiVswitch')),
             ],
         ),
     ]

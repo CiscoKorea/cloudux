@@ -1,7 +1,7 @@
 # coding=utf-8
 
 from __future__ import absolute_import
-from cisco02.celery import app
+from cloudmgmt.celery import app
 
 
 @app.task

@@ -40,8 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'cloudPortal',
-    'cisco02',
+    'ux',
+    'cloudmgmt',
    # 'djcelery',
 ]
 
@@ -56,7 +56,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'cisco02.urls'
+ROOT_URLCONF = 'cloudmgmt.urls'
 
 TEMPLATES = [
     {
@@ -75,7 +75,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'cisco02.wsgi.application'
+WSGI_APPLICATION = 'cloudmgmt.wsgi.application'
 
 
 # Database
@@ -148,7 +148,7 @@ BROKER_URL = 'amqp://guest:guest@localhost//'
 ## Using the database to store task state and results.
 CELERY_RESULT_BACKEND = 'amqp://'
 
-CELERY_ANNOTATIONS = {'cisco02.tasks.add': {'rate_limit': '10/s'}}
+CELERY_ANNOTATIONS = {'cloudmgmt.tasks.add': {'rate_limit': '10/s'}}
 
 from datetime import timedelta
 
@@ -157,12 +157,12 @@ t2 = 10
 
 CELERYBEAT_SCHEDULE = {
       'add-every-20-seconds': {
-        'task': 'cisco02.tasks.add',
+        'task': 'cloudmgmt.tasks.add',
         'schedule': timedelta(seconds=t1),
         'args': (16, 16)
     },
     'mul-every-10-seconds': {
-        'task': 'cisco02.tasks.mul',
+        'task': 'cloudmgmt.tasks.mul',
         'schedule': timedelta(seconds=t2),
         'args': (6, 6)
     },

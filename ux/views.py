@@ -7,7 +7,7 @@ from pyVim import connect
 from pyVmomi import vmodl
 from pyVmomi import vim
 #######
-from cisco02.settings import *
+from cloudmgmt.settings import *
 #######
 
 from models import GlobalConfig, BiHost, BiVnic, BiVolume, BiVswitch, BiVirtualMachine, BiPnic, BiPortgroup, BiCluster, BiDatacenter

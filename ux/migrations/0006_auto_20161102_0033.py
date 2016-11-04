@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cloudPortal', '0005_auto_20161101_0856'),
+        ('ux', '0005_auto_20161101_0856'),
     ]
 
     operations = [

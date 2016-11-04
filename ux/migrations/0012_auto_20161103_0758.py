@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cloudPortal', '0011_auto_20161103_0731'),
+        ('ux', '0011_auto_20161103_0731'),
     ]
 
     operations = [
@@ -19,6 +19,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='bivswitch',
             name='host',
-            field=models.ManyToManyField(to='cloudPortal.BiHost'),
+            field=models.ManyToManyField(to='ux.BiHost'),
         ),
     ]
