@@ -77,18 +77,12 @@
                                     {% endfor %}
                                 </td>
                                 <td>
-                                    {% for host in pg.vswitch.host.all %}
-                                        {% for vm in host.bivirtualmachine_set.all %}
+                                    {% for vm in pg.bivirtualmachine_set.all %}
                                             {{ vm.name }}<br/>
-                                        {% endfor %}
                                     {% endfor %}
                                 </td>
                                 <td>
-                                    {% for host in pg.vswitch.host.all %}
-                                        {% for vnic in host.bivnic_set.all %}
-                                            {{ vnic.device }}<br/>
-                                        {% endfor %}
-                                    {% endfor %}
+
                                 </td>
                               </tr>
                                   {% endfor %}

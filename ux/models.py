@@ -120,6 +120,7 @@ class BiVirtualMachine(Audited):
     stgUsage = models.CharField(max_length=30, blank=True, null=True)
     status = models.CharField(max_length=20, blank=True, null=True)
     host = models.ForeignKey(BiHost, blank=True, null=True, on_delete=models.CASCADE)
+    network = models.ManyToManyField(BiPortgroup)
 
     def __unicode__(self):
         return self.name

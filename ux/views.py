@@ -11,7 +11,7 @@ from cloudmgmt.settings import *
 #######
 
 from models import GlobalConfig, BiHost, BiVnic, BiVolume, BiVswitch, BiVirtualMachine, BiPnic, BiPortgroup, BiCluster, BiDatacenter
-
+from django.core.exceptions import ObjectDoesNotExist
 import tools.cli as cli
 
 import ssl
@@ -448,7 +448,21 @@ def GetDatacenters(content):
                     vvm.status = vm.summary.overallStatus
                     vvm.host = h
                     vvm.save()
-                    print(vm.config.hardware)
+
+                for nvm in host.vm:
+                    for vmnet in nvm.network:
+                        for vnetvm in vmnet.vm:
+                            # print(vmnet.name, "<->", vnetvm.config.name)
+                            try:
+                                lnet = BiPortgroup.objects.get(name=vmnet.name)
+                                lvm = BiVirtualMachine.objects.get(name=vnetvm.config.name)
+                                lvm.network.add(lnet)
+                            except ObjectDoesNotExist:
+                                pass #print("DoesNotExist")
+
+
+
+
                 for mnt in host.configManager.storageSystem.fileSystemVolumeInfo.mountInfo:
                     if len(mnt.volume.name) > 0:
                         if BiVolume.objects.filter(name=mnt.volume.name).__len__() == 0:
