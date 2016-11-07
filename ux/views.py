@@ -1,5 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
 import json
 import atexit
 
@@ -19,11 +21,14 @@ import ssl
 # Create your views here.
 
 
+@login_required
 def dashboard(request):
-    dcs = getVcenterInfo()  # get all data!!
+
+    # dcs = getVcenterInfo()  # get all data!!
     return render(request, 'dashboard.html', {})
 
 
+@login_required
 def hosts(request):
 
     hlist = BiHost.objects.all()
@@ -94,7 +99,9 @@ def hosts(request):
 #     return render(request, 'hostList.html', {'list': children})
 
 
+@login_required
 def vms(request):
+
     vlist = BiVirtualMachine.objects.all()
     return render(request, 'vmList.html', {'list': vlist})
 
@@ -175,12 +182,16 @@ def vmsAjax(request):
     return HttpResponse( json.dumps({'list': children}), 'application/json')
 
 
+@login_required
 def vnets(request):
+
     slist = BiVswitch.objects.all()
     return render(request, 'virtualNetworkList.html', {'list':slist})
 
 
+@login_required
 def volumes(request):
+
     slist = BiVolume.objects.all()
     return render(request, 'volumeList.html', {'list':slist})
 
