@@ -148,7 +148,7 @@ BROKER_URL = 'amqp://guest:guest@localhost//'
 ## Using the database to store task state and results.
 CELERY_RESULT_BACKEND = 'amqp://'
 
-CELERY_ANNOTATIONS = {'cloudmgmt.tasks.add': {'rate_limit': '10/s'}}
+CELERY_ANNOTATIONS = {'cloudmgmt.tasks.update_hosts': {'rate_limit': '10/s'}}
 
 from datetime import timedelta
 
@@ -156,15 +156,15 @@ t1 = 20
 t2 = 10
 
 CELERYBEAT_SCHEDULE = {
-      'add-every-20-seconds': {
-        'task': 'cloudmgmt.tasks.add',
-        'schedule': timedelta(seconds=t1),
-        'args': (16, 16)
+      'update-hosts': {
+        'task': 'cloudmgmt.tasks.update_hosts',
+        'schedule': timedelta(minutes=10),
+        'args': ()
     },
-    'mul-every-10-seconds': {
-        'task': 'cloudmgmt.tasks.mul',
-        'schedule': timedelta(seconds=t2),
-        'args': (6, 6)
+    'update-vms': {
+        'task': 'cloudmgmt.tasks.update_vms',
+        'schedule': timedelta(minutes=5),
+        'args': ()
     },
 }
 # #### END Celery CONFIGURATION
