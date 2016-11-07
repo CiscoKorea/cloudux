@@ -198,3 +198,149 @@ function searchVswitch(me) {
 		$("tr[class^='pgl']").show()
 	}
 }
+
+////////// merge
+function doColSpan(tid) {
+    var colSpanCount = 1,
+        tObj = document.getElementById(tid),
+        i = tObj.rows.length,
+        j,
+        numCells,
+        row,
+        cell;
+    while (i-- > 0) {
+        row = tObj.rows[i];
+        if (row) {
+            j = 0;
+            numCells = row.cells.length;
+            while (j < numCells) {
+                cell = row.cells[j];
+                if (cell.innerHTML) {
+                    if (colSpanCount > 1) {
+                        colSpanCount--;
+                        continue;
+                    }
+                    colSpanCount = getColSpanCount(tObj, i, j);
+                    if (colSpanCount > 1) {
+                        cell.colSpan = colSpanCount;
+                    }
+                }
+            }
+        }
+    }
+}
+function getColSpanCount(tObj, i, j) {
+    var colSpanCount = 1,
+        nextX = parseInt(j, 10);
+    while (isEqualToNextRightCell(tObj, i, j, ++nextX)) {
+        colSpanCount++;
+    }
+    return colSpanCount;
+}
+function isEqualToNextRightCell(tObj, i, j, nextX){
+    return tObj.rows[i].cells[nextX] &&
+		tObj.rows[i].cells[j].innerHTML === tObj.rows[i].cells[nextX].innerHTML;
+}
+function doRowSpan(tid){
+    var tObj=document.getElementById(tid);
+    for(var i=0; i<tObj.rows.length; i++){
+        if(tObj.rows[i]!=null){
+            for(var j in tObj.rows[i].cells){
+                if(tObj.rows[i].cells[j].innerHTML){
+                    rowSpanCount = getRowSpanCount(tObj, i, j);
+                    if(rowSpanCount > 1){
+                        tObj.rows[i].cells[j].rowSpan = rowSpanCount;
+                    }
+                }
+            }
+        }
+    }
+}
+function getRowSpanCount(tObj, i, j){
+    rowSpanCount = 1;
+    nextY = parseInt(i);
+    while(true){
+        nextY++;
+        if(isEqualToNextUnderCell(tObj, i, j, nextY)){
+            rowSpanCount++;
+            continue;
+        }else{
+            break;
+        }
+    }
+    return rowSpanCount;
+}
+function isEqualToNextUnderCell(tObj, i, j, nextY){
+    return tObj.rows[nextY] && tObj.rows[nextY].cells[j] && tObj.rows[i].cells[j].innerHTML == tObj.rows[nextY].cells[j].innerHTML
+}
+function deleteCellsByCol(tid){
+    var s="";
+    var tObj=document.getElementById(tid);
+    for(var i=0; i<tObj.rows.length; i++){
+        if(tObj.rows[i]!=null){
+            for(var j in tObj.rows[i].cells){
+                if(tObj.rows[i].cells[j].innerHTML){
+                    for(var k = 1; k < tObj.rows[i].cells[j].colSpan; k++){
+                        tObj.rows[i].deleteCell(parseInt(j) + 1);
+                    }
+                }
+            }
+        }
+    }
+}
+function deleteCellsByRow_bad(tid){
+    var deletedCount = 0;
+    var tObj=document.getElementById(tid);
+    for(var i=0; i<tObj.rows.length; i++){
+        if(tObj.rows[parseInt(i)+1]){
+            for(var j in tObj.rows[i].cells){
+                rowSpanCount = tObj.rows[i].cells[j].rowSpan;
+                if(rowSpanCount > 1){
+                    for(var k in tObj.rows[parseInt(i)+1].cells){
+                        if(tObj.rows[i].cells[j].innerHTML == tObj.rows[parseInt(i)+1].cells[k].innerHTML){
+                            tObj.rows[parseInt(i)+1].deleteCell(k);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+function deleteCellsByRow(tid){
+    var deletedCount = 0;
+    var tObj=document.getElementById(tid);
+	var rc = tObj.rows.length; // row count
+	var cc = tObj.rows[1].cells.length; // col count // first line is head
+
+	for(var j=cc-1; j >= 0; j--) {
+		for(var i=1; i<rc; i++) {
+			if(tObj.rows[i].cells.length >= j) {
+				if(tObj.rows[i].cells[j]) {
+					var rowSpanCount = tObj.rows[i].cells[j].rowSpan;
+					for(var k=1; k<rowSpanCount; k++) {
+						tObj.rows[i+k].deleteCell(j);
+
+					}
+				}
+			}
+		}
+	}
+/*
+    for(var i=0; i<tObj.rows.length; i++){
+        if(tObj.rows[parseInt(i)+1]){
+            for(var j=tObj.rows[i].cells.length; j >0; j--){
+                rowSpanCount = tObj.rows[i].cells[j].rowSpan;
+                if(rowSpanCount > 1){
+                    for(var k in tObj.rows[parseInt(i)+1].cells){
+                        if(tObj.rows[i].cells[j].innerHTML == tObj.rows[parseInt(i)+1].cells[k].innerHTML){
+                            tObj.rows[parseInt(i)+1].deleteCell(k);
+                        }
+                    }
+                }
+            }
+        }
+    }
+*/
+}
+////////// merge

@@ -15,7 +15,7 @@
                 <!-- inner -->
               <div class="inner">
                 <h4>Host List</h4>
-                  <table>
+                  <table id="content_table">
                       <colgroup>
                           <col width="7%">
                           <col width="7%">
@@ -109,6 +109,15 @@
                   </table>
                 </div>
                 <!-- //inner -->
+
+<script type="text/javascript">
+$(document).ready(function(){
+    //doColSpan("content_table");
+    doRowSpan("content_table");
+    //deleteCellsByCol("content_table");
+    deleteCellsByRow("content_table");
+});
+</script>
 
             {% endblock content %}
             <!-- //content -->
