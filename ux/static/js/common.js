@@ -163,7 +163,9 @@ $(document).ready(function() {
     })	
 
     $(".tree ul li a").click(function(){
-        $(this).next('ul').toggle();
+        $(this).parent().parent().children().children('ul').hide();
+        $(this).next('ul').show();
+        $(this).parent().parent().children().removeClass("on")
         $(this).parent().toggleClass("on");
         return false;
     })
@@ -246,7 +248,7 @@ function doRowSpan(tid){
     for(var i=0; i<tObj.rows.length; i++){
         if(tObj.rows[i]!=null){
             for(var j in tObj.rows[i].cells){
-                if(tObj.rows[i].cells[j].innerHTML){
+                if(tObj.rows[i].cells[j].innerHTML && j < 2){
                     rowSpanCount = getRowSpanCount(tObj, i, j);
                     if(rowSpanCount > 1){
                         tObj.rows[i].cells[j].rowSpan = rowSpanCount;

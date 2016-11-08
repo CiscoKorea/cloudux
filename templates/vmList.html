@@ -65,7 +65,7 @@
                             <td>{{ vm.memUsage }}</td>
                             <td>{{ vm.netUsage }}</td>
                             <td>{{ vm.stgUsage }}</td>
-                            <td><span class="box blue">{{ vm.status }}</span></td>
+                            <td><span class="box {{ vm.status }}">{{ vm.status }}</span></td>
                           </tr>
                         {% endfor %}
 {#                          <tr>#}

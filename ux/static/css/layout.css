@@ -134,6 +134,8 @@ html, body{background-color:#f5f5f5;}
 .content .inner span.box.blue{background-color:#2196f3;}
 .content .inner span.box.orange{background-color:#f57f17;}
 .content .inner span.box.red{background-color:#ef4900;}
+.content .inner span.box.green{background-color: #35a61f;}
+.content .inner span.box.yellow{background-color: #ede408;}
 
 div.paginate {text-align:center; margin-top:20px; position:relative;}
 div.paginate a,
