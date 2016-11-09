@@ -1,4 +1,5 @@
 pyvmomi
 Django>1.10
-celery
-installation RabbitMQ
+django-celery>3.1.17
+
+
