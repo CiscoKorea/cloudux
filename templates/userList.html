@@ -42,34 +42,15 @@
                             </tr>
                         </thead>
                         <tbody>
+                            {% for user in list %}
                             <tr>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
+                                <td>{{ user.first_name }} {{ user.last_name }}</td>
+                                <td>{{ user.username }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.useraddinfo.contact }}</td>
                                 <td>-</td>
                             </tr>
-                            <tr>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                            </tr>
-                            <tr>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                            </tr>
-                            <tr>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                            </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 
@@ -103,7 +84,7 @@
                     </p>
                 </div>
                 
-            {% endblock %}
+
 
 
 	<!-- lay_pop -->
@@ -112,7 +93,8 @@
             <h1>사용자 등록</h1>
             <a href="#nond" class="btn_close"><img src="../resources/img/content/lay_closed.png" alt="닫기"></a>
         </div>
-        
+        <form id="useraddform" method="post">
+            {% csrf_token %}
         <div class="lay_content">
             <table>
                 <colgroup>
@@ -122,23 +104,25 @@
                 <tbody>
                     <tr>
                         <th>아이디</th>
-                        <td><input type="text"> <a href="#" class="btn_check">Check</a></td>
+                        <td><input type="text" name="username" /> <a href="javascript:;" class="btn_check" onclick="idcheck()">Check</a></td>
                     </tr>
                     <tr>
                         <th>이름</th>
-                        <td><input type="text"></td>
+                        <td><input type="text" name="first_name" /></td>
                     </tr>
                     <tr>
                         <th>이메일</th>
-                        <td><input type="text"></td>
+                        <td><input type="text" name="email" /></td>
                     </tr>
                     <tr>
                         <th>연락처</th>
-                        <td><input type="text"></td>
+                        <td><input type="text" name="contact" /></td>
                     </tr>
                     <tr>
                         <th>권한</th>
-                        <td><label for="per1"><input type="radio" id="per1" name="permission"> 사용자</label> <label for="per2"><input type="radio" id="per2" name="permission"> 관리자</label></td>
+                        <td>
+                            <label for="per1"> <input type="radio" id="per1" name="is_staff" value="0" /> 사용자 </label>
+                            <label for="per2"> <input type="radio" id="per2" name="is_staff" value="1" /> 관리자 </label></td>
                     </tr>
                     <tr>
                         <th>Tenant</th>
@@ -154,19 +138,73 @@
                     </tr>
                     <tr>
                         <th>비밀번호</th>
-                        <td><input type="text"></td>
+                        <td><input type="password" name="password" /></td>
                     </tr>
                     <tr>
                         <th>비밀번호 확인</th>
-                        <td><input type="text"></td>
+                        <td><input type="password" name="passwordcfm" /></td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        
+        </form>
         <div class="lay_footer">
-            <a href="#" class="btn_common01">등록하기</a>
+            <a href="javascript:;" onclick="addUser();" class="btn_common01">등록하기</a>
         </div>
     </div>
 	<!-- //lay_pop -->
 
+<script type="text/javascript">
+var id_check = false;
+var id_check_id = "";
+
+function addUser() {
+
+    if(!id_check) {
+        alert("{% trans "msg.idchecked.require" %}");
+        return false;
+    }
+
+    $.ajax({
+       url: "/users",
+        type: "POST",
+        dataType: "json",
+        data: $("#useraddform").serialize(),
+        success: function(result) {
+            console.log(result);
+        },
+        error: function(xhr, resp, text) {
+            console.log(xhr, resp, text);
+        }
+    });
+}
+
+
+function idcheck() {
+    var cid = $("input[name='username']").val().trim();
+    if(cid.length==0) return false;
+    $.ajax({
+       url: "/users/idcheck",
+        type: "GET",
+        dataType: "json",
+        data: {"username": cid},
+        success: function(result) {
+            //console.log(result.result);
+            if(result.result == "OK") {
+                id_check = true;
+                id_check_id = cid;
+                $(".btn_check").hide();
+                $("input[name='username']").attr("readonly", true);
+            } else {
+                alert(cid + "{% trans "msg.idchecked.exist" %}");
+            }
+
+        },
+        error: function(xhr, resp, text) {
+            console.log(xhr, resp, text);
+        }
+    });
+}
+</script>
+
+            {% endblock %}

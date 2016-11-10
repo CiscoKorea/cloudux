@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 import json
 import atexit
 
@@ -9,10 +10,12 @@ from pyVim import connect
 from pyVmomi import vmodl
 from pyVmomi import vim
 #######
+from requests.packages.urllib3 import request
+
 from cloudmgmt.settings import *
 #######
 
-from models import GlobalConfig, BiHost, BiVnic, BiVolume, BiVswitch, BiVirtualMachine, BiPnic, BiPortgroup, BiCluster, BiDatacenter
+from models import GlobalConfig, BiHost, BiVnic, BiVolume, BiVswitch, BiVirtualMachine, BiPnic, BiPortgroup, BiCluster, BiDatacenter, UserAddInfo
 from django.core.exceptions import ObjectDoesNotExist
 import tools.cli as cli
 
@@ -243,7 +246,36 @@ def monitoring(request):
 
 
 def users(request):
-    return render(request, 'userList.html', {})
+    if request.is_ajax():
+        username = request.POST.get("username")
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+        contact = request.POST.get("contact")
+        first_name = request.POST.get("first_name")
+        is_staff = request.POST.get("is_staff")
+
+        newuser = User.objects.create_user(username=username,email=email,password=password, first_name=first_name, is_staff=is_staff, )
+
+        addinfo = UserAddInfo()
+        addinfo.contact = contact
+        addinfo.user = newuser
+        addinfo.save()
+        return HttpResponse(json.dumps({'result':'OK'}), 'application/json')
+
+    list = User.objects.all()
+    return render(request, 'userList.html', {'list': list})
+
+
+def users_idcheck(request):
+    if request.is_ajax():
+        username = request.GET.get("username")
+
+        exist_cnt = User.objects.filter(username=username).count()
+
+        if exist_cnt == 0:
+            return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
+
+    return HttpResponse(json.dumps({'result': 'NO'}), 'application/json')
 
 
 def print_vm_info(virtual_machine):

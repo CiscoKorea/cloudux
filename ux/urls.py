@@ -10,4 +10,5 @@ urlpatterns = [
     url(r'^disks$', views.disks, name='disks'),
     url(r'^monitoring$', views.monitoring, name='monitoring'),
     url(r'^users$', views.users, name='users'),
+    url(r'^users/idcheck$', views.users_idcheck, name='idcheck'),
 ]

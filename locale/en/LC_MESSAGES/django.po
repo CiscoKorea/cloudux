@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-10 06:48+0000\n"
+"POT-Creation-Date: 2016-11-10 09:42+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,47 +17,54 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: cisco02/settings.py:115
+#: cloudmgmt/settings.py:117
 msgid "Korean"
 msgstr ""
 
-#: cisco02/settings.py:116
+#: cloudmgmt/settings.py:118
 msgid "English"
 msgstr ""
 
-#: templates/base.html:6 templates/left.html:5
+#: templates/base.html:17
+msgid "user.logined"
+msgstr " logined."
+
+#: templates/body.html:6 templates/left.html:5
 msgid "site.title"
 msgstr "CISCO Cloud Management Portal"
 
-#: templates/base.html:28
-msgid "user.logined"
-msgstr " logined."
+#: templates/hostList.html:7 templates/left.html:12
+msgid "menu.hostlist"
+msgstr "Host List"
 
 #: templates/left.html:6
 msgid "menu.dashboard"
 msgstr "Dashboard"
 
-#: templates/left.html:12
-msgid "menu.hostlist"
-msgstr "Host List"
-
-#: templates/left.html:13
+#: templates/left.html:13 templates/vmList.html:9
 msgid "menu.vmlist"
 msgstr "VM List"
 
-#: templates/left.html:18
+#: templates/left.html:18 templates/virtualNetworkList.html:8
 msgid "menu.vnetlist"
 msgstr "Virtual Network List"
 
-#: templates/left.html:23
+#: templates/left.html:23 templates/volumeList.html:8
 msgid "site.volumelist"
 msgstr "Volume List"
 
-#: templates/left.html:24
+#: templates/left.html:24 templates/vmDiskList.html:8
 msgid "menu.disklist"
 msgstr "VM Disk List"
 
-#: templates/left.html:29
+#: templates/left.html:29 templates/userList.html:7
 msgid "menu.userlist"
 msgstr "User List"
 
+#: templates/userList.html:164
+msgid "msg.idchecked.require"
+msgstr "ID check required"
+
+#: templates/userList.html:197
+msgid "msg.idchecked.exist"
+msgstr " is already existed."
