@@ -1,3 +1,11 @@
+
+
+
+
+## IT IS ONLY NEEDED CELERY!!!!!
+
+
+
 """
 Django settings for cisco02 project.
 
@@ -151,30 +159,23 @@ CELERY_RESULT_BACKEND = 'database'
 CELERY_RESULT_DBURI = "sqlite:///mydatabase.db"
 
 
-CELERY_ANNOTATIONS = {'cloudmgmt.tasks.add': {'rate_limit': '10/s'}}
+CELERY_ANNOTATIONS = {'ux.tasks.add': {'rate_limit': '10/s'}}
+
 from datetime import timedelta
 
 t1 = 20
 t2 = 10
 
 CELERYBEAT_SCHEDULE = {
-      'update-hosts': {
-        'task': 'cloudmgmt.tasks.update_hosts',
-        'schedule': timedelta(minutes=10),
-        'args': ()
+      'add-every-20-seconds': {
+        'task': 'ux.tasks.add',
+        'schedule': timedelta(seconds=t1),
+        'args': (16, 16)
     },
-    'update-vms': {
-        'task': 'cloudmgmt.tasks.update_vms',
-        'schedule': timedelta(minutes=5),
-        'args': ()
+    'mul-every-10-seconds': {
+        'task': 'ux.tasks.mul',
+        'schedule': timedelta(seconds=t2),
+        'args': (6, 6)
     },
 }
 # #### END Celery CONFIGURATION
-
-
-
-LOGIN_REDIRECT_URL = '/'
-LOGIN_URL = '/login'
-
-LOGOUT_REDIRECT_URL = '/'
-LOGOUT_URL = '/logout'
