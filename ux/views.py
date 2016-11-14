@@ -23,6 +23,10 @@ import tools.cli as cli
 import ssl
 
 # Create your views here.
+class SearchForm():
+    srch_key = ""
+    srch_txt = ""
+
 
 
 @login_required
@@ -105,8 +109,18 @@ def hosts(request):
 
 @login_required
 def vms(request):
+    search = SearchForm()
+    search.srch_key = request.GET.get("srch_key", "name")
+    search.srch_txt = request.GET.get("srch_txt", "")
 
-    vlist = BiVirtualMachine.objects.all()
+    if len(search.srch_txt) > 0:
+        if search.srch_key == "name":
+            vlist = BiVirtualMachine.objects.filter(name__contains=search.srch_txt)
+        else:
+            vlist = BiVirtualMachine.objects.all()
+    else:
+        vlist = BiVirtualMachine.objects.all()
+
     paginator = Paginator(vlist, 10)
     page = request.GET.get('page')
     try:
@@ -116,7 +130,7 @@ def vms(request):
     except EmptyPage:
         list = paginator.page(paginator.num_pages)
 
-    return render(request, 'vmList.html', {'list': list})
+    return render(request, 'vmList.html', {'list': list, 'search': search})
 
 # def vms_old(request):
 #
@@ -272,8 +286,33 @@ def users(request):
         addinfo.save()
         return HttpResponse(json.dumps({'result':'OK'}), 'application/json')
 
-    list = User.objects.all()
-    return render(request, 'userList.html', {'list': list})
+    search = SearchForm()
+    search.srch_key = request.GET.get("srch_key", "username")
+    search.srch_txt = request.GET.get("srch_txt", "")
+
+    if len(search.srch_txt) > 0:
+        if search.srch_key == "username":
+            ulist = User.objects.filter(username__contains=search.srch_txt)
+        elif search.srch_key == "firstname":
+            ulist = User.objects.filter(first_name__contains=search.srch_txt)
+        elif search.srch_key == "email":
+            ulist = User.objects.filter(email__contains=search.srch_txt)
+        else:
+            ulist = User.objects.all()
+    else:
+        ulist = User.objects.all()
+    paginator = Paginator(ulist, 10)
+    page = request.GET.get('page')
+    try:
+        list = paginator.page(page)
+    except PageNotAnInteger:
+        list = paginator.page(1)
+    except EmptyPage:
+        list = paginator.page(paginator.num_pages)
+
+
+
+    return render(request, 'userList.html', {'list': list, 'search': search})
 
 
 def users_idcheck(request):
@@ -541,3 +580,5 @@ def deleteAll():
     BiVswitch.objects.all().delete()
     BiVnic.objects.all().delete()
     BiHost.objects.all().delete()
+
+

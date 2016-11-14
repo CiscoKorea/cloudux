@@ -20,10 +20,13 @@
                         <h4>VM List</h4>
                         
                         <div class="search">
-                            <select>
-                                <option>Name</option>
+                            <form name="search_form" method="get" action="">
+                            <select name="srch_key">
+                                <option value="name" {% if search.srch_key == 'name' %} selected {% endif %}>Name</option>
                             </select> 
-                            <input type="text">
+                            <input type="text" id="srch_txt" name="srch_txt" value="{{ search.srch_txt }}"/>
+                            <input type="hidden" name="page" value="1" />
+                            </form>
                         </div>
                     </div>
                     <table>
@@ -141,6 +144,19 @@
         });
     });
     */
+
+$(document).ready(function(){
+    $("#srch_txt").keyup(function (event) {
+        if (event.keyCode == 13) {
+            $("form[name='search_form']").submit();
+        }
+    });
+});
+
+function go_page(page) {
+    $("input[name='page']").val(page);
+    $("form[name='search_form']").submit();
+}
 </script>
 
             {% endblock %}

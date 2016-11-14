@@ -18,10 +18,15 @@
                         <h4>User list</h4>
                         
                         <div class="search">
-                            <select>
-                                <option>Name</option>
-                            </select> 
-                            <input type="text">
+                            <form name="search_form" method="get" action="">
+                            <select name="srch_key">
+                                <option value="username" {% if search.srch_key == 'username' %} selected {% endif %}>User Name</option>
+                                <option value="firstname" {% if search.srch_key == 'firstname' %} selected {% endif %}>First Name</option>
+                                <option value="email" {% if search.srch_key == 'email' %} selected {% endif %}>email</option>
+                            </select>
+                            <input type="text" id="srch_txt" name="srch_txt" value="{{ search.srch_txt }}"/>
+                            <input type="hidden" name="page" value="1" />
+                            </form>
                         </div>
                     </div>
                     <table>
@@ -34,8 +39,8 @@
                         </colgroup>
                         <thead>
                             <tr>
-                                <th>성명</th>
-                                <th>아이디</th>
+                                <th>First Name</th>
+                                <th>User Name</th>
                                 <th>이메일</th>
                                 <th>연락처</th>
                                 <th>Tenant</th>
@@ -55,24 +60,24 @@
                     </table>
                 
                     <div class="paginate">
-                        <p class="total">Total <strong>350</strong></p>
+                        <p class="total">Total <strong>{{ list.paginator.count }}</strong></p>
                         
-                        <a href="#none" class="first">처음</a>
-                        <a href="#none" class="prev">이전</a>
+                        <a href="?page=1" class="first">처음</a>
+                        {% if list.has_previous %}
+                        <a href="?page={{ list.previous_page_number }}" class="prev">이전</a>
+                        {% endif %}
                             <span>
-                                <a href="#none">1</a>
-                                <a href="#none">2</a>
-                                <a href="#none">3</a>
-                                <strong>4</strong>
-                                <a href="#none">5</a>
-                                <a href="#none">6</a>
-                                <a href="#none">7</a>
-                                <a href="#none">8</a>
-                                <a href="#none">9</a>
-                                <a href="#none">10</a>
+                                {% for p in list.paginator.page_range %}
+                                    {% if p == list.number %}
+                                        <strong>{{ p }}</strong>
+                                    {% else %}<a href="?page={{ p }}">{{ p }}</a>
+                                    {% endif %}
+                                {% endfor %}
                             </span>
-                        <a href="#none" class="next">다음</a>
-                        <a href="#none" class="last">마지막</a>
+                        {% if list.has_next %}
+                        <a href="?page={{ list.next_page_number }}" class="next">다음</a>
+                        {% endif %}
+                        <a href="?page={{ list.paginator.num_pages }}" class="last">마지막</a>
                     </div>
                 
                 </div>
