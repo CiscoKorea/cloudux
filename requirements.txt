@@ -1,5 +1,5 @@
 pyvmomi
 Django>1.10
-django-celery>3.1.17
+django-celery>3.1
 
 

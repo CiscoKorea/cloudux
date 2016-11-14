@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import json
 import atexit
 
@@ -106,7 +107,16 @@ def hosts(request):
 def vms(request):
 
     vlist = BiVirtualMachine.objects.all()
-    return render(request, 'vmList.html', {'list': vlist})
+    paginator = Paginator(vlist, 10)
+    page = request.GET.get('page')
+    try:
+        list = paginator.page(page)
+    except PageNotAnInteger:
+        list = paginator.page(1)
+    except EmptyPage:
+        list = paginator.page(paginator.num_pages)
+
+    return render(request, 'vmList.html', {'list': list})
 
 # def vms_old(request):
 #
