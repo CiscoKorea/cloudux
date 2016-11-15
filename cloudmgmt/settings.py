@@ -11,9 +11,9 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
-
 from django.utils.translation import ugettext_lazy as _
-
+import ldap
+from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -178,3 +178,22 @@ LOGIN_URL = '/login'
 
 LOGOUT_REDIRECT_URL = '/'
 LOGOUT_URL = '/logout'
+
+
+
+AUTHENTICATION_BACKENDS = (
+    'django_auth_ldap.backend.LDAPBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+AUTH_LDAP_SERVER_URI = "ldap://ldap.example.local"
+
+AUTH_LDAP_BIND_DN = ""
+AUTH_LDAP_BIND_PASSWORD = ""
+AUTH_LDAP_USER_SEARCH = LDAPSearch("ou=development,dc=example,dc=local",
+    ldap.SCOPE_SUBTREE, "(uid=%(user)s)")
+
+# AUTH_LDAP_GROUP_SEARCH = LDAPSearch("ou=development,dc=example,dc=local",
+#     ldap.SCOPE_SUBTREE, "(objectClass=partone)"
+# )
+# AUTH_LDAP_GROUP_TYPE = GroupOfNamesType(name_attr="cn")
