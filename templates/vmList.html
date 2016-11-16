@@ -89,22 +89,22 @@
                     <div class="paginate">
                         <p class="total">Total <strong>{{ list.paginator.count }}</strong></p>
                         
-                        <a href="?page=1" class="first">처음</a>
+                        <a href="javascript:go_page(1);" class="first">처음</a>
                         {% if list.has_previous %}
-                        <a href="?page={{ list.previous_page_number }}" class="prev">이전</a>
+                        <a href="javascript:go_page({{ list.previous_page_number }})" class="prev">이전</a>
                         {% endif %}
                             <span>
                                 {% for p in list.paginator.page_range %}
                                     {% if p == list.number %}
                                         <strong>{{ p }}</strong>
-                                    {% else %}<a href="?page={{ p }}">{{ p }}</a>
+                                    {% else %}<a href="javascript:go_page({{ p }})">{{ p }}</a>
                                     {% endif %}
                                 {% endfor %}
                             </span>
                         {% if list.has_next %}
-                        <a href="?page={{ list.next_page_number }}" class="next">다음</a>
+                        <a href="javascript:go_page({{ list.next_page_number }})" class="next">다음</a>
                         {% endif %}
-                        <a href="?page={{ list.paginator.num_pages }}" class="last">마지막</a>
+                        <a href="javascript:go_page({{ list.paginator.num_pages }})" class="last">마지막</a>
                     </div>
                 </div>
                 <!-- //inner -->
