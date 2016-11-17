@@ -11,36 +11,41 @@ from pyVim import connect
 from pyVmomi import vmodl
 from pyVmomi import vim
 #######
-from requests.packages.urllib3 import request
+# from requests.packages.urllib3 import request
 
 from cloudmgmt.settings import *
 #######
 
-from models import GlobalConfig, BiHost, BiVnic, BiVolume, BiVswitch, BiVirtualMachine, BiPnic, BiPortgroup, BiCluster, BiDatacenter, UserAddInfo
+from models import GlobalConfig, BiHost, BiVnic, BiVolume, BiVswitch, BiVirtualMachine, BiPnic, \
+    BiPortgroup, BiCluster, BiDatacenter, UserAddInfo, BiInventory, BiFaults
 from django.core.exceptions import ObjectDoesNotExist
-import tools.cli as cli
+# import tools.cli as cli
 
 import ssl
+# from ucsm_inventory import get_ucsm_info
+
 
 # Create your views here.
-class SearchForm():
+class search_form():
     srch_key = ""
     srch_txt = ""
-
 
 
 @login_required
 def dashboard(request):
 
-    # dcs = getVcenterInfo()  # get all data!!
-    return render(request, 'dashboard.html', {})
+    # dcs = get_vcenter_info()  # get all data!!
+    # get_ucsm_info()  # get ucsd inventory
+    inventory_list = BiInventory.objects.all()
+    fault_list = BiFaults.objects.all()
+    return render(request, 'dashboard.html', {'inventorylist': inventory_list, 'faultlist': fault_list})
 
 
 @login_required
 def hosts(request):
 
     hlist = BiHost.objects.all()
-    return render(request, 'hostList.html', {'list': hlist})
+    return render(request, "hostList.html", {'list': hlist})
 
 
 # def hosts_old(request):
@@ -109,7 +114,7 @@ def hosts(request):
 
 @login_required
 def vms(request):
-    search = SearchForm()
+    search = search_form()
     search.srch_key = request.GET.get("srch_key", "name")
     search.srch_txt = request.GET.get("srch_txt", "")
 
@@ -124,13 +129,13 @@ def vms(request):
     paginator = Paginator(vlist, 10)
     page = request.GET.get('page')
     try:
-        list = paginator.page(page)
+        plist = paginator.page(page)
     except PageNotAnInteger:
-        list = paginator.page(1)
+        plist = paginator.page(1)
     except EmptyPage:
-        list = paginator.page(paginator.num_pages)
+        plist = paginator.page(paginator.num_pages)
 
-    return render(request, 'vmList.html', {'list': list, 'search': search})
+    return render(request, "vmList.html", {'list': plist, 'search': search})
 
 # def vms_old(request):
 #
@@ -181,46 +186,46 @@ def vms(request):
 #     return render(request, 'vmList.html', {'list': children})  # {'list': children}
 
 
-def vmsAjax(request):
+def vms_ajax(request):
+    children = None
+    # try:
+    #     context = ssl._create_unverified_context()
+    #
+    #     service_instance = connect.SmartConnect(host="198.18.133.30",
+    #                                             user="root",
+    #                                             pwd="C1sco12345!",
+    #                                             port=int("443"), sslContext=context)
+    #
+    #     atexit.register(connect.Disconnect, service_instance)
+    #
+    #     content = service_instance.RetrieveContent()
+    #
+    #     container = content.rootFolder  # starting point to look into
+    #     view_type = [vim.VirtualMachine]  # object types to look for
+    #     recursive = True  # whether we should look into it recursively
+    #     container_view = content.viewManager.CreateContainerView(
+    #         container, view_type, recursive)
+    #
+    #     children = container_view.view
+    #
+    # except vmodl.MethodFault as error:
+    #     print("Caught vmodl fault : " + error.msg)
 
-    try:
-        context = ssl._create_unverified_context()
-
-        service_instance = connect.SmartConnect(host="198.18.133.30",
-                                                user="root",
-                                                pwd="C1sco12345!",
-                                                port=int("443"), sslContext = context)
-
-        atexit.register(connect.Disconnect, service_instance)
-
-        content = service_instance.RetrieveContent()
-
-        container = content.rootFolder  # starting point to look into
-        viewType = [vim.VirtualMachine]  # object types to look for
-        recursive = True  # whether we should look into it recursively
-        containerView = content.viewManager.CreateContainerView(
-            container, viewType, recursive)
-
-        children = containerView.view
-
-    except vmodl.MethodFault as error:
-        print("Caught vmodl fault : " + error.msg)
-
-    return HttpResponse( json.dumps({'list': children}), 'application/json')
+    return HttpResponse(json.dumps({'list': children}), 'application/json')
 
 
 @login_required
 def vnets(request):
 
     slist = BiVswitch.objects.all()
-    return render(request, 'virtualNetworkList.html', {'list':slist})
+    return render(request, 'virtualNetworkList.html', {'list': slist})
 
 
 @login_required
 def volumes(request):
 
     slist = BiVolume.objects.all()
-    return render(request, 'volumeList.html', {'list':slist})
+    return render(request, 'volumeList.html', {'list': slist})
 
 
 # def volumes_old(request):
@@ -266,7 +271,8 @@ def disks(request):
 
 
 def monitoring(request):
-    return render(request, 'Mmonitoring.html', {})
+    # return render(request, 'Mmonitoring.html', {})
+    return "Not Now"
 
 
 def users(request):
@@ -278,15 +284,16 @@ def users(request):
         first_name = request.POST.get("first_name")
         is_staff = request.POST.get("is_staff")
 
-        newuser = User.objects.create_user(username=username,email=email,password=password, first_name=first_name, is_staff=is_staff, )
+        newuser = User.objects.create_user(username=username, email=email, password=password, first_name=first_name,
+                                           is_staff=is_staff, )
 
         addinfo = UserAddInfo()
         addinfo.contact = contact
         addinfo.user = newuser
         addinfo.save()
-        return HttpResponse(json.dumps({'result':'OK'}), 'application/json')
+        return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
 
-    search = SearchForm()
+    search = search_form()
     search.srch_key = request.GET.get("srch_key", "username")
     search.srch_txt = request.GET.get("srch_txt", "")
 
@@ -304,15 +311,13 @@ def users(request):
     paginator = Paginator(ulist, 10)
     page = request.GET.get('page')
     try:
-        list = paginator.page(page)
+        plist = paginator.page(page)
     except PageNotAnInteger:
-        list = paginator.page(1)
+        plist = paginator.page(1)
     except EmptyPage:
-        list = paginator.page(paginator.num_pages)
+        plist = paginator.page(paginator.num_pages)
 
-
-
-    return render(request, 'userList.html', {'list': list, 'search': search})
+    return render(request, 'userList.html', {'list': plist, 'search': search})
 
 
 def users_idcheck(request):
@@ -340,10 +345,9 @@ def print_vm_info(virtual_machine):
     print("Instance UUID : ", summary.config.instanceUuid)
     print("Bios UUID     : ", summary.config.uuid)
 
-
     ##################
 
-    settings.t1=2
+    settings.t1 = 2
 
     ##################
      
@@ -367,8 +371,7 @@ def print_vm_info(virtual_machine):
     print("")
 
 
-
-def getVcenterInfo():
+def get_vcenter_info():
     # global content, hosts, hostPgDict#
     config = GlobalConfig.objects.all()
     # host, user, password = GetArgs()
@@ -380,28 +383,28 @@ def getVcenterInfo():
                                             port=int(config[0].vc_port), sslContext=context)
     atexit.register(connect.Disconnect, service_instance)
     content = service_instance.RetrieveContent()
-    dcs = GetDatacenters(content)
+    dcs = get_datacenters(content)
 
     return dcs
 
 
-def GetUplink(uplinks):
+def get_uplink(uplinks):
     vals = []
-    for nic in uplinks:
-        # vals.append(pnicmap.get(nic))
-        vals.append('')
+    # for nic in uplinks:
+    #     # vals.append(pnicmap.get(nic))
+    #     vals.append('')
     return "[" + ",".join(vals) + "]"
 
 
-def GetPortgroup(portgroups):
+def get_portgroup(portgroups):
     vals = []
-    for pg in portgroups:
-        # vals.append(pnicmap.get(pg))
-        vals.append('')
+    # for pg in portgroups:
+    #     # vals.append(pnicmap.get(pg))
+    #     vals.append('')
     return "[" + ",".join(vals) + "]"
 
 
-def GetNetwork(network):
+def get_network(network):
     # global pnicmap
     dpnic = {}
     dpg = {}
@@ -413,53 +416,54 @@ def GetNetwork(network):
         # pnicmap[pg.key] = pg.spec.name + ":" + str(pg.spec.vlanId)
         dpg[pg.key] = pg.spec.name + ":" + str(pg.spec.vlanId)
     for nic in network.vnic:
-        print("vnic name: %s connected portgroup: %s" %(nic.device, nic.portgroup))
+        print("vnic name: %s connected portgroup: %s" % (nic.device, nic.portgroup))
     for sw in network.vswitch:
         #    	print("vSwitch name: %s, numPort: %d pnics: %s" %(sw.name, sw.numPorts, sw.pnic))
-        #print("vSwicth name: %s uplink: %s portgroup: %s" % (sw.name, GetUplink(sw.pnic), GetPortgroup(sw.portgroup)))
+        # print("vSwicth name: %s uplink: %s portgroup: %s" % (sw.name, get_uplink(sw.pnic),
+        #   get_portgroup(sw.portgroup)))
         print("vSwicth name: %s uplink: %s portgroup: %s" % (sw.name, dpnic, dpg))
 
 
-def GetHost(hosts):
-    for host in hosts:
-        print("Host Name=%s" % (host.name))
-        GetNetwork(host.config.network)
+def get_host(phosts):
+    for host in phosts:
+        print("Host Name=%s" % host.name)
+        get_network(host.config.network)
 
 
-def GetCluster(folder):
+def get_cluster(folder):
     for entity in folder.childEntity:
-        print("Cluster name = %s" % (entity.name))
-        GetHost(entity.host)
+        print("Cluster name = %s" % entity.name)
+        get_host(entity.host)
 
 
-# def GetDatacenters(content):
+# def get_datacenters(content):
 #     print("Getting all Datacenter...")
 #     dc_view = content.viewManager.CreateContainerView(content.rootFolder, [vim.Datacenter], True)
 #     obj = [ dc for dc in dc_view.view]
 #     for dc in obj:
 #        print("Datacenter %s" %(dc.name))
-#        GetCluster( dc.hostFolder)
+#        get_cluster( dc.hostFolder)
 #     dc_view.Destroy()
 #     return obj
 
 
-def GetDatacenters(content):
-    deleteAll()     # delete all data !!!
+def get_datacenters(content):
+    delete_all()     # delete all data !!!
     print("Getting all Datacenter...")
     dc_view = content.viewManager.CreateContainerView(content.rootFolder, [vim.Datacenter], True)
-    obj = [ dc for dc in dc_view.view]
+    obj = [dc for dc in dc_view.view]
     for dc in obj:
-        print("Datacenter %s" % (dc.name))
+        print("Datacenter %s" % dc.name)
         vdc = BiDatacenter()
         vdc.name = dc.name
         vdc.save()
         for entity in dc.hostFolder.childEntity:
-            print("Cluster name = %s" % (entity.name))
+            print("Cluster name = %s" % entity.name)
             vcls = BiCluster()
             vcls.name = entity.name
             vcls.save()
             for host in entity.host:
-                print("Host Name=%s" % (host.name))
+                print("Host Name=%s" % host.name)
                 h = BiHost()
                 h.datacenter = vdc
                 h.cluster = vcls
@@ -501,7 +505,8 @@ def GetDatacenters(content):
                     vnic.host.add(h)
                 for sw in network.vswitch:
                     #    	print("vSwitch name: %s, numPort: %d pnics: %s" %(sw.name, sw.numPorts, sw.pnic))
-                    # print("vSwicth name: %s uplink: %s portgroup: %s" % (sw.name, GetUplink(sw.pnic), GetPortgroup(sw.portgroup)))
+                    # print("vSwicth name: %s uplink: %s portgroup: %s" % (sw.name, get_uplink(sw.pnic),
+                    #   get_portgroup(sw.portgroup)))
                     # print("vSwicth name: %s uplink: %s portgroup: %s" % (sw.name, dpnic, dpg))
 
                     if BiVswitch.objects.filter(key=sw.key).__len__() == 0:
@@ -550,10 +555,7 @@ def GetDatacenters(content):
                                 lvm = BiVirtualMachine.objects.get(name=vnetvm.config.name)
                                 lvm.network.add(lnet)
                             except ObjectDoesNotExist:
-                                pass #print("DoesNotExist")
-
-
-
+                                pass  # print("DoesNotExist")
 
                 for mnt in host.configManager.storageSystem.fileSystemVolumeInfo.mountInfo:
                     if len(mnt.volume.name) > 0:
@@ -572,7 +574,7 @@ def GetDatacenters(content):
     return obj
 
 
-def deleteAll():
+def delete_all():
     BiVirtualMachine.objects.all().delete()
     BiVolume.objects.all().delete()
     BiPortgroup.objects.all().delete()
@@ -581,4 +583,5 @@ def deleteAll():
     BiVnic.objects.all().delete()
     BiHost.objects.all().delete()
 
-
+    BiInventory.objects.all().delete()
+    BiFaults.objects.all().delete()     # refresh !!
