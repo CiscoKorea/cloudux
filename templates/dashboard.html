@@ -155,6 +155,19 @@
                             </tr>
                         </thead>
                         <tbody>
+                            {% for inven in inventorylist %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ inven.model }}</td>
+                                <td>{{ inven.hwtype }}</td>
+                                <td>{{ inven.name }}</td>
+                                <td>{{ inven.ipAddress }}</td>
+                                <td>{{ inven.firmwareVersion }}</td>
+                                <td>{{ inven.lastModified }}</td>
+                                <td>{{ inven.desc }}</td>
+                            </tr>
+                            {% endfor %}
+                            <!--
                             <tr>
                                 <td>-</td>
                                 <td>-</td>
@@ -185,16 +198,7 @@
                                 <td>-</td>
                                 <td>-</td>
                             </tr>
-                            <tr>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                            </tr>
+                            -->
                         </tbody>
                     </table>
                 </div>
@@ -233,6 +237,33 @@
                             </tr>
                         </thead>
                         <tbody>
+                            {% for fault in faultlist %}
+                            <tr>
+                                <td><span class="box gray">{{ fault.severity }}</span></td>
+                                <td>{{ fault.target }}</td>
+                                <td>{{ fault.faultType }}</td>
+                                <td>{{ fault.created }}</td>
+                                <td>{{ fault.occur }}</td>
+                                <td>{{ fault.desc }}</td>
+                            </tr>
+                            {% endfor %}
+                            <!--
+                            <tr>
+                                <td><span class="box blue">Online </span></td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <td><span class="box orange">Online with events</span></td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
                             <tr>
                                 <td><span class="box gray">Offline</span></td>
                                 <td>-</td>
@@ -257,30 +288,7 @@
                                 <td>-</td>
                                 <td>-</td>
                             </tr>
-                            <tr>
-                                <td><span class="box gray">Offline</span></td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                            </tr>
-                            <tr>
-                                <td><span class="box blue">Online </span></td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                            </tr>
-                            <tr>
-                                <td><span class="box orange">Online with events</span></td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                            </tr>
+                            -->
                         </tbody>
                     </table>
                     <div class="paginate">

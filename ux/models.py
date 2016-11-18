@@ -126,7 +126,28 @@ class BiVirtualMachine(Audited):
         return self.name
 
 
-
 class UserAddInfo(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     contact = models.CharField(max_length=50, blank=True, null=True)
+
+
+class BiInventory(Audited):
+    model = models.CharField(max_length=100, blank=True, null=True)
+    hwtype = models.CharField(max_length=100, blank=True, null=True)
+    serial = models.CharField(max_length=100, blank=True, null=True)
+    name = models.CharField(max_length=100, blank=True, null=True)
+    firmwareVersion = models.CharField(max_length=100, blank=True, null=True)
+    mfgtime = models.CharField(max_length=100, blank=True, null=True)
+    ipAddress = models.CharField(max_length=20, blank=True, null=True)
+    lastModified = models.DateTimeField(blank=True, null=True)
+    desc = models.CharField(max_length=100, blank=True, null=True)
+
+
+class BiFaults(models.Model):
+    severity = models.CharField(max_length=100, blank=True, null=True)
+    target = models.CharField(max_length=100, blank=True, null=True)
+    faultType = models.CharField(max_length=100, blank=True, null=True)
+    code = models.CharField(max_length=100, blank=True, null=True)
+    created = models.DateTimeField(blank=True, null=True)
+    desc = models.CharField(max_length=100, blank=True, null=True)
+    occur = models.CharField(max_length=100, blank=True, null=True)
