@@ -88,14 +88,25 @@ WSGI_APPLICATION = 'cloudmgmt.wsgi.application'
 #         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #     }
 # }
+
+import ConfigParser
+import os
+config = ConfigParser.RawConfigParser()
+config.read(os.path.join(os.path.dirname(__file__), 'connection.cfg'))
+hostname = config.get('mysql', "hostname")
+dbname = config.get('mysql', "dbname")
+username = config.get('mysql', "username")
+password = config.get('mysql', "password")
+port = config.get('mysql', "port")
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'cloudportal',
-        'USER': 'root',
-        'PASSWORD': 'rlagksrnr',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'NAME': dbname,
+        'USER': username,
+        'PASSWORD': password,
+        'HOST': hostname,
+        'PORT': port,
     }
 }
 
