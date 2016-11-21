@@ -7,6 +7,8 @@ from ucsmsdk.mometa.ls.LsServer import LsServerConsts
 #from connection.info import ucs_login, ucs_logout
 
 from models import BiInventory, BiFaults
+import datetime
+import pytz
 
 handle = None
 log = logging.getLogger('ucs')
@@ -130,7 +132,7 @@ def _print_fault_info(faults):
         entity.target = _fault_target(fault.dn)
         entity.faultType = fault.code
         entity.code = fault.code
-        entity.created = fault.created
+        entity.created = fault.created  # FIXME timezone
         entity.desc = fault.descr
         entity.occur = fault.occur
         entity.save()

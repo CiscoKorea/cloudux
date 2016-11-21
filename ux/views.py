@@ -22,7 +22,7 @@ from django.core.exceptions import ObjectDoesNotExist
 # import tools.cli as cli
 
 import ssl
-# from ucsm_inventory import get_ucsm_info
+from ucsm_inventory import get_ucsm_info
 
 
 # Create your views here.
@@ -448,7 +448,7 @@ def get_cluster(folder):
 
 
 def get_datacenters(content):
-    delete_all()     # delete all data !!!
+    # delete_all()     # delete all data !!!
     print("Getting all Datacenter...")
     dc_view = content.viewManager.CreateContainerView(content.rootFolder, [vim.Datacenter], True)
     obj = [dc for dc in dc_view.view]
@@ -585,3 +585,10 @@ def delete_all():
 
     BiInventory.objects.all().delete()
     BiFaults.objects.all().delete()     # refresh !!
+
+
+def reload_data(request):
+    delete_all()
+    dcs = get_vcenter_info()  # get all data!!
+    get_ucsm_info()  # get ucsd inventory
+    return HttpResponse(json.dumps({'result':'OK'}), 'application/json')

@@ -3,6 +3,13 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 
+class Config(models.Model):
+    key = models.CharField(max_length=50, blank=False, null=False)
+    val = models.CharField(max_length=50, blank=True, null=True)
+    type = models.CharField(max_length=5, blank=True, null=True)
+    is_used = models.CharField(max_length=1, blank=True, null=True)
+
+
 class GlobalConfig(models.Model):
     vc_host = models.CharField(max_length=50, blank=True, null=True)
     vc_user = models.CharField(max_length=30, blank=True, null=True)
