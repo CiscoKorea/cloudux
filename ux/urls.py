@@ -5,6 +5,7 @@ urlpatterns = [
     url(r'^$', views.dashboard, name='dashboard'),
     url(r'^hosts$', views.hosts, name='hosts'),
     url(r'^vms$', views.vms, name='vms'),
+    url(r'catalogs$', views.catalogs, name='catalogs'),
     url(r'^vnets$', views.vnets, name='vnets'),
     url(r'^volumes$', views.volumes, name='volumes'),
     url(r'^disks$', views.disks, name='disks'),

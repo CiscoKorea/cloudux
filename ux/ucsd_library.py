@@ -337,9 +337,36 @@ def catalog_list(group="", key_filter=None, result_filter=None):
     u = url % ucsdserver + getstring % apioperation + parameter_lead + \
         "{param0:\"" + group + '"' + '}'
 
-    r = requests.get(u, headers=headers)
+    r = requests.get(u, headers=headers, verify=False)
 
     j = json.loads(r.text)
+    print(j)
+
+    j['serviceResult']['rows'] = list_search(j['serviceResult']['rows'], result_filter)
+
+    search_results = [dict_filter(r, key_filter) for r in j['serviceResult']['rows']]
+    return search_results
+
+
+def catalog_list_all(key_filter=None, result_filter=None):
+    """
+    Get a list of Catalog Options for a Group
+    :param key_filter: A sub-list of keys from the returned data to filter for
+    :param result_filter: A dictionary of key/value pairs to filter the result list down by (OR logic).
+    :return:
+    """
+    if result_filter is None:
+        result_filter = {}
+    if key_filter is None:
+        key_filter = []
+    apioperation = "userAPIGetAllCatalogs"
+    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
+        "{}"
+
+    r = requests.get(u, headers=headers, verify=False)
+
+    j = json.loads(r.text)
+    # print(j)
 
     j['serviceResult']['rows'] = list_search(j['serviceResult']['rows'], result_filter)
 

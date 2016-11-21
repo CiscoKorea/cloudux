@@ -65,3 +65,6 @@ input[type=password]{height:35px; line-height:35px; background-color:#fafafa; bo
 .btn_common02{background-color:#fff; color:#666; font-weight:500; height:35px; line-height:35px; border:0; border-radius:2px; text-align:center; display:inline-block; min-width:100px; border:1px solid #dddddd;}
 .btn_common03{background-color:#999; color:#fff; font-weight:500; height:35px; line-height:35px; border:0; border-radius:2px; text-align:center; display:inline-block; min-width:100px;}
 .btn_common04{background-color:#00bcd4; color:#fff; font-weight:500; height:35px; line-height:35px; border:0; border-radius:2px; text-align:center; display:inline-block; min-width:100px;}
+
+
+span.point{color:#cc0000; font-weight:normal;}

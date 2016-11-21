@@ -17,7 +17,7 @@ from cloudmgmt.settings import *
 #######
 
 from models import GlobalConfig, ConfigUtil, BiHost, BiVnic, BiVolume, BiVswitch, BiVirtualMachine, BiPnic, \
-    BiPortgroup, BiCluster, BiDatacenter, UserAddInfo, BiInventory, BiFaults
+    BiPortgroup, BiCluster, BiDatacenter, UserAddInfo, BiInventory, BiFaults, BiCatalog
 from django.core.exceptions import ObjectDoesNotExist
 # import tools.cli as cli
 
@@ -110,7 +110,6 @@ def hosts(request):
 #     if request.is_ajax():
 #         return HttpResponse(json.dumps(results), 'application/json')
 #     return render(request, 'hostList.html', {'list': children})
-
 
 @login_required
 def vms(request):
@@ -212,6 +211,23 @@ def vms_ajax(request):
     #     print("Caught vmodl fault : " + error.msg)
 
     return HttpResponse(json.dumps({'list': children}), 'application/json')
+
+
+from ucsd_library import catalog_list, catalog_list_all
+@login_required
+def catalogs(request):
+    clist = BiCatalog.objects.all()
+
+    paginator = Paginator(clist, 10)
+    page = request.GET.get('page')
+    try:
+        plist = paginator.page(page)
+    except PageNotAnInteger:
+        plist = paginator.page(1)
+    except EmptyPage:
+        plist = paginator.page(paginator.num_pages)
+
+    return render(request, "catalogList.html", {'list': plist, 'ucsd_server': ConfigUtil.get_val("UCSD.HOST")})
 
 
 @login_required
@@ -590,9 +606,32 @@ def delete_all():
     BiInventory.objects.all().delete()
     BiFaults.objects.all().delete()     # refresh !!
 
+    BiCatalog.objects.all().delete()
+
+
+def get_catalog():
+    clist = catalog_list_all()
+    for catalog in clist:
+        entity = BiCatalog()
+        entity.status = catalog["Status"]
+        entity.gruop = catalog["Group"]
+        entity.template_name = catalog["Template_Name"]
+        entity.image = catalog["Image"]
+        entity.catalog_name = catalog["Catalog_Name"]
+        entity.catalog_type = catalog["Catalog_Type"]
+        entity.catalog_id = catalog["Catalog_ID"]
+        entity.folder = catalog["Folder"]
+        entity.os = catalog["OS"]
+        entity.catalog_description = catalog["Catalog_Description"]
+        entity.cloud = catalog["Cloud"]
+        entity.icon = catalog["Icon"]
+        entity.save()
 
 def reload_data(request):
-    delete_all()
-    dcs = get_vcenter_info()  # get all data!!
-    get_ucsm_info()  # get ucsd inventory
+    # delete_all()
+    # dcs = get_vcenter_info()  # get all data!!
+    # get_ucsm_info()  # get ucsd inventory
+    get_catalog()
     return HttpResponse(json.dumps({'result':'OK'}), 'application/json')
+
+

@@ -1,0 +1,242 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+
+        	
+            {% block title %}
+            <div class="title">
+                <div>
+                    <h3>{% trans "menu.catalog" %}</h3>
+                    <p>Home > Server > <strong>Catalog List</strong></p>
+                </div>
+            </div>
+            {% endblock %}
+                
+            {% block content %}
+
+                <!-- inner -->
+                <div class="inner">
+                    <h4>Catalogue List</h4>
+
+                    <ul class="catalogue_list">
+                        {% for catalog in list %}
+                    	<li>
+                        	<div class="box">
+                                <h5><span class="box blue">{{ catalog.catalog_type }}</span> {{ catalog.catalog_name }}</h5>
+                                <div class="system">
+                                	<p class="thomb"><img src="http://{{ ucsd_server }}{{ catalog.icon }}" alt="" height="90" width="170"></p>
+                                    <table>
+                                    	<colgroup>
+                                        	<col width="80px">
+                                            <col width="*">
+                                        </colgroup>
+                                        <tbody>
+                                        	<tr>
+                                            	<th valign="top">OS</th>
+                                                <td>{{ catalog.os }}</td>
+                                            </tr>
+                                        	<tr>
+                                            	<th valign="top">CPU</th>
+                                                <td></td>
+                                            </tr>
+                                        	<tr>
+                                            	<th valign="top">DISK</th>
+                                                <td></td>
+                                            </tr>
+                                        	<tr>
+                                            	<th valign="top">Networks</th>
+                                                <td></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="btn">
+                                    <a href="#" class="btn_common01">선택하기({{ catalog.catalog_id }})</a>
+                                </div>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    <!--
+                    <li>
+                        	<div class="box">
+                                <h5><span class="box blue">Standard</span> CerCVS VM Wave</h5>
+                                <div class="system">
+                                	<p class="thomb"><img src="../resources/img/content/thomb_centos.jpg" alt=""></p>
+                                    <table>
+                                    	<colgroup>
+                                        	<col width="80px">
+                                            <col width="*">
+                                        </colgroup>
+                                        <tbody>
+                                        	<tr>
+                                            	<th valign="top">OS</th>
+                                                <td>Linux Ubuntu 14.04</td>
+                                            </tr>
+                                        	<tr>
+                                            	<th valign="top">CPU</th>
+                                                <td>2 vCPU</td>
+                                            </tr>
+                                        	<tr>
+                                            	<th valign="top">DISK</th>
+                                                <td>/dev/sda : 50G<br>/deb/sdb : 100G</td>
+                                            </tr>
+                                        	<tr>
+                                            	<th valign="top">Networks</th>
+                                                <td>1st NIC (DHCP) / PortGroup : XXXX </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="btn">
+                                    <a href="#" class="btn_common01">선택하기</a>
+                                </div>
+                            </div>
+                        </li>
+
+                    	<li>
+                        	<div class="box">
+                                <h5><span class="box purple">Advanced</span> CerCVS VM Wave</h5>
+                                <div class="system">
+                                	<p class="thomb"><img src="../resources/img/content/thomb_centos.jpg" alt=""></p>
+                                    <table>
+                                    	<colgroup>
+                                        	<col width="80px">
+                                            <col width="*">
+                                        </colgroup>
+                                        <tbody>
+                                        	<tr>
+                                            	<th valign="top">OS</th>
+                                                <td>Linux Ubuntu 14.04</td>
+                                            </tr>
+                                        	<tr>
+                                            	<th valign="top">CPU</th>
+                                                <td>2 vCPU</td>
+                                            </tr>
+                                        	<tr>
+                                            	<th valign="top">DISK</th>
+                                                <td>/dev/sda : 50G<br>/deb/sdb : 100G</td>
+                                            </tr>
+                                        	<tr>
+                                            	<th valign="top">Networks</th>
+                                                <td>1st NIC (DHCP) / PortGroup : XXXX </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="btn">
+                                    <a href="#" class="btn_common01">선택하기</a>
+                                </div>
+                            </div>
+                        </li>
+
+                    	<li>
+                        	<div class="box">
+                                <h5><span class="box blue">Standard</span> CerCVS VM Wave</h5>
+                                <div class="system">
+                                	<p class="thomb"><img src="../resources/img/content/thomb_centos.jpg" alt=""></p>
+                                    <table>
+                                    	<colgroup>
+                                        	<col width="80px">
+                                            <col width="*">
+                                        </colgroup>
+                                        <tbody>
+                                        	<tr>
+                                            	<th valign="top">OS</th>
+                                                <td>Linux Ubuntu 14.04</td>
+                                            </tr>
+                                        	<tr>
+                                            	<th valign="top">CPU</th>
+                                                <td>2 vCPU</td>
+                                            </tr>
+                                        	<tr>
+                                            	<th valign="top">DISK</th>
+                                                <td>/dev/sda : 50G<br>/deb/sdb : 100G</td>
+                                            </tr>
+                                        	<tr>
+                                            	<th valign="top">Networks</th>
+                                                <td>1st NIC (DHCP) / PortGroup : XXXX </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="btn">
+                                    <a href="#" class="btn_common01">선택하기</a>
+                                </div>
+                            </div>
+                        </li>
+
+                    	<li>
+                        	<div class="box">
+                                <h5><span class="box blue">Standard</span> CerCVS VM Wave</h5>
+                                <div class="system">
+                                	<p class="thomb"><img src="../resources/img/content/thomb_centos.jpg" alt=""></p>
+                                    <table>
+                                    	<colgroup>
+                                        	<col width="80px">
+                                            <col width="*">
+                                        </colgroup>
+                                        <tbody>
+                                        	<tr>
+                                            	<th valign="top">OS</th>
+                                                <td>Linux Ubuntu 14.04</td>
+                                            </tr>
+                                        	<tr>
+                                            	<th valign="top">CPU</th>
+                                                <td>2 vCPU</td>
+                                            </tr>
+                                        	<tr>
+                                            	<th valign="top">DISK</th>
+                                                <td>/dev/sda : 50G<br>/deb/sdb : 100G</td>
+                                            </tr>
+                                        	<tr>
+                                            	<th valign="top">Networks</th>
+                                                <td>1st NIC (DHCP) / PortGroup : XXXX </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="btn">
+                                    <a href="#" class="btn_common01">선택하기</a>
+                                </div>
+                            </div>
+                        </li>
+                    -->
+
+                    </ul>
+
+                    <div class="paginate">
+                        <p class="total">Total <strong>{{ list.paginator.count }}</strong></p>
+
+                        <a href="javascript:go_page(1);" class="first">처음</a>
+                        {% if list.has_previous %}
+                        <a href="javascript:go_page({{ list.previous_page_number }})" class="prev">이전</a>
+                        {% endif %}
+                            <span>
+                                {% for p in list.paginator.page_range %}
+                                    {% if p == list.number %}
+                                        <strong>{{ p }}</strong>
+                                    {% else %}<a href="javascript:go_page({{ p }})">{{ p }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            </span>
+                        {% if list.has_next %}
+                        <a href="javascript:go_page({{ list.next_page_number }})" class="next">다음</a>
+                        {% endif %}
+                        <a href="javascript:go_page({{ list.paginator.num_pages }})" class="last">마지막</a>
+                    </div>
+                </div>
+                <!-- //inner -->
+
+
+<form name="search_form" method="get" action="">
+<input type="hidden" name="page" value="1" />
+</form>
+<script type="text/javascript">
+function go_page(page) {
+    $("input[name='page']").val(page);
+    $("form[name='search_form']").submit();
+}
+</script>
+            {% endblock %}
+            <!-- //content -->
+        

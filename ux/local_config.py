@@ -7,8 +7,8 @@
 __author__ = 'hapresto'
 
 # UCS Director Access Info  -  Update for your install
-ucsdserver = "ucsd.local.intra"
-ucsd_key = "XXXXXX"
+ucsdserver = "198.18.133.112"
+ucsd_key = "629FB012BADE48BCA7492F0068133024"
 
 # ICF Director Access Info  -  Update for your Install
 icfdserver = "icfd.local.intra"

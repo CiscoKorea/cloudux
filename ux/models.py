@@ -175,3 +175,19 @@ class BiFaults(models.Model):
     created = models.DateTimeField(blank=True, null=True)
     desc = models.CharField(max_length=100, blank=True, null=True)
     occur = models.CharField(max_length=100, blank=True, null=True)
+
+
+class BiCatalog(Audited):
+    status = models.CharField(max_length=100, blank=True, null=True)
+    group = models.CharField(max_length=100, blank=True, null=True)
+    template_name = models.CharField(max_length=100, blank=True, null=True)
+    image = models.CharField(max_length=100, blank=True, null=True)
+    catalog_name = models.CharField(max_length=100, blank=True, null=True)
+    applications = models.CharField(max_length=100, blank=True, null=True)
+    catalog_type = models.CharField(max_length=100, blank=True, null=True)
+    catalog_id = models.CharField(max_length=100, blank=True, null=True)
+    folder = models.CharField(max_length=100, blank=True, null=True)
+    os = models.CharField(max_length=100, blank=True, null=True)
+    catalog_description = models.TextField(blank=True, null=True)
+    cloud = models.CharField(max_length=100, blank=True, null=True)
+    icon = models.CharField(max_length=100, blank=True, null=True)

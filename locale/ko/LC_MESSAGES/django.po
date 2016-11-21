@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-10 09:42+0000\n"
+"POT-Creation-Date: 2016-11-21 02:57+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,11 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: cloudmgmt/settings.py:117
+#: cloudmgmt/settings.py:139 ux/settings.py:126
 msgid "Korean"
 msgstr ""
 
-#: cloudmgmt/settings.py:118
+#: cloudmgmt/settings.py:140 ux/settings.py:127
 msgid "English"
 msgstr ""
 
@@ -46,26 +46,30 @@ msgstr "Dashboard"
 msgid "menu.vmlist"
 msgstr "VM List"
 
-#: templates/left.html:18 templates/virtualNetworkList.html:8
+#: templates/left.html:14
+msgid "menu.catalog"
+msgstr "Catalog List"
+
+#: templates/left.html:19 templates/virtualNetworkList.html:8
 msgid "menu.vnetlist"
 msgstr "Virtual Network List"
 
-#: templates/left.html:23 templates/volumeList.html:8
+#: templates/left.html:24 templates/volumeList.html:8
 msgid "site.volumelist"
 msgstr "Volume List"
 
-#: templates/left.html:24 templates/vmDiskList.html:8
+#: templates/left.html:25 templates/vmDiskList.html:8
 msgid "menu.disklist"
 msgstr "VM Disk List"
 
-#: templates/left.html:29 templates/userList.html:7
+#: templates/left.html:30 templates/userList.html:7
 msgid "menu.userlist"
 msgstr "사용자관리"
 
-#: templates/userList.html:164
+#: templates/userList.html:169
 msgid "msg.idchecked.require"
 msgstr "ID 중복 체크가 필요합니다."
 
-#: templates/userList.html:197
+#: templates/userList.html:204
 msgid "msg.idchecked.exist"
 msgstr " 가 이미 존재합니다."
