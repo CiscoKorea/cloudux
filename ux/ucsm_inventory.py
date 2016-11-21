@@ -9,6 +9,7 @@ from ucsmsdk.mometa.ls.LsServer import LsServerConsts
 from models import BiInventory, BiFaults
 import datetime
 import pytz
+from models import ConfigUtil
 
 handle = None
 log = logging.getLogger('ucs')
@@ -16,17 +17,22 @@ log.setLevel(logging.DEBUG)
 
 
 def ucs_login():
-    import ConfigParser
-    import os
     from ucsmsdk.ucshandle import UcsHandle
 
-    config = ConfigParser.RawConfigParser()
-    config.read(os.path.join(os.path.dirname(__file__), 'connection.cfg'))
+    # import ConfigParser
+    # import os
+    # config = ConfigParser.RawConfigParser()
+    # config.read(os.path.join(os.path.dirname(__file__), 'connection.cfg'))
+    # hostname = config.get('ucs', "hostname")
+    # username = config.get('ucs', "username")
+    # password = config.get('ucs', "password")
+    # port = config.get('ucs', "port")
 
-    hostname = config.get('ucs', "hostname")
-    username = config.get('ucs', "username")
-    password = config.get('ucs', "password")
-    port = config.get('ucs', "port")
+    hostname = ConfigUtil.get_val("UCSM.HOST")
+    username = ConfigUtil.get_val("UCSM.USER")
+    password = ConfigUtil.get_val("UCSM.PASS")
+    port = ConfigUtil.get_val("UCSM.PORT")
+
     handle = UcsHandle(hostname, username, password, port)
     handle.login()
     return handle

@@ -16,7 +16,7 @@ from pyVmomi import vim
 from cloudmgmt.settings import *
 #######
 
-from models import GlobalConfig, BiHost, BiVnic, BiVolume, BiVswitch, BiVirtualMachine, BiPnic, \
+from models import GlobalConfig, ConfigUtil, BiHost, BiVnic, BiVolume, BiVswitch, BiVirtualMachine, BiPnic, \
     BiPortgroup, BiCluster, BiDatacenter, UserAddInfo, BiInventory, BiFaults
 from django.core.exceptions import ObjectDoesNotExist
 # import tools.cli as cli
@@ -373,14 +373,18 @@ def print_vm_info(virtual_machine):
 
 def get_vcenter_info():
     # global content, hosts, hostPgDict#
-    config = GlobalConfig.objects.all()
+    # config = GlobalConfig.objects.all()
+    host = ConfigUtil.get_val("VC.HOST")
+    user = ConfigUtil.get_val("VC.USER")
+    pwd = ConfigUtil.get_val("VC.PASS")
+    port = ConfigUtil.get_val("VC.PORT")
     # host, user, password = GetArgs()
     context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
     context.verify_mode = ssl.CERT_NONE
-    service_instance = connect.SmartConnect(host=config[0].vc_host,
-                                            user=config[0].vc_user,
-                                            pwd=config[0].vc_pass,
-                                            port=int(config[0].vc_port), sslContext=context)
+    service_instance = connect.SmartConnect(host=host,
+                                            user=user,
+                                            pwd=pwd,
+                                            port=int(port), sslContext=context)
     atexit.register(connect.Disconnect, service_instance)
     content = service_instance.RetrieveContent()
     dcs = get_datacenters(content)

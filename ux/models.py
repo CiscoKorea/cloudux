@@ -10,6 +10,23 @@ class Config(models.Model):
     is_used = models.CharField(max_length=1, blank=True, null=True)
 
 
+class ConfigUtil:
+    @staticmethod
+    def get_val(key_str):
+        try:
+            data = Config.objects.get(key=key_str, type=1, is_used='Y')
+        except:
+            pass
+
+        return data.val
+
+    def __init__(self):
+        pass
+
+    def __unicode__(self):
+        return ""
+
+
 class GlobalConfig(models.Model):
     vc_host = models.CharField(max_length=50, blank=True, null=True)
     vc_user = models.CharField(max_length=30, blank=True, null=True)
