@@ -213,7 +213,7 @@ def vms_ajax(request):
     return HttpResponse(json.dumps({'list': children}), 'application/json')
 
 
-from ucsd_library import catalog_list, catalog_list_all
+from ucsd_library import catalog_list, catalog_list_all, vm_list, vm_action
 @login_required
 def catalogs(request):
     clist = BiCatalog.objects.all()
@@ -628,11 +628,32 @@ def get_catalog():
         entity.save()
 
 
+def get_ucsd_vm_list():
+    vlist = vm_list()
+    # print(vlist)
+    for vm in vlist:
+        try:
+            dbvm = BiVirtualMachine.objects.get(name=vm["VM_Name"])
+            dbvm.ucsd_vm_id = vm["VM_ID"]
+            dbvm.save()
+        except:
+            print("get_ucsd_vm exception : ", vm["VM_Name"])
+
+
 def reload_data(request):
     delete_all()
     get_vcenter_info()  # get all data!!
     get_ucsm_info()  # get ucsd inventory
     get_catalog()
+    get_ucsd_vm_list()  # get ucsd vm id
     return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
 
 
+def ucsd_vm_action(request):
+    # print(request.GET.get("action"))
+    # print(request.GET.get("vmid"))
+    action = request.GET.get("action")
+    vmid = request.GET.get("vmid").split(",")
+    for vm in vmid:
+        vm_action(vmid=vm, action=action)
+    return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')

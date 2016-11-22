@@ -5,13 +5,15 @@
 
 
 # import standard variables and configuration info
-from local_config import ucsdserver, ucsd_key, url, getstring, parameter_lead, headers
+from local_config import url, getstring, parameter_lead, headers
 from cloud_library import dict_filter, list_search
+from models import ConfigUtil
 
 import requests
 import json
 
-headers["X-Cloupia-Request-Key"] = ucsd_key
+ucsdserver = ConfigUtil.get_val("UCSD.HOST")
+headers["X-Cloupia-Request-Key"] = ConfigUtil.get_val("UCSD.KEY") #ucsd_key
 
 
 def workflow_inputs(workflow):
@@ -23,7 +25,7 @@ def workflow_inputs(workflow):
     apioperation = "userAPIGetWorkflowInputs"
     u = url % ucsdserver + getstring % apioperation + parameter_lead + "{param0:\"" + workflow + '"' + '}'
 
-    r = requests.get(u, headers=headers)
+    r = requests.get(u, headers=headers, verify=False)
 
     j = json.loads(r.text)
 
@@ -46,7 +48,7 @@ def workflow_list(folder="", key_filter=None, result_filter=None):
     u = url % ucsdserver + getstring % apioperation + parameter_lead + \
         "{param0:\"" + folder + '"' + '}'
 
-    r = requests.get(u, headers=headers)
+    r = requests.get(u, headers=headers, verify=False)
     j = json.loads(r.text)
 
     j['serviceResult'] = list_search(j['serviceResult'], result_filter)
@@ -76,7 +78,7 @@ def workflow_execute(workflow, inputs):
         'param1:{"list":' + json.dumps(param1) + '}' + \
         ',param2:' + param2 + '}'
 
-    r = requests.get(u, headers=headers)
+    r = requests.get(u, headers=headers, verify=False)
 
     j = json.loads(r.text)
 
@@ -131,7 +133,7 @@ def vdc_list(group="", provider="", key_filter=None, result_filter=None):
     apioperation = "userAPIGetAllVDCs"
     u = url % ucsdserver + getstring % apioperation
 
-    r = requests.get(u, headers=headers)
+    r = requests.get(u, headers=headers, verify=False)
 
     j = json.loads(r.text)
 
@@ -163,7 +165,7 @@ def vm_list(key_filter=None, result_filter=None):
     apioperation = "userAPIGetAllVMs"
     u = url % ucsdserver + getstring % apioperation
 
-    r = requests.get(u, headers=headers)
+    r = requests.get(u, headers=headers, verify=False)
 
     j = json.loads(r.text)
     j['serviceResult']['rows'] = list_search(j['serviceResult']['rows'], result_filter)
@@ -197,7 +199,7 @@ def vm_details(vmid, key_filter=None, result_filter=None):
     u = url % ucsdserver + getstring % apioperation + parameter_lead + \
         "{param0:\"" + vmid + '"' + '}'
 
-    r = requests.get(u, headers=headers)
+    r = requests.get(u, headers=headers, verify=False)
 
     j = json.loads(r.text)
     if j['serviceError']:
@@ -242,7 +244,7 @@ def vm_action(vmid, action, comments=""):
         'param1:"' + action + '"' + \
         ',param2:"' + comments + '"}'
 
-    r = requests.get(u, headers=headers)
+    r = requests.get(u, headers=headers, verify=False)
 
     j = json.loads(r.text)
 
@@ -259,7 +261,7 @@ def vm_getactions(vmid):
     u = url % ucsdserver + getstring % apioperation + parameter_lead + \
         "{param0:\"" + vmid + '"' + '}'
 
-    r = requests.get(u, headers=headers)
+    r = requests.get(u, headers=headers, verify=False)
 
     j = json.loads(r.text)
 
@@ -281,7 +283,7 @@ def vm_terminate(vmid, comments=""):
         'param1:"' + action + '"' + \
         ',param2:"' + comments + '"}'
 
-    r = requests.get(u, headers=headers)
+    r = requests.get(u, headers=headers, verify=False)
 
     j = json.loads(r.text)
 
@@ -388,7 +390,7 @@ def cloud_list(key_filter=None, result_filter=None):
     apioperation = "userAPIGetCloudsListReport"
     u = url % ucsdserver + getstring % apioperation
 
-    r = requests.get(u, headers=headers)
+    r = requests.get(u, headers=headers, verify=False)
 
     j = json.loads(r.text)
     j['serviceResult']['rows'] = list_search(j['serviceResult']['rows'], result_filter)
@@ -495,7 +497,7 @@ def vmware_provision(catalog, vdc, comment="", vmname="", vcpus="0", vram="0", d
 
     # print u
 
-    r = requests.get(u, headers=headers)
+    r = requests.get(u, headers=headers, verify=False)
     # print r.text
 
     j = json.loads(r.text)

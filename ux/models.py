@@ -145,6 +145,7 @@ class BiVirtualMachine(Audited):
     status = models.CharField(max_length=20, blank=True, null=True)
     host = models.ForeignKey(BiHost, blank=True, null=True, on_delete=models.CASCADE)
     network = models.ManyToManyField(BiPortgroup)
+    ucsd_vm_id = models.CharField(max_length=20, blank=True, null=True)
 
     def __unicode__(self):
         return self.name

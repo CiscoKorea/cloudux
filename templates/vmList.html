@@ -59,7 +59,7 @@
                       <tbody>
                         {% for vm in list %}
                           <tr>
-                            <td><label><input type="checkbox"></label></td>
+                            <td><label><input type="checkbox" name="chk_vm_name" value="{{ vm.ucsd_vm_id }}" {% if vm.ucsd_vm_id == None %}disabled{% endif %}></label></td>
                             <td></td>
                             <td>{{ vm.name }}</td>
                             <td>{{ vm.ipAddress }}</td>
@@ -109,11 +109,16 @@
                 </div>
                 <!-- //inner -->
                 
+                <form name="vm_form">
+                    <input type="hidden" name="action" />
+                    <input type="hidden" name="vmid" />
+                </form>
                 <div class="btn_area">
                 	<p class="left">
-                    	<a href="#" class="btn_common02">Stop</a>
+                    	<a href="javascript:;" class="btn_common02" onclick="vm_action('shutdownGuest')">shutdownGuest</a>
+                    	<a href="javascript:;" class="btn_common02" onclick="vm_action('reboot')">reboot</a>
+                    	<a href="javascript:;" class="btn_common02" onclick="vm_action('powerOn')">powerOn</a>
                     	<a href="#" class="btn_common02">Delete</a>
-                    	<a href="#" class="btn_common02">Restart</a>
                     	<a href="#" class="btn_common02">Modify</a>
                     </p>
                     
@@ -156,6 +161,30 @@ $(document).ready(function(){
 function go_page(page) {
     $("input[name='page']").val(page);
     $("form[name='search_form']").submit();
+}
+
+function vm_action(action) {
+        var vmid = []
+        $("input[name='chk_vm_name']:checked").each(function() {
+				vmid.push($(this).val());
+			});
+        console.log(vmid.toString())
+        $.ajax({
+           url : "/vm_action",
+            datatype: "json",
+            data: {
+//                csrfmiddlewaretoken:'{{ csrf_token }}',
+                "action" : action,
+                "vmid" : vmid.toString()
+            }
+        }).done(function(msg){
+            if(msg.length>0) {
+
+            }
+
+        }).fail(function(err){
+            alert(err);
+        });
 }
 </script>
 
