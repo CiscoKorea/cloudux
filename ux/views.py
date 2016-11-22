@@ -627,11 +627,12 @@ def get_catalog():
         entity.icon = catalog["Icon"]
         entity.save()
 
+
 def reload_data(request):
-    # delete_all()
-    # dcs = get_vcenter_info()  # get all data!!
-    # get_ucsm_info()  # get ucsd inventory
+    delete_all()
+    get_vcenter_info()  # get all data!!
+    get_ucsm_info()  # get ucsd inventory
     get_catalog()
-    return HttpResponse(json.dumps({'result':'OK'}), 'application/json')
+    return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
 
 
