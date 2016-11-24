@@ -192,3 +192,30 @@ class BiCatalog(Audited):
     catalog_description = models.TextField(blank=True, null=True)
     cloud = models.CharField(max_length=100, blank=True, null=True)
     icon = models.CharField(max_length=100, blank=True, null=True)
+
+
+class UdCloud(Audited):
+    tag = models.CharField(max_length=100, blank=True, null=True)
+    cloud_type = models.CharField(max_length=100, blank=True, null=True)
+    description = models.CharField(max_length=255, blank=True, null=True)
+    contact = models.CharField(max_length=100, blank=True, null=True)
+    license_status = models.CharField(max_length=100, blank=True, null=True)
+    location = models.CharField(max_length=100, blank=True, null=True)
+    user_id = models.CharField(max_length=100, blank=True, null=True)
+    reachable = models.CharField(max_length=100, blank=True, null=True)
+    message = models.CharField(max_length=100, blank=True, null=True)
+    vmware_server = models.CharField(max_length=100, blank=True, null=True)
+    cloud = models.CharField(max_length=100, blank=True, null=True)
+
+
+class DashboardAlloc(Audited):
+    total_vm = models.IntegerField(default=0)
+    total_cpu = models.IntegerField(default=0)
+    total_mem = models.IntegerField(default=0)
+    total_stg = models.IntegerField(default=0)
+
+
+class DashboardVswitch(Audited):
+    switch = models.CharField(max_length=100, blank=True, null=True)
+    portgroup = models.IntegerField(default=0)
+

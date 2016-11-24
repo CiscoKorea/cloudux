@@ -533,7 +533,8 @@ def ucsd_cloud():
 
     r = requests.get(u, headers=headers, verify=False)
     j = json.loads(r.text)
-    print(j)
+
+    return j['serviceResult']['rows']
 
 
 
@@ -548,7 +549,22 @@ def ucsd_vdcs():
 
     r = requests.get(u, headers=headers, verify=False)
     j = json.loads(r.text)
-    print(j)
+
+    return j['serviceResult']['rows']
+
+
+def ucsd_cpu():
+    apioperation = "userAPIGetInstantDataReport"
+    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
+        "{param0:\"" + '0' + '"' \
+        + ',param1:\"' + 'All%20Clouds' + '"' \
+        + ',param2:\"' + 'CPU-S0' + '"' \
+        + '}'
+
+    r = requests.get(u, headers=headers, verify=False)
+    j = json.loads(r.text)
+
+    return j['serviceResult']['categories'][0]['nameValuePairs']
 
 
 def ucsd_memory():
@@ -561,7 +577,22 @@ def ucsd_memory():
 
     r = requests.get(u, headers=headers, verify=False)
     j = json.loads(r.text)
-    print(j)
+
+    return j['serviceResult']['categories'][0]['nameValuePairs']
+
+
+def ucsd_disk():
+    apioperation = "userAPIGetInstantDataReport"
+    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
+        "{param0:\"" + '0' + '"' \
+        + ',param1:\"' + 'All%20Clouds' + '"' \
+        + ',param2:\"' + 'DISK-S0' + '"' \
+        + '}'
+
+    r = requests.get(u, headers=headers, verify=False)
+    j = json.loads(r.text)
+
+    return j['serviceResult']['categories'][0]['nameValuePairs']
 
 
 def ucsd_network():

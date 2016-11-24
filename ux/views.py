@@ -17,13 +17,15 @@ from cloudmgmt.settings import *
 #######
 
 from models import GlobalConfig, ConfigUtil, BiHost, BiVnic, BiVolume, BiVswitch, BiVirtualMachine, BiPnic, \
-    BiPortgroup, BiCluster, BiDatacenter, UserAddInfo, BiInventory, BiFaults, BiCatalog
+    BiPortgroup, BiCluster, BiDatacenter, UserAddInfo, BiInventory, BiFaults, BiCatalog, \
+    UdCloud, DashboardAlloc, DashboardVswitch
 from django.core.exceptions import ObjectDoesNotExist
 # import tools.cli as cli
 
 import ssl
 from ucsm_inventory import get_ucsm_info
-from ucsd_library import catalog_list, catalog_list_all, vm_list, vm_action, ucsd_vdcs, ucsd_memory, ucsd_network, ucsd_cloud
+from ucsd_library import catalog_list, catalog_list_all, vm_list, vm_action, ucsd_vdcs, ucsd_memory, ucsd_network, \
+    ucsd_cloud, ucsd_cpu, ucsd_disk
 
 # Create your views here.
 class search_form():
@@ -43,7 +45,9 @@ def dashboard(request):
     inventory_list = BiInventory.objects.all()
     fault_list = BiFaults.objects.all()
 
-    chart1 = [30, 50, 40, 70]
+    dash1 = DashboardAlloc.objects.all()
+    chart1 = [int(dash1[0].total_vm), int(dash1[0].total_cpu), int(dash1[0].total_mem), int(dash1[0].total_stg)]
+    chart1d = [100-int(dash1[0].total_vm), 100-int(dash1[0].total_cpu), 100-int(dash1[0].total_mem), 100-int(dash1[0].total_stg)]
     chart2 = [{'name': 'vswitch0', 'pgcount': 5}
         , {'name': 'vswitch1', 'pgcount': 3}
         , {'name': 'vswitch2', 'pgcount': 7}
@@ -51,7 +55,7 @@ def dashboard(request):
         , {'name': 'vswitch4', 'pgcount': 2}
      ]
     return render(request, 'dashboard.html', {'inventorylist': inventory_list, 'faultlist': fault_list,
-                                              'chart1': chart1, 'chart2': chart2})
+                                              'chart1': chart1, 'chart1d': chart1d, 'chart2': chart2})
 
 
 @login_required
@@ -620,6 +624,10 @@ def delete_all():
 
     BiCatalog.objects.all().delete()
 
+    UdCloud.objects.all().delete()
+    DashboardAlloc.objects.all().delete()
+    DashboardVswitch.objects.all().delete()
+
 
 def get_catalog():
     clist = catalog_list_all()
@@ -654,10 +662,71 @@ def get_ucsd_vm_list():
 
 def reload_data(request):
     delete_all()
-    get_vcenter_info()  # get all data!!
-    get_ucsm_info()  # get ucsd inventory
-    get_catalog()
-    get_ucsd_vm_list()  # get ucsd vm id
+    # get_vcenter_info()  # get all data!!
+    # get_ucsm_info()  # get ucsd inventory
+    # get_catalog()
+    # get_ucsd_vm_list()  # get ucsd vm id
+
+    cloud_list = ucsd_cloud()  # cloud list from ucsd
+    for cloud in cloud_list:
+        entity = UdCloud()
+        entity.tag = cloud["Tag"]
+        entity.cloud_type = cloud["Cloud_Type"]
+        entity.description = cloud["Description"]
+        entity.contact = cloud["Contact"]
+        entity.license_status = cloud["License_Status"]
+        entity.location = cloud["Location"]
+        entity.user_id = cloud["User_ID"]
+        entity.reachable = cloud["Reachable"]
+        entity.message = cloud["Message"]
+        entity.vmware_server = cloud["VMware_Server"]
+        entity.cloud = cloud["Cloud"]
+        entity.save()
+
+    total_vm = 0.0
+    active_vm = 0.0
+    vdc_list = ucsd_vdcs()
+    for vdc in vdc_list:
+        total_vm += vdc["Total_VMs"]
+        active_vm += vdc["Active_VMs"]
+
+    dash1 = DashboardAlloc()
+    dash1.total_vm = int(round(active_vm / total_vm * 100))
+    dash1.save()
+
+    total_cpu = 0.0
+    prov_cpu = 0.0
+    cpu_alloc = ucsd_cpu()
+    for cpu in cpu_alloc:
+        if cpu["name"].__contains__("Capacity"):
+            total_cpu = float(cpu["value"])
+        if cpu["name"].__contains__("Provisioned"):
+            prov_cpu = float(cpu["value"])
+    dash1.total_cpu = int(round(prov_cpu / total_cpu * 100))
+    dash1.save()
+
+    total_mem = 0.0
+    prov_mem = 0.0
+    mem_alloc = ucsd_memory()
+    for mem in mem_alloc:
+        if mem["name"].__contains__("Capacity"):
+            total_mem = float(mem["value"])
+        if mem["name"].__contains__("Provisioned"):
+            prov_mem = float(mem["value"])
+    dash1.total_mem = int(round(prov_mem / total_mem * 100))
+    dash1.save()
+
+    total_stg = 0.0
+    prov_stg = 0.0
+    stg_alloc = ucsd_disk()
+    for stg in stg_alloc:
+        if stg["name"].__contains__("Capacity"):
+            total_stg = float(stg["value"])
+        if stg["name"].__contains__("Provisioned"):
+            prov_stg = float(stg["value"])
+    dash1.total_stg = int(round(prov_stg / total_stg * 100))
+    dash1.save()
+
     return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
 
 
