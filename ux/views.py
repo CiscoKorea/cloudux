@@ -23,7 +23,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 import ssl
 from ucsm_inventory import get_ucsm_info
-
+from ucsd_library import catalog_list, catalog_list_all, vm_list, vm_action, ucsd_vdcs, ucsd_memory, ucsd_network, ucsd_cloud
 
 # Create your views here.
 class search_form():
@@ -33,12 +33,25 @@ class search_form():
 
 @login_required
 def dashboard(request):
+    # ucsd_vdcs()
+    # ucsd_memory()
+    # ucsd_network()
+    # ucsd_cloud()
 
     # dcs = get_vcenter_info()  # get all data!!
     # get_ucsm_info()  # get ucsd inventory
     inventory_list = BiInventory.objects.all()
     fault_list = BiFaults.objects.all()
-    return render(request, 'dashboard.html', {'inventorylist': inventory_list, 'faultlist': fault_list})
+
+    chart1 = [30, 50, 40, 70]
+    chart2 = [{'name': 'vswitch0', 'pgcount': 5}
+        , {'name': 'vswitch1', 'pgcount': 3}
+        , {'name': 'vswitch2', 'pgcount': 7}
+        , {'name': 'vswitch3', 'pgcount': 9}
+        , {'name': 'vswitch4', 'pgcount': 2}
+     ]
+    return render(request, 'dashboard.html', {'inventorylist': inventory_list, 'faultlist': fault_list,
+                                              'chart1': chart1, 'chart2': chart2})
 
 
 @login_required
@@ -213,7 +226,6 @@ def vms_ajax(request):
     return HttpResponse(json.dumps({'list': children}), 'application/json')
 
 
-from ucsd_library import catalog_list, catalog_list_all, vm_list, vm_action
 @login_required
 def catalogs(request):
     clist = BiCatalog.objects.all()

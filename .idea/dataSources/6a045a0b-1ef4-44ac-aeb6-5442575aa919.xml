@@ -1,0 +1,1398 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="Sqlite (Xerial) - db.sqlite3">
+  <database-model serializer="dbm" rdbms="SQLITE" format-version="2.6">
+    <schema id="1">
+      <visible>1</visible>
+    </schema>
+    <table id="2" parent="1" name="auth_group"/>
+    <table id="3" parent="1" name="auth_group_permissions"/>
+    <table id="4" parent="1" name="auth_permission"/>
+    <table id="5" parent="1" name="auth_user"/>
+    <table id="6" parent="1" name="auth_user_groups"/>
+    <table id="7" parent="1" name="auth_user_user_permissions"/>
+    <table id="8" parent="1" name="celery_taskmeta"/>
+    <table id="9" parent="1" name="celery_tasksetmeta"/>
+    <table id="10" parent="1" name="django_admin_log"/>
+    <table id="11" parent="1" name="django_content_type"/>
+    <table id="12" parent="1" name="django_migrations"/>
+    <table id="13" parent="1" name="django_session"/>
+    <table id="14" parent="1" name="djcelery_crontabschedule"/>
+    <table id="15" parent="1" name="djcelery_intervalschedule"/>
+    <table id="16" parent="1" name="djcelery_periodictask"/>
+    <table id="17" parent="1" name="djcelery_periodictasks"/>
+    <table id="18" parent="1" name="djcelery_taskstate"/>
+    <table id="19" parent="1" name="djcelery_workerstate"/>
+    <table id="20" parent="1" name="djkombu_message"/>
+    <table id="21" parent="1" name="djkombu_queue"/>
+    <table id="22" parent="1" name="sqlite_sequence"/>
+    <table id="23" parent="1" name="ux_bicluster"/>
+    <table id="24" parent="1" name="ux_bidatacenter"/>
+    <table id="25" parent="1" name="ux_bifaults"/>
+    <table id="26" parent="1" name="ux_bihost"/>
+    <table id="27" parent="1" name="ux_biinventory"/>
+    <table id="28" parent="1" name="ux_bipnic"/>
+    <table id="29" parent="1" name="ux_biportgroup"/>
+    <table id="30" parent="1" name="ux_bivirtualmachine"/>
+    <table id="31" parent="1" name="ux_bivirtualmachine_network"/>
+    <table id="32" parent="1" name="ux_bivnic"/>
+    <table id="33" parent="1" name="ux_bivnic_host"/>
+    <table id="34" parent="1" name="ux_bivolume"/>
+    <table id="35" parent="1" name="ux_bivolume_host"/>
+    <table id="36" parent="1" name="ux_bivswitch"/>
+    <table id="37" parent="1" name="ux_bivswitch_host"/>
+    <table id="38" parent="1" name="ux_globalconfig"/>
+    <table id="39" parent="1" name="ux_useraddinfo"/>
+    <column id="40" parent="2" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="41" parent="2" name="name">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(80)(0,-1)|12</data-type>
+    </column>
+    <index id="42" parent="2" name="sqlite_autoindex_auth_group_1">
+      <name-surrogate>1</name-surrogate>
+      <columns>name</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <key id="43" parent="2">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="44" parent="3" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="45" parent="3" name="group_id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="46" parent="3" name="permission_id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <index id="47" parent="3" name="auth_group_permissions_group_id_0cd325b0_uniq">
+      <columns>group_id
+permission_id</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <key id="48" parent="3">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <foreign-key id="49" parent="3" name="#FAKE_auth_group_permissions_2">
+      <name-surrogate>1</name-surrogate>
+      <columns>group_id</columns>
+      <deferrable>1</deferrable>
+      <initially-deferred>1</initially-deferred>
+      <ref-key>~.auth_group.#1</ref-key>
+      <cascade-update-rule>no_action</cascade-update-rule>
+      <cascade-delete-rule>no_action</cascade-delete-rule>
+    </foreign-key>
+    <foreign-key id="50" parent="3" name="#FAKE_auth_group_permissions_1">
+      <name-surrogate>1</name-surrogate>
+      <columns>permission_id</columns>
+      <deferrable>1</deferrable>
+      <initially-deferred>1</initially-deferred>
+      <ref-key>~.auth_permission.#1</ref-key>
+      <cascade-update-rule>no_action</cascade-update-rule>
+      <cascade-delete-rule>no_action</cascade-delete-rule>
+    </foreign-key>
+    <column id="51" parent="4" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="52" parent="4" name="content_type_id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="53" parent="4" name="codename">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(100)(0,-1)|12</data-type>
+    </column>
+    <column id="54" parent="4" name="name">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(255)(0,-1)|12</data-type>
+    </column>
+    <index id="55" parent="4" name="auth_permission_content_type_id_01ab375a_uniq">
+      <columns>content_type_id
+codename</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <key id="56" parent="4">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <foreign-key id="57" parent="4" name="#FAKE_auth_permission_1">
+      <name-surrogate>1</name-surrogate>
+      <columns>content_type_id</columns>
+      <deferrable>1</deferrable>
+      <initially-deferred>1</initially-deferred>
+      <ref-key>~.django_content_type.#1</ref-key>
+      <cascade-update-rule>no_action</cascade-update-rule>
+      <cascade-delete-rule>no_action</cascade-delete-rule>
+    </foreign-key>
+    <column id="58" parent="5" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="59" parent="5" name="password">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(128)(0,-1)|12</data-type>
+    </column>
+    <column id="60" parent="5" name="last_login">
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="61" parent="5" name="is_superuser">
+      <mandatory>1</mandatory>
+      <data-type>BOOL(0,-1)|4</data-type>
+    </column>
+    <column id="62" parent="5" name="first_name">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(30)(0,-1)|12</data-type>
+    </column>
+    <column id="63" parent="5" name="last_name">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(30)(0,-1)|12</data-type>
+    </column>
+    <column id="64" parent="5" name="email">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(254)(0,-1)|12</data-type>
+    </column>
+    <column id="65" parent="5" name="is_staff">
+      <mandatory>1</mandatory>
+      <data-type>BOOL(0,-1)|4</data-type>
+    </column>
+    <column id="66" parent="5" name="is_active">
+      <mandatory>1</mandatory>
+      <data-type>BOOL(0,-1)|4</data-type>
+    </column>
+    <column id="67" parent="5" name="date_joined">
+      <mandatory>1</mandatory>
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="68" parent="5" name="username">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(150)(0,-1)|12</data-type>
+    </column>
+    <index id="69" parent="5" name="sqlite_autoindex_auth_user_1">
+      <name-surrogate>1</name-surrogate>
+      <columns>username</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <key id="70" parent="5">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="71" parent="6" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="72" parent="6" name="user_id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="73" parent="6" name="group_id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <index id="74" parent="6" name="auth_user_groups_user_id_94350c0c_uniq">
+      <columns>user_id
+group_id</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <key id="75" parent="6">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <foreign-key id="76" parent="6" name="#FAKE_auth_user_groups_2">
+      <name-surrogate>1</name-surrogate>
+      <columns>user_id</columns>
+      <deferrable>1</deferrable>
+      <initially-deferred>1</initially-deferred>
+      <ref-key>~.auth_user.#1</ref-key>
+      <cascade-update-rule>no_action</cascade-update-rule>
+      <cascade-delete-rule>no_action</cascade-delete-rule>
+    </foreign-key>
+    <foreign-key id="77" parent="6" name="#FAKE_auth_user_groups_1">
+      <name-surrogate>1</name-surrogate>
+      <columns>group_id</columns>
+      <deferrable>1</deferrable>
+      <initially-deferred>1</initially-deferred>
+      <ref-key>~.auth_group.#1</ref-key>
+      <cascade-update-rule>no_action</cascade-update-rule>
+      <cascade-delete-rule>no_action</cascade-delete-rule>
+    </foreign-key>
+    <column id="78" parent="7" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="79" parent="7" name="user_id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="80" parent="7" name="permission_id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <index id="81" parent="7" name="auth_user_user_permissions_user_id_14a6b632_uniq">
+      <columns>user_id
+permission_id</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <key id="82" parent="7">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <foreign-key id="83" parent="7" name="#FAKE_auth_user_user_permissions_2">
+      <name-surrogate>1</name-surrogate>
+      <columns>user_id</columns>
+      <deferrable>1</deferrable>
+      <initially-deferred>1</initially-deferred>
+      <ref-key>~.auth_user.#1</ref-key>
+      <cascade-update-rule>no_action</cascade-update-rule>
+      <cascade-delete-rule>no_action</cascade-delete-rule>
+    </foreign-key>
+    <foreign-key id="84" parent="7" name="#FAKE_auth_user_user_permissions_1">
+      <name-surrogate>1</name-surrogate>
+      <columns>permission_id</columns>
+      <deferrable>1</deferrable>
+      <initially-deferred>1</initially-deferred>
+      <ref-key>~.auth_permission.#1</ref-key>
+      <cascade-update-rule>no_action</cascade-update-rule>
+      <cascade-delete-rule>no_action</cascade-delete-rule>
+    </foreign-key>
+    <column id="85" parent="8" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="86" parent="8" name="task_id">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(255)(0,-1)|12</data-type>
+    </column>
+    <column id="87" parent="8" name="status">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(50)(0,-1)|12</data-type>
+    </column>
+    <column id="88" parent="8" name="result">
+      <data-type>TEXT(0,-1)|12</data-type>
+    </column>
+    <column id="89" parent="8" name="date_done">
+      <mandatory>1</mandatory>
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="90" parent="8" name="traceback">
+      <data-type>TEXT(0,-1)|12</data-type>
+    </column>
+    <column id="91" parent="8" name="hidden">
+      <mandatory>1</mandatory>
+      <data-type>BOOL(0,-1)|4</data-type>
+    </column>
+    <column id="92" parent="8" name="meta">
+      <data-type>TEXT(0,-1)|12</data-type>
+    </column>
+    <index id="93" parent="8" name="sqlite_autoindex_celery_taskmeta_1">
+      <name-surrogate>1</name-surrogate>
+      <columns>task_id</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <index id="94" parent="8" name="celery_taskmeta_hidden_23fd02dc">
+      <columns>hidden</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <key id="95" parent="8">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="96" parent="9" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="97" parent="9" name="taskset_id">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(255)(0,-1)|12</data-type>
+    </column>
+    <column id="98" parent="9" name="result">
+      <mandatory>1</mandatory>
+      <data-type>TEXT(0,-1)|12</data-type>
+    </column>
+    <column id="99" parent="9" name="date_done">
+      <mandatory>1</mandatory>
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="100" parent="9" name="hidden">
+      <mandatory>1</mandatory>
+      <data-type>BOOL(0,-1)|4</data-type>
+    </column>
+    <index id="101" parent="9" name="sqlite_autoindex_celery_tasksetmeta_1">
+      <name-surrogate>1</name-surrogate>
+      <columns>taskset_id</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <index id="102" parent="9" name="celery_tasksetmeta_hidden_593cfc24">
+      <columns>hidden</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <key id="103" parent="9">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="104" parent="10" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="105" parent="10" name="object_id">
+      <data-type>TEXT(0,-1)|12</data-type>
+    </column>
+    <column id="106" parent="10" name="object_repr">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(200)(0,-1)|12</data-type>
+    </column>
+    <column id="107" parent="10" name="action_flag">
+      <mandatory>1</mandatory>
+      <data-type>SMALLINT UNSIGNED(0,-1)|4</data-type>
+    </column>
+    <column id="108" parent="10" name="change_message">
+      <mandatory>1</mandatory>
+      <data-type>TEXT(0,-1)|12</data-type>
+    </column>
+    <column id="109" parent="10" name="content_type_id">
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="110" parent="10" name="user_id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="111" parent="10" name="action_time">
+      <mandatory>1</mandatory>
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <key id="112" parent="10">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <foreign-key id="113" parent="10" name="#FAKE_django_admin_log_2">
+      <name-surrogate>1</name-surrogate>
+      <columns>content_type_id</columns>
+      <deferrable>1</deferrable>
+      <initially-deferred>1</initially-deferred>
+      <ref-key>~.django_content_type.#1</ref-key>
+      <cascade-update-rule>no_action</cascade-update-rule>
+      <cascade-delete-rule>no_action</cascade-delete-rule>
+    </foreign-key>
+    <foreign-key id="114" parent="10" name="#FAKE_django_admin_log_1">
+      <name-surrogate>1</name-surrogate>
+      <columns>user_id</columns>
+      <deferrable>1</deferrable>
+      <initially-deferred>1</initially-deferred>
+      <ref-key>~.auth_user.#1</ref-key>
+      <cascade-update-rule>no_action</cascade-update-rule>
+      <cascade-delete-rule>no_action</cascade-delete-rule>
+    </foreign-key>
+    <column id="115" parent="11" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="116" parent="11" name="app_label">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(100)(0,-1)|12</data-type>
+    </column>
+    <column id="117" parent="11" name="model">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(100)(0,-1)|12</data-type>
+    </column>
+    <index id="118" parent="11" name="django_content_type_app_label_76bd3d3b_uniq">
+      <columns>app_label
+model</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <key id="119" parent="11">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="120" parent="12" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="121" parent="12" name="app">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(255)(0,-1)|12</data-type>
+    </column>
+    <column id="122" parent="12" name="name">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(255)(0,-1)|12</data-type>
+    </column>
+    <column id="123" parent="12" name="applied">
+      <mandatory>1</mandatory>
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <key id="124" parent="12">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="125" parent="13" name="session_key">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(40)(0,-1)|12</data-type>
+    </column>
+    <column id="126" parent="13" name="session_data">
+      <mandatory>1</mandatory>
+      <data-type>TEXT(0,-1)|12</data-type>
+    </column>
+    <column id="127" parent="13" name="expire_date">
+      <mandatory>1</mandatory>
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <index id="128" parent="13" name="django_session_de54fa62">
+      <columns>expire_date</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <key id="129" parent="13">
+      <columns>session_key</columns>
+      <primary>1</primary>
+    </key>
+    <column id="130" parent="14" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="131" parent="14" name="minute">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(64)(0,-1)|12</data-type>
+    </column>
+    <column id="132" parent="14" name="hour">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(64)(0,-1)|12</data-type>
+    </column>
+    <column id="133" parent="14" name="day_of_week">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(64)(0,-1)|12</data-type>
+    </column>
+    <column id="134" parent="14" name="day_of_month">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(64)(0,-1)|12</data-type>
+    </column>
+    <column id="135" parent="14" name="month_of_year">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(64)(0,-1)|12</data-type>
+    </column>
+    <key id="136" parent="14">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="137" parent="15" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="138" parent="15" name="every">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="139" parent="15" name="period">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(24)(0,-1)|12</data-type>
+    </column>
+    <key id="140" parent="15">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="141" parent="16" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="142" parent="16" name="name">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(200)(0,-1)|12</data-type>
+    </column>
+    <column id="143" parent="16" name="task">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(200)(0,-1)|12</data-type>
+    </column>
+    <column id="144" parent="16" name="args">
+      <mandatory>1</mandatory>
+      <data-type>TEXT(0,-1)|12</data-type>
+    </column>
+    <column id="145" parent="16" name="kwargs">
+      <mandatory>1</mandatory>
+      <data-type>TEXT(0,-1)|12</data-type>
+    </column>
+    <column id="146" parent="16" name="queue">
+      <data-type>VARCHAR(200)(0,-1)|12</data-type>
+    </column>
+    <column id="147" parent="16" name="exchange">
+      <data-type>VARCHAR(200)(0,-1)|12</data-type>
+    </column>
+    <column id="148" parent="16" name="routing_key">
+      <data-type>VARCHAR(200)(0,-1)|12</data-type>
+    </column>
+    <column id="149" parent="16" name="expires">
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="150" parent="16" name="enabled">
+      <mandatory>1</mandatory>
+      <data-type>BOOL(0,-1)|4</data-type>
+    </column>
+    <column id="151" parent="16" name="last_run_at">
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="152" parent="16" name="total_run_count">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER UNSIGNED(0,-1)|4</data-type>
+    </column>
+    <column id="153" parent="16" name="date_changed">
+      <mandatory>1</mandatory>
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="154" parent="16" name="description">
+      <mandatory>1</mandatory>
+      <data-type>TEXT(0,-1)|12</data-type>
+    </column>
+    <column id="155" parent="16" name="crontab_id">
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="156" parent="16" name="interval_id">
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <index id="157" parent="16" name="sqlite_autoindex_djcelery_periodictask_1">
+      <name-surrogate>1</name-surrogate>
+      <columns>name</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <key id="158" parent="16">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <foreign-key id="159" parent="16" name="#FAKE_djcelery_periodictask_2">
+      <name-surrogate>1</name-surrogate>
+      <columns>crontab_id</columns>
+      <deferrable>1</deferrable>
+      <initially-deferred>1</initially-deferred>
+      <ref-key>~.djcelery_crontabschedule.#1</ref-key>
+      <cascade-update-rule>no_action</cascade-update-rule>
+      <cascade-delete-rule>no_action</cascade-delete-rule>
+    </foreign-key>
+    <foreign-key id="160" parent="16" name="#FAKE_djcelery_periodictask_1">
+      <name-surrogate>1</name-surrogate>
+      <columns>interval_id</columns>
+      <deferrable>1</deferrable>
+      <initially-deferred>1</initially-deferred>
+      <ref-key>~.djcelery_intervalschedule.#1</ref-key>
+      <cascade-update-rule>no_action</cascade-update-rule>
+      <cascade-delete-rule>no_action</cascade-delete-rule>
+    </foreign-key>
+    <column id="161" parent="17" name="ident">
+      <mandatory>1</mandatory>
+      <data-type>SMALLINT(0,-1)|4</data-type>
+    </column>
+    <column id="162" parent="17" name="last_update">
+      <mandatory>1</mandatory>
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <key id="163" parent="17">
+      <columns>ident</columns>
+      <primary>1</primary>
+    </key>
+    <column id="164" parent="18" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="165" parent="18" name="state">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(64)(0,-1)|12</data-type>
+    </column>
+    <column id="166" parent="18" name="task_id">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(36)(0,-1)|12</data-type>
+    </column>
+    <column id="167" parent="18" name="name">
+      <data-type>VARCHAR(200)(0,-1)|12</data-type>
+    </column>
+    <column id="168" parent="18" name="tstamp">
+      <mandatory>1</mandatory>
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="169" parent="18" name="args">
+      <data-type>TEXT(0,-1)|12</data-type>
+    </column>
+    <column id="170" parent="18" name="kwargs">
+      <data-type>TEXT(0,-1)|12</data-type>
+    </column>
+    <column id="171" parent="18" name="eta">
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="172" parent="18" name="expires">
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="173" parent="18" name="result">
+      <data-type>TEXT(0,-1)|12</data-type>
+    </column>
+    <column id="174" parent="18" name="traceback">
+      <data-type>TEXT(0,-1)|12</data-type>
+    </column>
+    <column id="175" parent="18" name="runtime">
+      <data-type>REAL(0,-1)|6</data-type>
+    </column>
+    <column id="176" parent="18" name="retries">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="177" parent="18" name="hidden">
+      <mandatory>1</mandatory>
+      <data-type>BOOL(0,-1)|4</data-type>
+    </column>
+    <column id="178" parent="18" name="worker_id">
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <index id="179" parent="18" name="djcelery_taskstate_state_53543be4">
+      <columns>state</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <index id="180" parent="18" name="sqlite_autoindex_djcelery_taskstate_1">
+      <name-surrogate>1</name-surrogate>
+      <columns>task_id</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <index id="181" parent="18" name="djcelery_taskstate_name_8af9eded">
+      <columns>name</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <index id="182" parent="18" name="djcelery_taskstate_tstamp_4c3f93a1">
+      <columns>tstamp</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <index id="183" parent="18" name="djcelery_taskstate_hidden_c3905e57">
+      <columns>hidden</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <key id="184" parent="18">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <foreign-key id="185" parent="18" name="#FAKE_djcelery_taskstate_1">
+      <name-surrogate>1</name-surrogate>
+      <columns>worker_id</columns>
+      <deferrable>1</deferrable>
+      <initially-deferred>1</initially-deferred>
+      <ref-key>~.djcelery_workerstate.#1</ref-key>
+      <cascade-update-rule>no_action</cascade-update-rule>
+      <cascade-delete-rule>no_action</cascade-delete-rule>
+    </foreign-key>
+    <column id="186" parent="19" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="187" parent="19" name="hostname">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(255)(0,-1)|12</data-type>
+    </column>
+    <column id="188" parent="19" name="last_heartbeat">
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <index id="189" parent="19" name="sqlite_autoindex_djcelery_workerstate_1">
+      <name-surrogate>1</name-surrogate>
+      <columns>hostname</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <index id="190" parent="19" name="djcelery_workerstate_last_heartbeat_4539b544">
+      <columns>last_heartbeat</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <key id="191" parent="19">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="192" parent="20" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="193" parent="20" name="visible">
+      <mandatory>1</mandatory>
+      <data-type>BOOL(0,-1)|4</data-type>
+    </column>
+    <column id="194" parent="20" name="sent_at">
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="195" parent="20" name="payload">
+      <mandatory>1</mandatory>
+      <data-type>TEXT(0,-1)|12</data-type>
+    </column>
+    <column id="196" parent="20" name="queue_id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <index id="197" parent="20" name="djkombu_message_46cf0e59">
+      <columns>visible</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <index id="198" parent="20" name="djkombu_message_df2f2974">
+      <columns>sent_at</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <key id="199" parent="20">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <foreign-key id="200" parent="20" name="#FAKE_djkombu_message_1">
+      <name-surrogate>1</name-surrogate>
+      <columns>queue_id</columns>
+      <deferrable>1</deferrable>
+      <initially-deferred>1</initially-deferred>
+      <ref-key>~.djkombu_queue.#1</ref-key>
+      <cascade-update-rule>no_action</cascade-update-rule>
+      <cascade-delete-rule>no_action</cascade-delete-rule>
+    </foreign-key>
+    <column id="201" parent="21" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="202" parent="21" name="name">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(200)(0,-1)|12</data-type>
+    </column>
+    <index id="203" parent="21" name="sqlite_autoindex_djkombu_queue_1">
+      <name-surrogate>1</name-surrogate>
+      <columns>name</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <key id="204" parent="21">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="205" parent="22" name="name">
+      <data-type>(0,-1)|12</data-type>
+    </column>
+    <column id="206" parent="22" name="seq">
+      <data-type>(0,-1)|12</data-type>
+    </column>
+    <column id="207" parent="23" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="208" parent="23" name="created">
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="209" parent="23" name="modified">
+      <mandatory>1</mandatory>
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="210" parent="23" name="dbstatus">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(1)(0,-1)|12</data-type>
+    </column>
+    <column id="211" parent="23" name="name">
+      <data-type>VARCHAR(100)(0,-1)|12</data-type>
+    </column>
+    <key id="212" parent="23">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="213" parent="24" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="214" parent="24" name="created">
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="215" parent="24" name="modified">
+      <mandatory>1</mandatory>
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="216" parent="24" name="dbstatus">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(1)(0,-1)|12</data-type>
+    </column>
+    <column id="217" parent="24" name="name">
+      <data-type>VARCHAR(100)(0,-1)|12</data-type>
+    </column>
+    <key id="218" parent="24">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="219" parent="25" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="220" parent="25" name="severity">
+      <data-type>VARCHAR(100)(0,-1)|12</data-type>
+    </column>
+    <column id="221" parent="25" name="target">
+      <data-type>VARCHAR(100)(0,-1)|12</data-type>
+    </column>
+    <column id="222" parent="25" name="faultType">
+      <data-type>VARCHAR(100)(0,-1)|12</data-type>
+    </column>
+    <column id="223" parent="25" name="code">
+      <data-type>VARCHAR(100)(0,-1)|12</data-type>
+    </column>
+    <column id="224" parent="25" name="created">
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="225" parent="25" name="desc">
+      <data-type>VARCHAR(100)(0,-1)|12</data-type>
+    </column>
+    <column id="226" parent="25" name="occur">
+      <data-type>VARCHAR(100)(0,-1)|12</data-type>
+    </column>
+    <key id="227" parent="25">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="228" parent="26" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="229" parent="26" name="cluster_id">
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="230" parent="26" name="host">
+      <data-type>VARCHAR(100)(0,-1)|12</data-type>
+    </column>
+    <column id="231" parent="26" name="os">
+      <data-type>VARCHAR(50)(0,-1)|12</data-type>
+    </column>
+    <column id="232" parent="26" name="version">
+      <data-type>VARCHAR(20)(0,-1)|12</data-type>
+    </column>
+    <column id="233" parent="26" name="ip">
+      <data-type>VARCHAR(20)(0,-1)|12</data-type>
+    </column>
+    <column id="234" parent="26" name="status">
+      <data-type>VARCHAR(20)(0,-1)|12</data-type>
+    </column>
+    <column id="235" parent="26" name="created">
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="236" parent="26" name="dbstatus">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(1)(0,-1)|12</data-type>
+    </column>
+    <column id="237" parent="26" name="modified">
+      <mandatory>1</mandatory>
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="238" parent="26" name="datacenter_id">
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <key id="239" parent="26">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <foreign-key id="240" parent="26" name="#FAKE_ux_bihost_2">
+      <name-surrogate>1</name-surrogate>
+      <columns>cluster_id</columns>
+      <deferrable>1</deferrable>
+      <initially-deferred>1</initially-deferred>
+      <ref-key>~.ux_bicluster.#1</ref-key>
+      <cascade-update-rule>no_action</cascade-update-rule>
+      <cascade-delete-rule>no_action</cascade-delete-rule>
+    </foreign-key>
+    <foreign-key id="241" parent="26" name="#FAKE_ux_bihost_1">
+      <name-surrogate>1</name-surrogate>
+      <columns>datacenter_id</columns>
+      <deferrable>1</deferrable>
+      <initially-deferred>1</initially-deferred>
+      <ref-key>~.ux_bidatacenter.#1</ref-key>
+      <cascade-update-rule>no_action</cascade-update-rule>
+      <cascade-delete-rule>no_action</cascade-delete-rule>
+    </foreign-key>
+    <column id="242" parent="27" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="243" parent="27" name="created">
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="244" parent="27" name="modified">
+      <mandatory>1</mandatory>
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="245" parent="27" name="dbstatus">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(1)(0,-1)|12</data-type>
+    </column>
+    <column id="246" parent="27" name="model">
+      <data-type>VARCHAR(100)(0,-1)|12</data-type>
+    </column>
+    <column id="247" parent="27" name="hwtype">
+      <data-type>VARCHAR(100)(0,-1)|12</data-type>
+    </column>
+    <column id="248" parent="27" name="serial">
+      <data-type>VARCHAR(100)(0,-1)|12</data-type>
+    </column>
+    <column id="249" parent="27" name="name">
+      <data-type>VARCHAR(100)(0,-1)|12</data-type>
+    </column>
+    <column id="250" parent="27" name="firmwareVersion">
+      <data-type>VARCHAR(100)(0,-1)|12</data-type>
+    </column>
+    <column id="251" parent="27" name="mfgtime">
+      <data-type>VARCHAR(100)(0,-1)|12</data-type>
+    </column>
+    <column id="252" parent="27" name="ipAddress">
+      <data-type>VARCHAR(20)(0,-1)|12</data-type>
+    </column>
+    <column id="253" parent="27" name="lastModified">
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="254" parent="27" name="desc">
+      <data-type>VARCHAR(100)(0,-1)|12</data-type>
+    </column>
+    <key id="255" parent="27">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="256" parent="28" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="257" parent="28" name="device">
+      <data-type>VARCHAR(100)(0,-1)|12</data-type>
+    </column>
+    <column id="258" parent="28" name="created">
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="259" parent="28" name="dbstatus">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(1)(0,-1)|12</data-type>
+    </column>
+    <column id="260" parent="28" name="modified">
+      <mandatory>1</mandatory>
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="261" parent="28" name="key">
+      <data-type>VARCHAR(100)(0,-1)|12</data-type>
+    </column>
+    <column id="262" parent="28" name="vswitch_id">
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <key id="263" parent="28">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <foreign-key id="264" parent="28" name="#FAKE_ux_bipnic_1">
+      <name-surrogate>1</name-surrogate>
+      <columns>vswitch_id</columns>
+      <deferrable>1</deferrable>
+      <initially-deferred>1</initially-deferred>
+      <ref-key>~.ux_bivswitch.#1</ref-key>
+      <cascade-update-rule>no_action</cascade-update-rule>
+      <cascade-delete-rule>no_action</cascade-delete-rule>
+    </foreign-key>
+    <column id="265" parent="29" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="266" parent="29" name="name">
+      <data-type>VARCHAR(100)(0,-1)|12</data-type>
+    </column>
+    <column id="267" parent="29" name="vlanId">
+      <data-type>VARCHAR(100)(0,-1)|12</data-type>
+    </column>
+    <column id="268" parent="29" name="created">
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="269" parent="29" name="dbstatus">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(1)(0,-1)|12</data-type>
+    </column>
+    <column id="270" parent="29" name="modified">
+      <mandatory>1</mandatory>
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="271" parent="29" name="key">
+      <data-type>VARCHAR(100)(0,-1)|12</data-type>
+    </column>
+    <column id="272" parent="29" name="vswitch_id">
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <key id="273" parent="29">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <foreign-key id="274" parent="29" name="#FAKE_ux_biportgroup_1">
+      <name-surrogate>1</name-surrogate>
+      <columns>vswitch_id</columns>
+      <deferrable>1</deferrable>
+      <initially-deferred>1</initially-deferred>
+      <ref-key>~.ux_bivswitch.#1</ref-key>
+      <cascade-update-rule>no_action</cascade-update-rule>
+      <cascade-delete-rule>no_action</cascade-delete-rule>
+    </foreign-key>
+    <column id="275" parent="30" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="276" parent="30" name="name">
+      <data-type>VARCHAR(100)(0,-1)|12</data-type>
+    </column>
+    <column id="277" parent="30" name="ipAddress">
+      <data-type>VARCHAR(20)(0,-1)|12</data-type>
+    </column>
+    <column id="278" parent="30" name="macAddress">
+      <data-type>VARCHAR(20)(0,-1)|12</data-type>
+    </column>
+    <column id="279" parent="30" name="cpuUsage">
+      <data-type>VARCHAR(5)(0,-1)|12</data-type>
+    </column>
+    <column id="280" parent="30" name="memUsage">
+      <data-type>VARCHAR(5)(0,-1)|12</data-type>
+    </column>
+    <column id="281" parent="30" name="netUsage">
+      <data-type>VARCHAR(5)(0,-1)|12</data-type>
+    </column>
+    <column id="282" parent="30" name="stgUsage">
+      <data-type>VARCHAR(30)(0,-1)|12</data-type>
+    </column>
+    <column id="283" parent="30" name="status">
+      <data-type>VARCHAR(20)(0,-1)|12</data-type>
+    </column>
+    <column id="284" parent="30" name="created">
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="285" parent="30" name="dbstatus">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(1)(0,-1)|12</data-type>
+    </column>
+    <column id="286" parent="30" name="modified">
+      <mandatory>1</mandatory>
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="287" parent="30" name="host_id">
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <key id="288" parent="30">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <foreign-key id="289" parent="30" name="#FAKE_ux_bivirtualmachine_1">
+      <name-surrogate>1</name-surrogate>
+      <columns>host_id</columns>
+      <deferrable>1</deferrable>
+      <initially-deferred>1</initially-deferred>
+      <ref-key>~.ux_bihost.#1</ref-key>
+      <cascade-update-rule>no_action</cascade-update-rule>
+      <cascade-delete-rule>no_action</cascade-delete-rule>
+    </foreign-key>
+    <column id="290" parent="31" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="291" parent="31" name="bivirtualmachine_id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="292" parent="31" name="biportgroup_id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <index id="293" parent="31" name="ux_bivirtualmachine_network_bivirtualmachine_id_4bc1a02c_uniq">
+      <columns>bivirtualmachine_id
+biportgroup_id</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <key id="294" parent="31">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <foreign-key id="295" parent="31" name="#FAKE_ux_bivirtualmachine_network_2">
+      <name-surrogate>1</name-surrogate>
+      <columns>bivirtualmachine_id</columns>
+      <deferrable>1</deferrable>
+      <initially-deferred>1</initially-deferred>
+      <ref-key>~.ux_bivirtualmachine.#1</ref-key>
+      <cascade-update-rule>no_action</cascade-update-rule>
+      <cascade-delete-rule>no_action</cascade-delete-rule>
+    </foreign-key>
+    <foreign-key id="296" parent="31" name="#FAKE_ux_bivirtualmachine_network_1">
+      <name-surrogate>1</name-surrogate>
+      <columns>biportgroup_id</columns>
+      <deferrable>1</deferrable>
+      <initially-deferred>1</initially-deferred>
+      <ref-key>~.ux_biportgroup.#1</ref-key>
+      <cascade-update-rule>no_action</cascade-update-rule>
+      <cascade-delete-rule>no_action</cascade-delete-rule>
+    </foreign-key>
+    <column id="297" parent="32" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="298" parent="32" name="device">
+      <data-type>VARCHAR(100)(0,-1)|12</data-type>
+    </column>
+    <column id="299" parent="32" name="ipAddress">
+      <data-type>VARCHAR(20)(0,-1)|12</data-type>
+    </column>
+    <column id="300" parent="32" name="created">
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="301" parent="32" name="dbstatus">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(1)(0,-1)|12</data-type>
+    </column>
+    <column id="302" parent="32" name="modified">
+      <mandatory>1</mandatory>
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="303" parent="32" name="key">
+      <data-type>VARCHAR(100)(0,-1)|12</data-type>
+    </column>
+    <column id="304" parent="32" name="mac">
+      <data-type>VARCHAR(30)(0,-1)|12</data-type>
+    </column>
+    <column id="305" parent="32" name="portgroup">
+      <data-type>VARCHAR(100)(0,-1)|12</data-type>
+    </column>
+    <key id="306" parent="32">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="307" parent="33" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="308" parent="33" name="bivnic_id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="309" parent="33" name="bihost_id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <index id="310" parent="33" name="ux_bivnic_host_bivnic_id_ec3bcc62_uniq">
+      <columns>bivnic_id
+bihost_id</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <key id="311" parent="33">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <foreign-key id="312" parent="33" name="#FAKE_ux_bivnic_host_2">
+      <name-surrogate>1</name-surrogate>
+      <columns>bivnic_id</columns>
+      <deferrable>1</deferrable>
+      <initially-deferred>1</initially-deferred>
+      <ref-key>~.ux_bivnic.#1</ref-key>
+      <cascade-update-rule>no_action</cascade-update-rule>
+      <cascade-delete-rule>no_action</cascade-delete-rule>
+    </foreign-key>
+    <foreign-key id="313" parent="33" name="#FAKE_ux_bivnic_host_1">
+      <name-surrogate>1</name-surrogate>
+      <columns>bihost_id</columns>
+      <deferrable>1</deferrable>
+      <initially-deferred>1</initially-deferred>
+      <ref-key>~.ux_bihost.#1</ref-key>
+      <cascade-update-rule>no_action</cascade-update-rule>
+      <cascade-delete-rule>no_action</cascade-delete-rule>
+    </foreign-key>
+    <column id="314" parent="34" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="315" parent="34" name="name">
+      <data-type>VARCHAR(100)(0,-1)|12</data-type>
+    </column>
+    <column id="316" parent="34" name="created">
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="317" parent="34" name="dbstatus">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(1)(0,-1)|12</data-type>
+    </column>
+    <column id="318" parent="34" name="modified">
+      <mandatory>1</mandatory>
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="319" parent="34" name="capacity">
+      <mandatory>1</mandatory>
+      <data-type>BIGINT(0,-1)|4</data-type>
+    </column>
+    <column id="320" parent="34" name="type">
+      <data-type>VARCHAR(100)(0,-1)|12</data-type>
+    </column>
+    <key id="321" parent="34">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="322" parent="35" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="323" parent="35" name="bivolume_id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="324" parent="35" name="bihost_id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <index id="325" parent="35" name="ux_bivolume_host_bivolume_id_480feeff_uniq">
+      <columns>bivolume_id
+bihost_id</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <key id="326" parent="35">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <foreign-key id="327" parent="35" name="#FAKE_ux_bivolume_host_2">
+      <name-surrogate>1</name-surrogate>
+      <columns>bivolume_id</columns>
+      <deferrable>1</deferrable>
+      <initially-deferred>1</initially-deferred>
+      <ref-key>~.ux_bivolume.#1</ref-key>
+      <cascade-update-rule>no_action</cascade-update-rule>
+      <cascade-delete-rule>no_action</cascade-delete-rule>
+    </foreign-key>
+    <foreign-key id="328" parent="35" name="#FAKE_ux_bivolume_host_1">
+      <name-surrogate>1</name-surrogate>
+      <columns>bihost_id</columns>
+      <deferrable>1</deferrable>
+      <initially-deferred>1</initially-deferred>
+      <ref-key>~.ux_bihost.#1</ref-key>
+      <cascade-update-rule>no_action</cascade-update-rule>
+      <cascade-delete-rule>no_action</cascade-delete-rule>
+    </foreign-key>
+    <column id="329" parent="36" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="330" parent="36" name="name">
+      <data-type>VARCHAR(100)(0,-1)|12</data-type>
+    </column>
+    <column id="331" parent="36" name="created">
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="332" parent="36" name="dbstatus">
+      <mandatory>1</mandatory>
+      <data-type>VARCHAR(1)(0,-1)|12</data-type>
+    </column>
+    <column id="333" parent="36" name="modified">
+      <mandatory>1</mandatory>
+      <data-type>DATETIME(0,-1)|12</data-type>
+    </column>
+    <column id="334" parent="36" name="key">
+      <data-type>VARCHAR(100)(0,-1)|12</data-type>
+    </column>
+    <column id="335" parent="36" name="numPorts">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="336" parent="36" name="numPortsAvailable">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <key id="337" parent="36">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="338" parent="37" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="339" parent="37" name="bivswitch_id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="340" parent="37" name="bihost_id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <index id="341" parent="37" name="ux_bivswitch_host_bivswitch_id_c71cca38_uniq">
+      <columns>bivswitch_id
+bihost_id</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <key id="342" parent="37">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <foreign-key id="343" parent="37" name="#FAKE_ux_bivswitch_host_2">
+      <name-surrogate>1</name-surrogate>
+      <columns>bivswitch_id</columns>
+      <deferrable>1</deferrable>
+      <initially-deferred>1</initially-deferred>
+      <ref-key>~.ux_bivswitch.#1</ref-key>
+      <cascade-update-rule>no_action</cascade-update-rule>
+      <cascade-delete-rule>no_action</cascade-delete-rule>
+    </foreign-key>
+    <foreign-key id="344" parent="37" name="#FAKE_ux_bivswitch_host_1">
+      <name-surrogate>1</name-surrogate>
+      <columns>bihost_id</columns>
+      <deferrable>1</deferrable>
+      <initially-deferred>1</initially-deferred>
+      <ref-key>~.ux_bihost.#1</ref-key>
+      <cascade-update-rule>no_action</cascade-update-rule>
+      <cascade-delete-rule>no_action</cascade-delete-rule>
+    </foreign-key>
+    <column id="345" parent="38" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="346" parent="38" name="vc_host">
+      <data-type>VARCHAR(50)(0,-1)|12</data-type>
+    </column>
+    <column id="347" parent="38" name="vc_user">
+      <data-type>VARCHAR(30)(0,-1)|12</data-type>
+    </column>
+    <column id="348" parent="38" name="vc_pass">
+      <data-type>VARCHAR(30)(0,-1)|12</data-type>
+    </column>
+    <column id="349" parent="38" name="vc_port">
+      <data-type>VARCHAR(10)(0,-1)|12</data-type>
+    </column>
+    <key id="350" parent="38">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="351" parent="39" name="id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <column id="352" parent="39" name="contact">
+      <data-type>VARCHAR(50)(0,-1)|12</data-type>
+    </column>
+    <column id="353" parent="39" name="user_id">
+      <mandatory>1</mandatory>
+      <data-type>INTEGER(0,-1)|4</data-type>
+    </column>
+    <key id="354" parent="39">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <foreign-key id="355" parent="39" name="#FAKE_ux_useraddinfo_1">
+      <name-surrogate>1</name-surrogate>
+      <columns>user_id</columns>
+      <deferrable>1</deferrable>
+      <initially-deferred>1</initially-deferred>
+      <ref-key>~.auth_user.#1</ref-key>
+      <cascade-update-rule>no_action</cascade-update-rule>
+      <cascade-delete-rule>no_action</cascade-delete-rule>
+    </foreign-key>
+  </database-model>
+</dataSource>

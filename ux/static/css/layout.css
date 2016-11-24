@@ -96,7 +96,7 @@ html, body{background-color:#f5f5f5;}
 .chart_list > .sel_left > li > .chart_area.type02{background:url(../img/content/chart_bg02.png) no-repeat 50% 50%;}
 .chart_list > .sel_left > li > .chart_area.type03{background:url(../img/content/chart_bg03.png) no-repeat 50% 50%;}
 .chart_list > .sel_left > li > .chart_area.type04{background:url(../img/content/chart_bg04.png) no-repeat 50% 50%;}
-.chart_list > .sel_left > li > .chart_area > .chart{width:221px; height:211px; margin:0 auto;}
+.chart_list > .sel_left > li > .chart_area > .chart{width:240px; height:211px; margin:0 auto;}
 .chart_list > .sel_left > li > .chart_area > .clear{position:absolute; bottom:40px; width:100%;}
 .chart_list > .sel_left > li > .chart_area > .clear > .left{float:left; width:50%; text-align:center; border-right:1px solid #eaeaea;}
 .chart_list > .sel_left > li > .chart_area > .clear > .right{float:right; width:50%; text-align:center;}

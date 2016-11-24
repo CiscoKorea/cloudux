@@ -1,6 +1,172 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<script type="text/javascript" src="http://d3js.org/d3.v3.js" ></script>
+    <script type="text/javascript">
+     function Arc(placeholderName, configuration) {
+         this.placeholderName = placeholderName;
+
+         var self = this; // for internal d3 functions
+
+         this.configure = function(configuration)
+         {
+             this.config = configuration;
+
+             this.config.cx = 120;
+             this.config.cy = 120;
+             this.config.raduis = 100;
+
+             this.config.min = undefined != configuration.min ? configuration.min : 0;
+             this.config.max = undefined != configuration.max ? configuration.max : 100;
+             this.config.range = this.config.max - this.config.min;
+
+         };
+
+         this.valueToDegrees = function (value) {
+             // thanks @closealert
+             //return value / this.config.range * 270 - 45;
+//             return value / this.config.range * 270 - (this.config.min / this.config.range * 270 + 45);
+              return value / this.config.range * 180;
+         };
+
+         this.valueToRadians = function (value) {
+             return this.valueToDegrees(value) * Math.PI / 180;
+         };
+
+         this.valueToPoint = function (value, factor) {
+             return {
+                 x: this.config.cx - this.config.raduis *  Math.cos(this.valueToRadians(value)),
+                 y: this.config.cy - this.config.raduis *  Math.sin(this.valueToRadians(value))
+             };
+         };
+
+         this.configure(configuration);
+     }
+
+     function drowArc(holder, color, val) {
+         var config =
+         {
+             size: 230,
+             label: "label",
+//             min: undefined != min ? min : 0,
+//             max: undefined != max ? max : 100,
+             min : 0,
+             max : 100,
+             minorTicks: 5
+         };
+         var arc01 = new Arc("test", config);
+         var tp = arc01.valueToPoint(val,0);
+         /*
+         var path = d3.select(holder)
+                 .append("path")
+                 .attr("d", "M20,120  A100 100 0 0 1 "+ tp.x + " " + tp.y)     // M10,120  A100 100 0 0 1 60 60
+                 .attr("fill", "none")
+                 .style("stroke", color)
+                 .style("stroke-width", "10")
+         ;
+         */
+         tp = arc01.valueToPoint(0,0);
+         tp2 = arc01.valueToPoint(val,0);
+         var path = d3.select(holder)
+                 .append("path")
+                 .attr("d", "M20,120  A100 100 0 0 1 "+ tp.x + " " + tp.y)     // M10,120  A100 100 0 0 1 60 60
+                 .attr("fill", "none")
+                 .style("stroke", color)
+                 .style("stroke-width", "10")
+                         .transition().duration(1500)
+                         .attr("d", "M20,120  A100 100 0 0 1 "+ tp2.x + " " + tp2.y)
+         ;
+
+
+     }
+     function init() {
+         var chart1 = {{ chart1|safe }};
+         drowArc("#totalvm", "#dcd8d8", 100);
+         drowArc("#totalvm", "#33d033", chart1[0] );
+         drowArc("#totalcpu", "#dcd8d8", 100);
+         drowArc("#totalcpu", "#33d033", chart1[1]);
+         drowArc("#totalmem", "#dcd8d8", 100);
+         drowArc("#totalmem", "#33d033", chart1[2]);
+         drowArc("#totalstg", "#dcd8d8", 100);
+         drowArc("#totalstg", "#33d033", chart1[3]);
+     }
+    </script>
+
+<style>
+
+.chart rect {
+  fill: steelblue;
+}
+
+.chart text {
+  fill: white;
+  font: 10px sans-serif;
+  text-anchor: middle;
+}
+
+</style>
+    <script type="text/javascript">
+$(document).ready(function() {
+    var width = 360 -30,
+            height = 370-20;
+
+    var y = d3.scale.linear().range([height, 0]);
+
+    var chart = d3.select(".sel_right .chart")
+            .attr("width", width)
+            .attr("height", height);
+
+    //data2 = [10, 20, 30, 40];
+    data2 = {{ chart2|safe }};
+
+    y.domain([0, d3.max(data2, function (d) {
+        return d.pgcount;
+    })]);
+
+    var barWidth = width / data2.length;
+
+    var bar = chart.selectAll("g")
+            .data(data2)
+            .enter().append("g")
+            .attr("transform", function (d, i) {
+                return "translate(" + i * barWidth + ",0)";
+            });
+
+    bar.append("rect")
+            .attr("y", function (d) {
+                return y(d.pgcount)+20;
+            })
+            .attr("height", function (d) {
+                return height - y(d.pgcount) -20;
+            })
+            .attr("width", barWidth - 1);
+
+    bar.append("text")
+      .attr("x", barWidth / 2)
+      .attr("y", function(d) { return y(d.pgcount); })
+      .attr("dy", ".75em")
+            .style("fill", "black")
+      .text(function(d) { return d.pgcount; });
+
+    bar.append("text")
+            .attr("x", barWidth / 2 -50)
+            .attr("y", function (d) {
+                return y(d.pgcount) - 3;
+            })
+            .attr("dy", ".75em")
+            .text(function (d) {
+                return d.name;
+            }).attr("transform", function (d, i) {
+        return "rotate(-90 " + barWidth / 2 + " " + (3+ y(d.pgcount))+ ")"
+    } )
+    ;
+});
+
+function type(d) {
+  d.value = +d.value; // coerce to number
+  return d;
+}
+</script>
                 <!-- chart_list -->
                 <div class="chart_list">
 
@@ -15,6 +181,7 @@
                             <div class="chart_area type01">
                                 <div class="chart">
                                     <!-- 그래프영역 -->
+                                    <svg width="230" height="120" id="totalvm" />
                                 </div>
                                 <div class="clear">
                                     <div class="left">
@@ -38,6 +205,7 @@
                             <div class="chart_area type02">
                                 <div class="chart">
                                     <!-- 그래프영역 -->
+                                    <svg width="230" height="120" id="totalcpu" />
                                 </div>
                                 <div class="clear">
                                     <div class="left">
@@ -61,6 +229,7 @@
                             <div class="chart_area type03">
                                 <div class="chart">
                                     <!-- 그래프영역 -->
+                                    <svg width="230" height="120" id="totalmem" />
                                 </div>
                                 <div class="clear">
                                     <div class="left">
@@ -85,6 +254,7 @@
                             <div class="chart_area type04">
                                 <div class="chart">
                                     <!-- 그래프영역 -->
+                                    <svg width="230" height="120" id="totalstg" />
                                 </div>
                                 <div class="clear">
                                     <div class="left">
@@ -117,9 +287,9 @@
 
                         <div class="chart_area">
                             <p>Switch</p>
-                            <div class="chart">
+                            <svg class="chart">
                                 <!-- 그래프영역 -->
-                            </div>
+                            </svg>
                             <p class="tr">Port group</p>
                         </div>
                     </div>
@@ -313,4 +483,9 @@
                     </div>
                 </div>
                 <!-- //inner -->
+<script type="text/javascript">
+$(document).ready(function(){
+   init();
+});
+</script>
 {% endblock content %}

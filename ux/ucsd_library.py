@@ -521,3 +521,58 @@ def sr_vms(srnumber):
     j = json.loads(r.text)
 
     return j['serviceResult']['vms']
+
+
+def ucsd_cloud():
+    apioperation = "userAPIGetTabularReport"
+    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
+        "{param0:\"" + '0' + '"' \
+        + ',param1:\"' + 'All%20Clouds' + '"' \
+        + ',param2:\"' + 'CLOUDS-T0' + '"' \
+        + '}'
+
+    r = requests.get(u, headers=headers, verify=False)
+    j = json.loads(r.text)
+    print(j)
+
+
+
+def ucsd_vdcs():
+    # /api/rest?formatType=json&opName=userAPIGetTabularReport&opData={param0:"0",param1:"All%20Clouds",param2:"VDCS-T0"}
+    apioperation = "userAPIGetTabularReport"
+    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
+        "{param0:\"" + '0' + '"' \
+        + ',param1:\"' + 'All%20Clouds' + '"' \
+        + ',param2:\"' + 'VDCS-T0' + '"' \
+        + '}'
+
+    r = requests.get(u, headers=headers, verify=False)
+    j = json.loads(r.text)
+    print(j)
+
+
+def ucsd_memory():
+    apioperation = "userAPIGetInstantDataReport"
+    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
+        "{param0:\"" + '0' + '"' \
+        + ',param1:\"' + 'All%20Clouds' + '"' \
+        + ',param2:\"' + 'MEMORY-S0' + '"' \
+        + '}'
+
+    r = requests.get(u, headers=headers, verify=False)
+    j = json.loads(r.text)
+    print(j)
+
+
+def ucsd_network():
+    # opName=userAPIGetTabularReport&opData={param0:"1",param1:"dCloud-Cluster",param2:"VSWITCHES-T2"}
+    apioperation = "userAPIGetTabularReport"
+    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
+        "{param0:\"" + '1' + '"' \
+        + ',param1:\"' + 'dCloud-Cluster' + '"' \
+        + ',param2:\"' + 'VSWITCHES-T2' + '"' \
+        + '}'
+
+    r = requests.get(u, headers=headers, verify=False)
+    j = json.loads(r.text)
+    print(j)
