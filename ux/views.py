@@ -48,14 +48,22 @@ def dashboard(request):
     dash1 = DashboardAlloc.objects.all()
     chart1 = [int(dash1[0].total_vm), int(dash1[0].total_cpu), int(dash1[0].total_mem), int(dash1[0].total_stg)]
     chart1d = [100-int(dash1[0].total_vm), 100-int(dash1[0].total_cpu), 100-int(dash1[0].total_mem), 100-int(dash1[0].total_stg)]
-    chart2 = [{'name': 'vswitch0', 'pgcount': 5}
-        , {'name': 'vswitch1', 'pgcount': 3}
-        , {'name': 'vswitch2', 'pgcount': 7}
-        , {'name': 'vswitch3', 'pgcount': 9}
-        , {'name': 'vswitch4', 'pgcount': 2}
-     ]
+    chart3 = DashboardVswitch.objects.all()
+    chart4 = []
+    total_portgroup = 0
+    switch_count = 0
+    for dbswitch in chart3:
+        t = dict()
+        t['name'] = dbswitch.switch
+        t['pgcount'] = int(dbswitch.portgroup)
+        total_portgroup += int(dbswitch.portgroup)
+        switch_count += 1
+        chart4.append(t)
+
     return render(request, 'dashboard.html', {'inventorylist': inventory_list, 'faultlist': fault_list,
-                                              'chart1': chart1, 'chart1d': chart1d, 'chart2': chart2})
+                                              'chart1': chart1, 'chart1d': chart1d,
+                                              'chart4': json.dumps(chart4),
+                                              'avgport': round(total_portgroup/switch_count, 1)})
 
 
 @login_required
@@ -726,6 +734,13 @@ def reload_data(request):
             prov_stg = float(stg["value"])
     dash1.total_stg = int(round(prov_stg / total_stg * 100))
     dash1.save()
+
+    net_list = ucsd_network()
+    for net in net_list:
+        vswtc = DashboardVswitch()
+        vswtc.portgroup = int(net["Num_Port_Groups"])
+        vswtc.switch = net["Switch_Name"]
+        vswtc.save()
 
     return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
 

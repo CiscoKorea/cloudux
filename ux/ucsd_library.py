@@ -606,4 +606,4 @@ def ucsd_network():
 
     r = requests.get(u, headers=headers, verify=False)
     j = json.loads(r.text)
-    print(j)
+    return j['serviceResult']['rows']

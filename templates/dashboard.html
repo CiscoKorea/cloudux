@@ -117,7 +117,7 @@ $(document).ready(function() {
             .attr("height", height);
 
     //data2 = [10, 20, 30, 40];
-    data2 = {{ chart2|safe }};
+    data2 = {{ chart4|safe }};
 
     y.domain([0, d3.max(data2, function (d) {
         return d.pgcount;
@@ -281,16 +281,16 @@ function type(d) {
 
                         <div class="info">
                             <h4><span>가상스위치</span></h4>
-                            <p><strong>10</strong> <span>개</span></p>
+                            <p><strong>{{ avgport }}</strong> <span>개</span></p>
                             <p>스위치당포트그룹개수</p>
                         </div>
 
                         <div class="chart_area">
-                            <p>Switch</p>
+                            <p>Port group</p>
                             <svg class="chart">
                                 <!-- 그래프영역 -->
                             </svg>
-                            <p class="tr">Port group</p>
+                            <p class="tr">Switch</p>
                         </div>
                     </div>
                     <!-- //sel_right -->
