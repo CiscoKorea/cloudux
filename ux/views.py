@@ -670,10 +670,10 @@ def get_ucsd_vm_list():
 
 def reload_data(request):
     delete_all()
-    # get_vcenter_info()  # get all data!!
-    # get_ucsm_info()  # get ucsd inventory
-    # get_catalog()
-    # get_ucsd_vm_list()  # get ucsd vm id
+    get_vcenter_info()  # get all data!!
+    get_ucsm_info()  # get ucsd inventory
+    get_catalog()
+    get_ucsd_vm_list()  # get ucsd vm id
 
     cloud_list = ucsd_cloud()  # cloud list from ucsd
     for cloud in cloud_list:
