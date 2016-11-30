@@ -51,7 +51,7 @@
                                     </table>
                                 </div>
                                 <div class="btn">
-                                    <a href="#" class="btn_common01">선택하기({{ catalog.catalog_id }})</a>
+                                    <a href="javaScript:setid({{ catalog.catalog_id }});layer_popup('.lay_pop');" class="btn_common01">선택하기</a>
                                 </div>
                             </div>
                         </li>
@@ -228,6 +228,105 @@
                 <!-- //inner -->
 
 
+<!-- lay_pop -->
+    <div class="lay_pop catalogue_option">
+    <form name="option_pop" >
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+        <input type="hidden" name="catalog_id" value=""/>
+        <div class="lay_header">
+            <h1>카탈로그 옵션 선택</h1>
+            <a href="#nond" class="btn_close"><img src="../resources/img/content/lay_closed.png" alt="닫기"></a>
+        </div>
+
+        <div class="lay_content">
+            <table class="tbl_type01">
+                <colgroup>
+                    <col width="110px">
+                    <col width="*">
+                </colgroup>
+                <tbody>
+                    <tr>
+                        <th>Name <span class="point">*</span></th>
+                        <td><input type="text" name="vmname"></td>
+                    </tr>
+                    <tr>
+                        <th>Group <span class="point">*</span></th>
+                        <td>
+                            <select name="group">
+                                {% for group in group_list %}
+                            <option value="{{ group.group_name }}">{{ group.group_name }}</option>
+                                {% endfor %}
+
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>VDC <span class="point">*</span></th>
+                        <td>
+                            <select name="vdc">
+                                {% for vdc in vdc_list %}
+                            <option value="{{ vdc.vdc }}">{{ vdc.vdc }}</option>
+                                {% endfor %}
+
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Count <span class="point">*</span></th>
+                        <td><select name="vmcount"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
+                    </tr>
+                    <tr>
+                        <th>vcpus <span class="point">*</span></th>
+                        <td><input type="text" name="vcpus" value="0"></td>
+                    </tr>
+                    <tr>
+                        <th>vram <span class="point">*</span></th>
+                        <td><input type="text" name="vram" value="0"></td>
+                    </tr>
+                    <tr>
+                        <th>datastores <span class="point">*</span></th>
+                        <td><input type="text" name="datastores"></td>
+                    </tr>
+                    <tr>
+                        <th>vnics <span class="point">*</span></th>
+                        <td><input type="text" name="vnics"></td>
+                    </tr>
+                    <tr>
+                        <th>comment <span class="point">*</span></th>
+                        <td><input type="text" name="comment"></td>
+                    </tr>
+
+                    <!--
+                    <tr class="line">
+                        <th>Type1</th>
+                        <td><select><option></option></select></td>
+                    </tr>
+                    <tr>
+                        <th>Type2</th>
+                        <td><label><input type="checkbox"> 체크박스 항목</label></td>
+                    </tr>
+                    <tr>
+                        <th>Type3</th>
+                        <td><input type="text"></td>
+                    </tr>
+                    <tr>
+                        <th>Type4</th>
+                        <td><label><input type="radio"> 항목</label> <label><input type="radio"> 항목</label></td>
+                    </tr>
+                    -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="lay_footer">
+            <p><span class="point">*</span> 필수입력</p>
+            <a href="javascript:order_catalog();" class="btn_common01">실행하기</a>
+        </div>
+    </form>
+    </div>
+	<!-- //lay_pop -->
+
+
 <form name="search_form" method="get" action="">
 <input type="hidden" name="page" value="1" />
 </form>
@@ -235,6 +334,26 @@
 function go_page(page) {
     $("input[name='page']").val(page);
     $("form[name='search_form']").submit();
+}
+
+function setid(catalog_id) {
+    $("input[name='catalog_id']").val(catalog_id);
+}
+
+function order_catalog() {
+    var params = $("form[name='option_pop']").serialize()
+    $.ajax({
+       url : "/catalog_order",
+        datatype: "json",
+        data: params
+    }).done(function(msg){
+        if(msg.result) {
+            alert(msg.result);
+            layer_popup_close(".lay_pop")
+        }
+    }).fail(function(err){
+        alert(err);
+    });
 }
 </script>
             {% endblock %}

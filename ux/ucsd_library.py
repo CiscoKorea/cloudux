@@ -498,10 +498,10 @@ def vmware_provision(catalog, vdc, comment="", vmname="", vcpus="0", vram="0", d
     # print u
 
     r = requests.get(u, headers=headers, verify=False)
-    # print r.text
+    print r.text
 
     j = json.loads(r.text)
-
+    print j
     # vms = sr_vms()
 
     return j
@@ -606,4 +606,51 @@ def ucsd_network():
 
     r = requests.get(u, headers=headers, verify=False)
     j = json.loads(r.text)
+    return j['serviceResult']['rows']
+
+
+def group_list():
+    """
+    Get a list of Group
+    :return:
+    """
+    apioperation = "userAPIGetGroups"
+    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
+        "{param0:\"" + "" + '"' + '}'
+
+    r = requests.get(u, headers=headers, verify=False)
+    # print r.text
+    j = json.loads(r.text)
+    return j['serviceResult']
+
+
+def group_detail_by_id(group_id):
+    """
+    Get a list of Group
+    :return:
+    """
+    apioperation = "userAPIGetGroupById"
+    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
+        "{param0:\"" + str(group_id) + '"' + '}'
+
+    r = requests.get(u, headers=headers, verify=False)
+    # print r.text
+    j = json.loads(r.text)
+    # print j
+    return j['serviceResult'][0]
+
+
+def vdc_list():
+    """
+    Get a list of Group
+    :return:
+    """
+    apioperation = "userAPIGetAllVDCs"
+    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
+        "{param0:\"" + "" + '"' + '}'
+
+    r = requests.get(u, headers=headers, verify=False)
+    # print r.text
+    j = json.loads(r.text)
+    # print j
     return j['serviceResult']['rows']

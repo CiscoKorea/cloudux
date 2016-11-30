@@ -14,4 +14,5 @@ urlpatterns = [
     url(r'^users/idcheck$', views.users_idcheck, name='idcheck'),
     url(r'^reloaddata$', views.reload_data, name="reloaddata"),
     url(r'^vm_action$', views.ucsd_vm_action, name="vmaction"),
+    url(r'^catalog_order$', views.catalog_vm_provision, name="catalogorder"),
 ]

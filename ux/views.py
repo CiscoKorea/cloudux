@@ -18,14 +18,14 @@ from cloudmgmt.settings import *
 
 from models import GlobalConfig, ConfigUtil, BiHost, BiVnic, BiVolume, BiVswitch, BiVirtualMachine, BiPnic, \
     BiPortgroup, BiCluster, BiDatacenter, UserAddInfo, BiInventory, BiFaults, BiCatalog, \
-    UdCloud, DashboardAlloc, DashboardVswitch
+    UdCloud, DashboardAlloc, DashboardVswitch, UdGroup, UdVDC
 from django.core.exceptions import ObjectDoesNotExist
 # import tools.cli as cli
 
 import ssl
 from ucsm_inventory import get_ucsm_info
 from ucsd_library import catalog_list, catalog_list_all, vm_list, vm_action, ucsd_vdcs, ucsd_memory, ucsd_network, \
-    ucsd_cloud, ucsd_cpu, ucsd_disk
+    ucsd_cloud, ucsd_cpu, ucsd_disk, catalog_order, group_list, group_detail_by_id, vdc_list
 
 # Create your views here.
 class search_form():
@@ -251,7 +251,11 @@ def catalogs(request):
     except EmptyPage:
         plist = paginator.page(paginator.num_pages)
 
-    return render(request, "catalogList.html", {'list': plist, 'ucsd_server': ConfigUtil.get_val("UCSD.HOST")})
+    glist = UdGroup.objects.all()
+    vdclist = UdVDC.objects.all()
+
+    return render(request, "catalogList.html", {'list': plist, 'ucsd_server': ConfigUtil.get_val("UCSD.HOST")
+                  , 'group_list': glist, 'vdc_list': vdclist})
 
 
 @login_required
@@ -626,6 +630,7 @@ def delete_all():
     BiVswitch.objects.all().delete()
     BiVnic.objects.all().delete()
     BiHost.objects.all().delete()
+    BiDatacenter.objects.all().delete()
 
     BiInventory.objects.all().delete()
     BiFaults.objects.all().delete()     # refresh !!
@@ -635,6 +640,8 @@ def delete_all():
     UdCloud.objects.all().delete()
     DashboardAlloc.objects.all().delete()
     DashboardVswitch.objects.all().delete()
+    UdGroup.objects.all().delete()
+    UdVDC.objects.all().delete()
 
 
 def get_catalog():
@@ -668,12 +675,61 @@ def get_ucsd_vm_list():
             print("get_ucsd_vm exception : ", vm["VM_Name"])
 
 
+def get_ucsd_group_list():
+    glist = group_list()
+    for group in glist:
+        # try:
+            detail = group_detail_by_id(group["groupId"])
+            entity = UdGroup()
+            entity.group_id = group["groupId"]
+            entity.group_name = detail["groupName"]
+            entity.description = detail["description"]
+            entity.parent_group_id = detail["parentGroupId"]
+            entity.parent_group_name = detail["parentGroupName"]
+            entity.last_name = detail["lastName"]
+            entity.first_name = detail["firstName"]
+            entity.phone_number = detail["phoneNumber"]
+            entity.address = detail["address"]
+            entity.group_type = detail["groupType"]
+            entity.enable_budget = detail["enableBudget"]
+            entity.save()
+        # except:
+        #     print("get_ucsd_group_list exception :")
+
+
+def get_ucsd_vdc_list():
+    vlist = vdc_list()
+    for vdc in vlist:
+        entity = UdVDC()
+        entity.status = vdc["Status"]
+        entity.tag = vdc["Tag"]
+        entity.vdc_id = vdc["vDC_ID"]
+        entity.custom_categories = vdc["Custom_Categories"]
+        entity.total_vms = vdc["Total_VMs"]
+        entity.active_vms = vdc["Active_VMs"]
+        entity.dcloud = vdc["dCloud"]
+        entity.vdc = vdc["vDC"]
+        entity.approvers = vdc["Approvers"]
+        entity.lock_state = vdc["Lock_State"]
+        entity.type = vdc["Type"]
+        entity.cloud = vdc["Cloud"]
+        entity.vdc_description = vdc["vDC_Description"]
+        entity.save()
+
+
+def reload_data_test(request):
+    get_ucsd_vdc_list()
+    return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
+
+
 def reload_data(request):
     delete_all()
     get_vcenter_info()  # get all data!!
     get_ucsm_info()  # get ucsd inventory
     get_catalog()
     get_ucsd_vm_list()  # get ucsd vm id
+    get_ucsd_group_list()   # get ucsd group
+    get_ucsd_vdc_list()
 
     cloud_list = ucsd_cloud()  # cloud list from ucsd
     for cloud in cloud_list:
@@ -752,4 +808,31 @@ def ucsd_vm_action(request):
     vmid = request.GET.get("vmid").split(",")
     for vm in vmid:
         vm_action(vmid=vm, action=action)
+    return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
+
+
+def catalog_vm_provision(request):
+    p_catalog_id = request.GET.get("catalog_id")
+    p_vmname = request.GET.get("vmname")
+    p_vmcount = request.GET.get("vmcount")
+    p_vcpus = request.GET.get("vcpus")
+    p_vram = request.GET.get("vram")
+    p_datastores = request.GET.get("datastores")
+    p_vnics = request.GET.get("vnics")
+    p_comment = request.GET.get("comment")
+    p_group = request.GET.get("group")
+    p_vdc = request.GET.get("vdc")
+
+    cnt = 1
+    while cnt <= int(p_vmcount):
+        db_catalog = BiCatalog.objects.filter(catalog_id=p_catalog_id).first()
+        # FIXME check catalog type
+        l = list()
+        l.append(p_vmname)
+        l.append("-")
+        l.append(str(cnt).zfill(3))
+        vmname = ''.join(l)
+        catalog_order(db_catalog.catalog_name, vdc=p_vdc, group=p_group, comment=p_comment, vmname=vmname,
+                       vcpus=p_vcpus, vram=p_vram, datastores=p_datastores, vnics=p_vnics)
+        cnt += 1
     return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')

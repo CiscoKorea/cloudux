@@ -64,6 +64,12 @@ function layer_popup(area){
 }
 
 // 레이어팝업 닫기
+function layer_popup_close(area){
+    $(area).removeClass("on");
+    $('.mask').remove();
+}
+
+// 레이어팝업 닫기
 function layer_close(btn){
 	$(document).on('click',btn,function(){
 		$(this).parents(".lay_pop").removeClass("on");

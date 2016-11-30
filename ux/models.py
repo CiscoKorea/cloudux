@@ -15,10 +15,12 @@ class ConfigUtil:
     def get_val(key_str):
         try:
             data = Config.objects.get(key=key_str, type=1, is_used='Y')
+            data2 = data.val
         except:
+            data2 = ''
             pass
 
-        return data.val
+        return data2
 
     def __init__(self):
         pass
@@ -219,3 +221,33 @@ class DashboardVswitch(Audited):
     switch = models.CharField(max_length=100, blank=True, null=True)
     portgroup = models.IntegerField(default=0)
 
+
+class UdGroup(Audited):
+    group_id = models.IntegerField(default=0)
+    group_name = models.CharField(max_length=100, blank=True, null=True)
+    description = models.CharField(max_length=255, blank=True, null=True)
+    parent_group_id = models.IntegerField(default=0)
+    parent_group_name = models.CharField(max_length=100, blank=True, null=True)
+    email_address = models.CharField(max_length=100, blank=True, null=True)
+    last_name = models.CharField(max_length=100, blank=True, null=True)
+    first_name = models.CharField(max_length=100, blank=True, null=True)
+    phone_number = models.CharField(max_length=100, blank=True, null=True)
+    address = models.CharField(max_length=100, blank=True, null=True)
+    group_type = models.IntegerField(default=0)
+    enable_budget = models.BooleanField(default=False)
+
+
+class UdVDC(Audited):
+    status = models.CharField(max_length=100, blank=True, null=True)
+    tag = models.CharField(max_length=100, blank=True, null=True)
+    vdc_id = models.IntegerField(default=0)
+    custom_categories = models.IntegerField(default=0)
+    total_vms = models.IntegerField(default=0)
+    active_vms = models.IntegerField(default=0)
+    dcloud = models.CharField(max_length=100, blank=True, null=True)
+    vdc = models.CharField(max_length=100, blank=True, null=True)
+    approvers = models.CharField(max_length=100, blank=True, null=True)
+    lock_state = models.CharField(max_length=100, blank=True, null=True)
+    type = models.CharField(max_length=100, blank=True, null=True)
+    cloud = models.CharField(max_length=100, blank=True, null=True)
+    vdc_description = models.CharField(max_length=255, blank=True, null=True)
