@@ -18,14 +18,15 @@ from cloudmgmt.settings import *
 
 from models import GlobalConfig, ConfigUtil, BiHost, BiVnic, BiVolume, BiVswitch, BiVirtualMachine, BiPnic, \
     BiPortgroup, BiCluster, BiDatacenter, UserAddInfo, BiInventory, BiFaults, BiCatalog, \
-    UdCloud, DashboardAlloc, DashboardVswitch, UdGroup, UdVDC
+    UdCloud, DashboardAlloc, DashboardVswitch, UdGroup, UdVDC, UdVmDisk
 from django.core.exceptions import ObjectDoesNotExist
 # import tools.cli as cli
 
 import ssl
 from ucsm_inventory import get_ucsm_info
 from ucsd_library import catalog_list, catalog_list_all, vm_list, vm_action, ucsd_vdcs, ucsd_memory, ucsd_network, \
-    ucsd_cloud, ucsd_cpu, ucsd_disk, catalog_order, group_list, group_detail_by_id, vdc_list
+    ucsd_cloud, ucsd_cpu, ucsd_disk, catalog_order, group_list, group_detail_by_id, vdc_list, vm_details, \
+    global_vms, group_vms, available_reports, ucsd_vm_disk
 
 # Create your views here.
 class search_form():
@@ -138,6 +139,8 @@ def hosts(request):
 
 @login_required
 def vms(request):
+    # print("vm69:", vm_details(vmid="69"))
+
     search = search_form()
     search.srch_key = request.GET.get("srch_key", "name")
     search.srch_txt = request.GET.get("srch_txt", "")
@@ -311,7 +314,18 @@ def volumes(request):
 
 
 def disks(request):
-    return render(request, 'vmDiskList.html', {})
+    dlist = UdVmDisk.objects.all()
+
+    paginator = Paginator(dlist, 10)
+    page = request.GET.get('page')
+    try:
+        plist = paginator.page(page)
+    except PageNotAnInteger:
+        plist = paginator.page(1)
+    except EmptyPage:
+        plist = paginator.page(paginator.num_pages)
+
+    return render(request, 'vmDiskList.html', {'list': plist})
 
 
 def monitoring(request):
@@ -642,6 +656,7 @@ def delete_all():
     DashboardVswitch.objects.all().delete()
     UdGroup.objects.all().delete()
     UdVDC.objects.all().delete()
+    UdVmDisk.objects.all().delete()
 
 
 def get_catalog():
@@ -717,8 +732,27 @@ def get_ucsd_vdc_list():
         entity.save()
 
 
-def reload_data_test(request):
-    get_ucsd_vdc_list()
+def get_ucsd_vmdisk_list():
+    vmlist = BiVirtualMachine.objects.filter(ucsd_vm_id__isnull=False)
+    for vm in vmlist:
+        # print(vm.ucsd_vm_id)
+        # print(ucsd_vm_disk(str(vm.ucsd_vm_id)))
+        vmdisklist = ucsd_vm_disk(str(vm.ucsd_vm_id))
+        for vmdisk in vmdisklist:
+            disk = UdVmDisk()
+            disk.vm_name = vmdisk["VM_Name"]
+            disk.datacenter_name = vmdisk["Datacenter_Name"]
+            disk.unit_number = vmdisk["Unit_Number"]
+            disk.disk_id = vmdisk["ID"]
+            disk.provision_size_gb = vmdisk["Provision_Size_GB"]
+            disk.vm_id = vmdisk["VM_ID"]
+            disk.datastore_name = vmdisk["Datastore_Name"]
+            disk.disk_name = vmdisk["Disk_Name"]
+            disk.save()
+
+
+def reload_data_t(request):
+
     return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
 
 
@@ -730,6 +764,7 @@ def reload_data(request):
     get_ucsd_vm_list()  # get ucsd vm id
     get_ucsd_group_list()   # get ucsd group
     get_ucsd_vdc_list()
+    get_ucsd_vmdisk_list()
 
     cloud_list = ucsd_cloud()  # cloud list from ucsd
     for cloud in cloud_list:

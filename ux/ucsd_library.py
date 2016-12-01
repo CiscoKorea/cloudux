@@ -654,3 +654,72 @@ def vdc_list():
     j = json.loads(r.text)
     # print j
     return j['serviceResult']['rows']
+
+
+def global_vms():
+    apioperation = "userAPIGetTabularReport"
+    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
+        "{param0:\"" + '0' + '"' \
+        + ',param1:\"' + 'All%20Clouds' + '"' \
+        + ',param2:\"' + 'VMS-T0' + '"' \
+        + '}'
+
+    r = requests.get(u, headers=headers, verify=False)
+    print r
+    j = json.loads(r.text)
+    print j
+
+    return j    # ['serviceResult']['rows']
+
+
+def group_vms(group_id):
+    apioperation = "userAPIGetTabularReport"
+    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
+        "{param0:\"" + 'group' + '"' \
+        + ',param1:\"' + group_id + '"' \
+        + ',param2:\"' + 'VMS-T14' + '"' \
+        + '}'
+
+    r = requests.get(u, headers=headers, verify=False)
+    # print r.text
+    j = json.loads(r.text)
+    # print j
+
+    return j['serviceResult']['rows']
+
+
+def available_reports(group_name):
+    apioperation = "userAPIGetAvailableReports"
+    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
+        "{param0:\"" + 'group' + '"' \
+        + ',param1:\"' + group_name + '"' \
+        + '}'
+
+    r = requests.get(u, headers=headers, verify=False)
+    # print r.text
+    j = json.loads(r.text)
+    # print j
+
+    return j['serviceResult']
+
+
+def tabular_report(context_name, context_value, report_id):
+    apioperation = "userAPIGetTabularReport"
+    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
+        "{param0:\"" + context_name + '"' \
+        + ',param1:\"' + context_value + '"' \
+        + ',param2:\"' + report_id + '"' \
+        + '}'
+
+    r = requests.get(u, headers=headers, verify=False)
+    # print r.text
+    j = json.loads(r.text)
+    # print j
+
+    return j['serviceResult']['rows']
+
+
+def ucsd_vm_disk(p_vm_id):
+    # /userAPIGetTabularReport&opData={param0:"3",param1:"70",param2:"DISKS-T0"}
+    assert isinstance(p_vm_id, str)
+    return tabular_report('3', p_vm_id, 'DISKS-T0')

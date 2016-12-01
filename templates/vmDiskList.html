@@ -38,15 +38,18 @@
                             </tr>
                         </thead>
                         <tbody>
+                            {% for disk in list %}
                             <tr>
-                                <td><span class="box gray">Offline </span></td>
+                                <td><span></span></td>
                                 <td>-</td>
+                                <td>{{ disk.vm_name }} {{ disk.disk_name }}</td>
                                 <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
+                                <td>{{ disk.provision_size_gb }}</td>
                                 <td>-</td>
                                 <td>-</td>
                             </tr>
+                            {% endfor %}
+                            <!--
                             <tr>
                                 <td><span class="box blue">Online </span></td>
                                 <td>-</td>
@@ -65,31 +68,41 @@
                                 <td>-</td>
                                 <td>-</td>
                             </tr>
+                            -->
                         </tbody>
                     </table>
                 
                     <div class="paginate">
-                        <p class="total">Total <strong>350</strong></p>
-                        
-                        <a href="#none" class="first">처음</a>
-                        <a href="#none" class="prev">이전</a>
+                        <p class="total">Total <strong>{{ list.paginator.count }}</strong></p>
+
+                        <a href="javascript:go_page(1);" class="first">처음</a>
+                        {% if list.has_previous %}
+                        <a href="javascript:go_page({{ list.previous_page_number }})" class="prev">이전</a>
+                        {% endif %}
                             <span>
-                                <a href="#none">1</a>
-                                <a href="#none">2</a>
-                                <a href="#none">3</a>
-                                <strong>4</strong>
-                                <a href="#none">5</a>
-                                <a href="#none">6</a>
-                                <a href="#none">7</a>
-                                <a href="#none">8</a>
-                                <a href="#none">9</a>
-                                <a href="#none">10</a>
+                                {% for p in list.paginator.page_range %}
+                                    {% if p == list.number %}
+                                        <strong>{{ p }}</strong>
+                                    {% else %}<a href="javascript:go_page({{ p }})">{{ p }}</a>
+                                    {% endif %}
+                                {% endfor %}
                             </span>
-                        <a href="#none" class="next">다음</a>
-                        <a href="#none" class="last">마지막</a>
+                        {% if list.has_next %}
+                        <a href="javascript:go_page({{ list.next_page_number }})" class="next">다음</a>
+                        {% endif %}
+                        <a href="javascript:go_page({{ list.paginator.num_pages }})" class="last">마지막</a>
                     </div>
                 
                 </div>
                 <!-- //inner -->
-                
+
+<form name="search_form" method="get" action="">
+<input type="hidden" name="page" value="1" />
+</form>
+<script type="text/javascript">
+function go_page(page) {
+    $("input[name='page']").val(page);
+    $("form[name='search_form']").submit();
+}
+</script>
             {% endblock %}

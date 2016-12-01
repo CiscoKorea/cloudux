@@ -251,3 +251,14 @@ class UdVDC(Audited):
     type = models.CharField(max_length=100, blank=True, null=True)
     cloud = models.CharField(max_length=100, blank=True, null=True)
     vdc_description = models.CharField(max_length=255, blank=True, null=True)
+
+
+class UdVmDisk(Audited):
+    vm_name = models.CharField(max_length=100, blank=True, null=True)
+    datacenter_name = models.CharField(max_length=100, blank=True, null=True)
+    unit_number = models.IntegerField(default=0)
+    disk_id = models.CharField(max_length=200, blank=True, null=True)
+    provision_size_gb = models.CharField(max_length=10, blank=True, null=True)
+    vm_id = models.CharField(max_length=100, blank=True, null=True)
+    datastore_name = models.CharField(max_length=100, blank=True, null=True)
+    disk_name = models.CharField(max_length=100, blank=True, null=True)
