@@ -12,6 +12,7 @@ urlpatterns = [
     url(r'^monitoring$', views.monitoring, name='monitoring'),
     url(r'^users$', views.users, name='users'),
     url(r'^users/idcheck$', views.users_idcheck, name='idcheck'),
+    url(r'^users/modify$', views.users_modify, name='usermodify'),
     url(r'^reloaddata$', views.reload_data, name="reloaddata"),
     url(r'^vm_action$', views.ucsd_vm_action, name="vmaction"),
     url(r'^catalog_order$', views.catalog_vm_provision, name="catalogorder"),

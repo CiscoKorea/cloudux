@@ -98,7 +98,7 @@
             <h1>사용자 등록</h1>
             <a href="#nond" class="btn_close"><img src="../resources/img/content/lay_closed.png" alt="닫기"></a>
         </div>
-        <form id="useraddform" method="post">
+        <form name="useraddform" id="useraddform" method="post">
             {% csrf_token %}
         <div class="lay_content">
             <table>
@@ -176,17 +176,18 @@ function addUser() {
         dataType: "json",
         data: $("#useraddform").serialize(),
         success: function(result) {
-            console.log(result);
+           location.reload(true);
+           //console.log(result);
         },
         error: function(xhr, resp, text) {
-            console.log(xhr, resp, text);
+           //console.log(xhr, resp, text);
         }
     });
 }
 
 
 function idcheck() {
-    var cid = $("input[name='username']").val().trim();
+    var cid = $("form[name='useraddform'] input[name='username']").val().trim();
     if(cid.length==0) return false;
     $.ajax({
        url: "/users/idcheck",

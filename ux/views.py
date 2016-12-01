@@ -390,6 +390,25 @@ def users_idcheck(request):
     return HttpResponse(json.dumps({'result': 'NO'}), 'application/json')
 
 
+def users_modify(request):
+    p_first_name = request.POST.get("first_name")
+    p_username = request.POST.get("username")
+    p_email = request.POST.get("email")
+    p_contact = request.POST.get("contact")
+    p_password = request.POST.get("password")
+
+    user = User.objects.get(username=p_username)
+    user.first_name = p_first_name
+    user.email = p_email
+    if len(p_password)>0 :
+        user.set_password(p_password)
+    user.useraddinfo.contact = p_contact
+    user.useraddinfo.save()
+    user.save()
+
+    return HttpResponse(json.dumps({'result': 'NO'}), 'application/json')
+
+
 def print_vm_info(virtual_machine):
     """
     Print information for a particular virtual machine or recurse into a

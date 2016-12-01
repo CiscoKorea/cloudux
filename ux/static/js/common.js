@@ -383,3 +383,25 @@ $.ajaxSetup({
         }
     }
 });
+
+
+function open_myinfo() {
+    layer_popup('.your_info');
+}
+
+function modify_myinfo() {
+    var params = $("form[name='form_user_info']").serialize()
+    $.ajax({
+       url : "/users/modify",
+        method : "post",
+        datatype: "json",
+        data: params
+    }).done(function(msg){
+        if(msg) {
+            location.reload(true);
+        }
+
+    }).fail(function(err){
+        alert(err);
+    });
+}
