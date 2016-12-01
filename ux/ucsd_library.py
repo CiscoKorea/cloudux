@@ -232,7 +232,8 @@ def vm_action(vmid, action, comments=""):
                        "saveState",
                        "shutdownGuest",
                        "standby",
-                       "suspend"
+                       "suspend",
+                       "destroyVM"  # for VMware vSphere VMs
                        ]
     if action == "help":
         return generic_actions

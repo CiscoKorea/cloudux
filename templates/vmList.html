@@ -118,7 +118,7 @@
                     	<a href="javascript:;" class="btn_common02" onclick="vm_action('shutdownGuest')">shutdownGuest</a>
                     	<a href="javascript:;" class="btn_common02" onclick="vm_action('reboot')">reboot</a>
                     	<a href="javascript:;" class="btn_common02" onclick="vm_action('powerOn')">powerOn</a>
-                    	<a href="#" class="btn_common02">Delete</a>
+                    	<a href="javascript:;" class="btn_common02" onclick="vm_action('destroyVM')">destroyVM</a>
                     	<a href="#" class="btn_common02">Modify</a>
                     </p>
                     
@@ -178,8 +178,8 @@ function vm_action(action) {
                 "vmid" : vmid.toString()
             }
         }).done(function(msg){
-            if(msg.length>0) {
-
+            if(msg) {
+                alert(msg);
             }
 
         }).fail(function(err){
