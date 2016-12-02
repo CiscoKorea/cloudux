@@ -26,7 +26,7 @@ import ssl
 from ucsm_inventory import get_ucsm_info
 from ucsd_library import catalog_list, catalog_list_all, vm_list, vm_action, ucsd_vdcs, ucsd_memory, ucsd_network, \
     ucsd_cloud, ucsd_cpu, ucsd_disk, catalog_order, group_list, group_detail_by_id, vdc_list, vm_details, \
-    global_vms, group_vms, available_reports, ucsd_vm_disk
+    global_vms, group_vms, available_reports, ucsd_vm_disk, vmware_provision
 
 # Create your views here.
 class search_form():
@@ -162,7 +162,8 @@ def vms(request):
     except EmptyPage:
         plist = paginator.page(paginator.num_pages)
 
-    return render(request, "vmList.html", {'list': plist, 'search': search})
+    clist = BiCatalog.objects.filter(catalog_type='Standard')
+    return render(request, "vmList.html", {'list': plist, 'search': search, 'clist': clist})
 
 # def vms_old(request):
 #
@@ -400,7 +401,7 @@ def users_modify(request):
     user = User.objects.get(username=p_username)
     user.first_name = p_first_name
     user.email = p_email
-    if len(p_password)>0 :
+    if len(p_password) > 0:
         user.set_password(p_password)
     user.useraddinfo.contact = p_contact
     user.useraddinfo.save()
@@ -851,6 +852,20 @@ def reload_data(request):
         vswtc.portgroup = int(net["Num_Port_Groups"])
         vswtc.switch = net["Switch_Name"]
         vswtc.save()
+
+    return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
+
+
+def ucsd_vm_create(request):
+    p_catalog = request.POST.get("catalog")     # catalog_
+    p_resource = request.POST.get("resource")   # CPU|MEM|DISK format
+    resource = p_resource.split("|")
+    p_cpu = resource[0]
+    p_mem = resource[1]
+    p_disk = ""  # FIXME resource[2]
+    p_vdc = request.POST.get("vdc", "Sales Bronze VDC") # FIXME
+
+    vmware_provision(p_catalog, p_vdc, comment="", vmname="", vcpus=p_cpu, vram=p_mem, datastores=p_disk, vnics="")
 
     return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
 

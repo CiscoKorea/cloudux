@@ -1,0 +1,154 @@
+    <!-- lay_pop -->
+    <form name="create_vm" id="create_vm">
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+    <div class="lay_pop create">
+        <div class="lay_header">
+            <h1>Create VM</h1>
+            <a href="#nond" class="btn_close"><img src="../resources/img/content/lay_closed.png" alt="닫기"></a>
+        </div>
+
+        <div class="create_list">
+            <h3><a href="#">OS List </a></h3>
+            <div class="sub">
+            	<ul>
+                    {% for catalog in clist %}
+                	<li><label><input type="radio" name="catalog" value="{{ catalog.catalog_name }}" onchange="changeOS('{{ catalog.catalog_name }}')"> {{ catalog.catalog_name }}</label></li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <h3><a href="#">VM Resource</a></h3>
+            <div class="sub">
+            	<ul>
+                	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="1|1|20"> CPU 1. 1G Memory. 20G Disk</label></li>
+                	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="1|2|20"> CPU 1. 2G Memory. 20G Disk</label></li>
+                	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="1|4|20"> CPU 1. 4G Memory. 20G Disk</label></li>
+                	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="1|8|20"> CPU 1. 8G Memory. 20G Disk</label></li>
+                	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="2|1|20"> CPU 2. 1G Memory. 20G Disk</label></li>
+                	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="2|2|20"> CPU 2. 2G Memory. 20G Disk</label></li>
+                	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="2|4|20"> CPU 2. 4G Memory. 20G Disk</label></li>
+                	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="2|8|20"> CPU 2. 8G Memory. 20G Disk</label></li>
+                </ul>
+            </div>
+
+            <h3><a href="#">Interface</a></h3>
+            <div class="sub">
+            	<h4>가상스위치</h4>
+
+                <ul style="list-style:none; margin: 0; padding: 0; padding-bottom: 10px">
+                    <li style="float:left;margin-top: 0px;padding-left: 10px"><label><input type="radio" name="vswitch"> Platinum</label></li>
+                    <li style="float:left;margin-top: 0px;padding-left: 10px"><label><input type="radio" name="vswitch"> Gold</label></li>
+                    <li style="float:left;margin-top: 0px;padding-left: 10px"><label><input type="radio" name="vswitch"> Sliver</label></li>
+                    <li style="margin-top: 0px;padding-left: 10px"><label><input type="radio" name="vswitch"> Bronze</label></li>
+                </ul>
+
+
+            	<h4>인터페이스개수</h4>
+                <ul style="list-style:none; margin: 0; padding: 0; padding-bottom: 10px">
+                    <li style="float:left;margin-top: 0px;padding-left: 10px;padding-right: 10px"><label><input type="radio" name="eth" value="1" onchange="change_eth(1)"> 1개</label></li>
+                    <li style="margin-top: 0px;padding-left: 10px;padding-right: 10px"><label><input type="radio" name="eth" value="2" onchange="change_eth(2)"> 2개</label></li>
+                </ul>
+                <div class="box">
+                    <h5>인터페이스포트그룹</h5>
+                	<div class="main_group">
+                        <p>
+                            <input type="text" value="eth0" style="width: 50px">
+                            <select>
+                            	<option>Web</option>
+                            </select>
+                            <a href="#none"><em>DHCP</em> <span></span> <em>Static</em></a>
+                        </p>
+                    </div>
+
+                    <div class="sub_group">
+                    	<table>
+                        	<colgroup>
+                            	<col width="135px">
+                            	<col width="*">
+                            </colgroup>
+                            <tbody>
+                            	<tr>
+                                	<th>IP Address</th>
+                                    <td><input type="text"></td>
+                                </tr>
+                            	<tr>
+                                	<th>Subnet Mask</th>
+                                    <td><input type="text"></td>
+                                </tr>
+                            	<tr>
+                                	<th>Basic Gateway</th>
+                                    <td><input type="text"></td>
+                                </tr>
+                            	<tr>
+                                	<th>기본설정DNS 서버</th>
+                                    <td><input type="text"></td>
+                                </tr>
+                            	<tr>
+                                	<th>보조DNS 서버</th>
+                                    <td><input type="text"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+        <div class="lay_footer">
+            <a href="javascript:;" class="btn_common01" onclick="createvm()">생성하기</a>
+        </div>
+    </div>
+    <!-- //lay_pop -->
+    </form>
+
+<script type="text/javascript">
+    function changeOS(os) {
+        //$($("div.create_list h3")[0]).html("<a href='#'>OS List " + "<strong>"+os+"</strong></a>");
+        if($($("div.create_list h3")[0]).children().children())
+            $($("div.create_list h3")[0]).children().children().remove();
+        $($("div.create_list h3")[0]).children().append("<strong>"+os+"</strong></a>");
+    }
+
+    function changeResource(me) {
+        _this = me;
+        txt = $(_this).parent().text();
+        if($($("div.create_list h3")[1]).children().children())
+            $($("div.create_list h3")[1]).children().children().remove();
+        $($("div.create_list h3")[1]).children().append("<strong>"+txt+"</strong></a>");
+    }
+
+    function change_eth(cnt) {
+        //alert($("input[name='eth']:checked").val());
+        var box = $($(".create_list div.sub")[2]).children('div');
+        var maing = $($(".create_list div.sub")[2]).children('div').children('div')[0];
+        var subg = $($(".create_list div.sub")[2]).children('div').children('div')[1];
+        var ahtml = "";
+        for(i=0; i< cnt; i++) {
+            ahtml += maing.outerHTML + subg.outerHTML;
+        }
+        box.html(ahtml);
+        $(".create_list .sub .box > .main_group > p > a").click(function(){
+            $(this).find("span").toggleClass("on").parent().parent().parent().next('.sub_group').toggle();
+            //return false;
+        });
+    }
+
+    function createvm() {
+        var param = $("#create_vm").serialize();
+        $.ajax({
+           url : "/vm_create",
+            datatype: "json",
+            method: "post",
+            data: param
+        }).done(function(msg){
+            if(msg) {
+                alert(msg);
+            }
+
+        }).fail(function(err){
+            alert(err);
+        });
+    }
+</script>

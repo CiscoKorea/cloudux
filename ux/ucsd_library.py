@@ -466,14 +466,14 @@ def catalog_order(catalog, vdc, group, comment="", vmname="", vcpus="0", vram="0
 def vmware_provision(catalog, vdc, comment="", vmname="", vcpus="0", vram="0", datastores="", vnics=""):
     """
     Order a VMware based standard catalog
-    :param catalog:
-    :param vdc:
-    :param comment:
-    :param vmname:
-    :param vcpus:
-    :param vram:
-    :param datastores:
-    :param vnics:
+    :param catalog: Name of the catalog
+    :param vdc: Name of the vDC
+    :param comment: Comment that is set as the VM label
+    :param vmname: Name of the VM to be provisioned
+    :param vcpus: Number of CPUs
+    :param vram: Size of memory in GB
+    :param datastores: Number of VM Disks
+    :param vnics: VM networks
     :return:
     """
     param0 = catalog

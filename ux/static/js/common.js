@@ -19,7 +19,7 @@ $.fn.customRadioCheck = function() {
     $this.on({
       change: function() {
         if ($this.is(':radio')) {
-          $this.parent().siblings('label')
+          $this.parent().parent().siblings()
             .find('.custom-radio').removeClass('checked');
         }
         $span.toggleClass('checked', $this.is(':checked'));
@@ -158,7 +158,7 @@ $(document).ready(function() {
     $(".create_list > h3 > a").click(function(){
         $(".sub:visible").slideUp("middle");
         $(".create_list > h3 > a").removeClass("on");
-        $(this).addClass("on");
+        if($(this).parent().next('.sub:hidden').length > 0) $(this).addClass("on");
 		$(this).parent().next('.sub:hidden').slideDown("middle");
         return false;
     })	

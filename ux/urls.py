@@ -15,5 +15,6 @@ urlpatterns = [
     url(r'^users/modify$', views.users_modify, name='usermodify'),
     url(r'^reloaddata$', views.reload_data, name="reloaddata"),
     url(r'^vm_action$', views.ucsd_vm_action, name="vmaction"),
+    url(r'^vm_create$', views.ucsd_vm_create, name="vmcreate"),
     url(r'^catalog_order$', views.catalog_vm_provision, name="catalogorder"),
 ]
