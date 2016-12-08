@@ -326,7 +326,7 @@ function type(d) {
                         </thead>
                         <tbody>
                             {% for inven in inventorylist %}
-                            <tr>
+                            <tr onclick="faults_list('{{ inven.name }}')">
                                 <td>{{ forloop.counter }}</td>
                                 <td>{{ inven.model }}</td>
                                 <td>{{ inven.hwtype }}</td>
@@ -381,13 +381,13 @@ function type(d) {
 
                         <div class="search">
                             <select>
-                                <option>Name</option>
+                                <option value="description">description</option>
                             </select>
                             <input type="text">
                         </div>
                     </div>
 
-                    <table>
+                    <table id="fault_table">
                         <colgroup>
                             <col width="15%">
                             <col width="15%">
@@ -407,60 +407,17 @@ function type(d) {
                             </tr>
                         </thead>
                         <tbody>
-                            {% for fault in faultlist %}
                             <tr>
-                                <td><span class="box gray">{{ fault.severity }}</span></td>
-                                <td>{{ fault.target }}</td>
-                                <td>{{ fault.faultType }}</td>
-                                <td>{{ fault.created }}</td>
-                                <td>{{ fault.occur }}</td>
-                                <td>{{ fault.desc }}</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
                             </tr>
-                            {% endfor %}
-                            <!--
-                            <tr>
-                                <td><span class="box blue">Online </span></td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                            </tr>
-                            <tr>
-                                <td><span class="box orange">Online with events</span></td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                            </tr>
-                            <tr>
-                                <td><span class="box gray">Offline</span></td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                            </tr>
-                            <tr>
-                                <td><span class="box blue">Online </span></td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                            </tr>
-                            <tr>
-                                <td><span class="box orange">Online with events</span></td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                            </tr>
-                            -->
                         </tbody>
                     </table>
+                    <!--
                     <div class="paginate">
                         <p class="total">Total <strong>350</strong></p>
 
@@ -481,11 +438,46 @@ function type(d) {
                         <a href="#none" class="next">다음</a>
                         <a href="#none" class="last">마지막</a>
                     </div>
+                    -->
                 </div>
                 <!-- //inner -->
 <script type="text/javascript">
 $(document).ready(function(){
    init();
 });
+
+function faults_list(target) {
+    var targetarr = target.split("/");
+    var skey = $(".search select option:selected").val();
+    var stxt = $(".search input[type='text']").val();
+    $.ajax({
+        url : "/dashboard/faults",
+        datatype: "json",
+        data: {
+//                csrfmiddlewaretoken:'{{ csrf_token }}',
+            "srch_key" : skey,
+            "srch_txt" : stxt,
+            "targetinfra" : targetarr[0]
+        }
+    }).done(function(msg){
+        console.log(msg);
+        if(msg.list) {
+            $("#fault_table tbody").empty();
+            for(var i=0; i<msg.list.length; i++) {
+                var tr = "<tr>";
+                tr += "<td><span class='box "+msg.list[i].severity+"'>"+msg.list[i].severity+"</span></td>";
+                tr += "<td>"+msg.list[i].target+"</td>";
+                tr += "<td>"+msg.list[i].faultType+"</td>";
+                tr += "<td>"+msg.list[i].created+"</td>";
+                tr += "<td>"+msg.list[i].occur+"</td>";
+                tr += "<td>"+msg.list[i].desc+"</td>";
+                tr += "</tr>";
+                $("#fault_table tbody").append(tr);
+            }
+        }
+    }).fail(function(err){
+        alert(err);
+    });
+}
 </script>
 {% endblock content %}

@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.dashboard, name='dashboard'),
+    url(r'^dashboard/faults$', views.dashboard_fault_list, name='dashboardfaults'),
     url(r'^hosts$', views.hosts, name='hosts'),
     url(r'^vms$', views.vms, name='vms'),
     url(r'catalogs$', views.catalogs, name='catalogs'),

@@ -179,6 +179,17 @@ class BiFaults(models.Model):
     desc = models.CharField(max_length=100, blank=True, null=True)
     occur = models.CharField(max_length=100, blank=True, null=True)
 
+    def to_dict(self):
+        dc = dict()
+        dc["severity"] = self.severity
+        dc["target"] = self.target
+        dc["faultType"] = self.faultType
+        dc["code"] = self.code
+        dc["created"] = self.created.strftime("%Y-%m-%d %H:%M:%S")
+        dc["desc"] = self.desc
+        dc["occur"] = self.occur
+        return dc
+
 
 class BiCatalog(Audited):
     status = models.CharField(max_length=100, blank=True, null=True)

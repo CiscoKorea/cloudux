@@ -1,9 +1,13 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core import serializers
+from django.forms.models import model_to_dict
+from django.utils.encoding import force_text
+from django.core.serializers.json import DjangoJSONEncoder
 import json
 import atexit
 
@@ -33,6 +37,10 @@ class search_form():
     srch_key = ""
     srch_txt = ""
 
+    def __init__(self, request):
+        self.srch_key = request.GET.get("srch_key", "name")
+        self.srch_txt = request.GET.get("srch_txt", "")
+
 
 @login_required
 def dashboard(request):
@@ -47,8 +55,14 @@ def dashboard(request):
     fault_list = BiFaults.objects.all()
 
     dash1 = DashboardAlloc.objects.all()
-    chart1 = [int(dash1[0].total_vm), int(dash1[0].total_cpu), int(dash1[0].total_mem), int(dash1[0].total_stg)]
-    chart1d = [100-int(dash1[0].total_vm), 100-int(dash1[0].total_cpu), 100-int(dash1[0].total_mem), 100-int(dash1[0].total_stg)]
+    if dash1.count() >0 :
+        chart1 = [int(dash1[0].total_vm), int(dash1[0].total_cpu), int(dash1[0].total_mem), int(dash1[0].total_stg)]
+        chart1d = [100 - int(dash1[0].total_vm), 100 - int(dash1[0].total_cpu), 100 - int(dash1[0].total_mem),
+                   100 - int(dash1[0].total_stg)]
+    else :
+        chart1 = [0,0,0,0]
+        chart1d = [100, 100, 100, 100]
+
     chart3 = DashboardVswitch.objects.all()
     chart4 = []
     total_portgroup = 0
@@ -60,11 +74,36 @@ def dashboard(request):
         total_portgroup += int(dbswitch.portgroup)
         switch_count += 1
         chart4.append(t)
+    if switch_count == 0:
+        switch_count = 1
 
     return render(request, 'dashboard.html', {'inventorylist': inventory_list, 'faultlist': fault_list,
                                               'chart1': chart1, 'chart1d': chart1d,
                                               'chart4': json.dumps(chart4),
                                               'avgport': round(total_portgroup/switch_count, 1)})
+
+
+def dashboard_fault_list(request):
+    search = search_form(request)
+    target_infra = request.GET.get("targetinfra", "")
+
+    # search.srch_key = request.GET.get("srch_key", "name")
+    # search.srch_txt = request.GET.get("srch_txt", "")
+
+    # json_list = []
+    print("search.srch_key: ", search.srch_key)
+    if search.srch_key == "description":
+        print("search.srch_txt: ", search.srch_txt)
+        fault_list = BiFaults.objects.filter(target=target_infra, desc__contains=search.srch_txt)
+    else:
+        fault_list = BiFaults.objects.filter(target=target_infra)
+
+    json_list = []
+    for fault in fault_list:
+        json_list.append(fault.to_dict())
+    # json_list = serializers.serialize("json", fault_list)
+    return HttpResponse(json.dumps({'list': json_list}), 'application/json')
+    # return JsonResponse(json.dumps(json_list), safe=False)
 
 
 @login_required
@@ -141,9 +180,9 @@ def hosts(request):
 def vms(request):
     # print("vm69:", vm_details(vmid="69"))
 
-    search = search_form()
-    search.srch_key = request.GET.get("srch_key", "name")
-    search.srch_txt = request.GET.get("srch_txt", "")
+    search = search_form(request)
+    # search.srch_key = request.GET.get("srch_key", "name")
+    # search.srch_txt = request.GET.get("srch_txt", "")
 
     if len(search.srch_txt) > 0:
         if search.srch_key == "name":
@@ -352,9 +391,9 @@ def users(request):
         addinfo.save()
         return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
 
-    search = search_form()
-    search.srch_key = request.GET.get("srch_key", "username")
-    search.srch_txt = request.GET.get("srch_txt", "")
+    search = search_form(request)
+    # search.srch_key = request.GET.get("srch_key", "username")
+    # search.srch_txt = request.GET.get("srch_txt", "")
 
     if len(search.srch_txt) > 0:
         if search.srch_key == "username":
@@ -465,9 +504,8 @@ def get_vcenter_info():
                                             port=int(port), sslContext=context)
     atexit.register(connect.Disconnect, service_instance)
     content = service_instance.RetrieveContent()
-    dcs = get_datacenters(content)
 
-    return dcs
+    return content
 
 
 def get_uplink(uplinks):
@@ -777,8 +815,12 @@ def reload_data_t(request):
 
 
 def reload_data(request):
+
+    content = get_vcenter_info()  # get all data!!
+
     delete_all()
-    get_vcenter_info()  # get all data!!
+    dcs = get_datacenters(content)
+
     get_ucsm_info()  # get ucsd inventory
     get_catalog()
     get_ucsd_vm_list()  # get ucsd vm id
