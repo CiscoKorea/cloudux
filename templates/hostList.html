@@ -13,20 +13,20 @@
             {% block content %}
 
                 <!-- inner -->
-              <div class="inner">
+              <div class="inner" style="overflow:scroll;width:1450px">
                 <h4>Host List</h4>
-                  <table id="content_table">
+                  <table id="content_table" style="width:1400px">
                       <colgroup>
-                          <col width="7%">
-                          <col width="7%">
-                          <col width="7%">
+                          <col width="8%">
+                          <col width="10%">
+                          <col width="*">
+                          <col width="12%">
                           <col width="10%">
                           <col width="13%">
-                          <col width="10%">
-                          <col width="15%">
-                          <col width="11%">
-                          <col width="11%">
-                          <col width="*">
+                          <col width="8%">
+                          <col width="12%">
+                          <!-- <col width="5%"> -->
+                          <col width="7%">
                       </colgroup>
                       <thead>
                           <tr>
@@ -37,7 +37,7 @@
                               <th>vNIC</th>
                               <th>Virtual switch</th>
                               <th>StorageVolume</th>
-                              <th>CreationTime</th>
+                              <!-- <th>CreationTime</th> -->
                               <th>Status</th>
                           </tr>
                       </thead>
@@ -67,7 +67,7 @@
                                     <br/>
                                 {% endfor %}
                             </td>
-                            <td>-</td>
+                            <!-- <td>-</td> -->
                             <td><span class="box {{ host.status }}">{{ host.status }}</span></td>
                           </tr>
                           {% endfor %}
