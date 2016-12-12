@@ -23,6 +23,8 @@
                             <form name="search_form" method="get" action="">
                             <select name="srch_key">
                                 <option value="name" {% if search.srch_key == 'name' %} selected {% endif %}>Name</option>
+                                <option value="ip" {% if search.srch_key == 'ip' %} selected {% endif %}>IP</option>
+                                <option value="mac" {% if search.srch_key == 'mac' %} selected {% endif %}>MAC</option>
                             </select> 
                             <input type="text" id="srch_txt" name="srch_txt" value="{{ search.srch_txt }}"/>
                             <input type="hidden" name="page" value="1" />
@@ -44,15 +46,15 @@
                       </colgroup>
                       <thead>
                           <tr>
-                              <th><label><input type="checkbox"></label></th>
+                              <th><label><input type="checkbox" onchange="javascript:$('span.custom-check').click();"></label></th>
                               <th>Tenant</th>
-                              <th>VMName</th>
-                              <th>IPAddress</th>
-                              <th>MACAddress</th>
+                              <th>VM Name</th>
+                              <th>IP Address</th>
+                              <th>MAC Address</th>
                               <th>CPU Usage</th>
                               <th>Mem Usag</th>
                               <th>Net Usage</th>
-                              <th>StorageUsage</th>
+                              <th>Storage Usage</th>
                               <th>Status</th>
                           </tr>
                       </thead>

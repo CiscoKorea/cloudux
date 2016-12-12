@@ -82,20 +82,20 @@
      function init() {
          var chart1 = {{ chart1|safe }};
          drowArc("#totalvm", "#dcd8d8", 100);
-         drowArc("#totalvm", "#33d033", chart1[0] );
+         drowArc("#totalvm", "#06a7f7", chart1[0] );
          drowArc("#totalcpu", "#dcd8d8", 100);
-         drowArc("#totalcpu", "#33d033", chart1[1]);
+         drowArc("#totalcpu", "#06a7f7", chart1[1]);
          drowArc("#totalmem", "#dcd8d8", 100);
-         drowArc("#totalmem", "#33d033", chart1[2]);
+         drowArc("#totalmem", "#06a7f7", chart1[2]);
          drowArc("#totalstg", "#dcd8d8", 100);
-         drowArc("#totalstg", "#33d033", chart1[3]);
+         drowArc("#totalstg", "#06a7f7", chart1[3]);    // #443cb0
      }
     </script>
 
 <style>
 
 .chart rect {
-  fill: steelblue;
+  fill: #06a7f7;
 }
 
 .chart text {
@@ -104,13 +104,34 @@
   text-anchor: middle;
 }
 
+.chart .axis path,.chart .axis line,.chart .axis text {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+    font: 10px sans-serif;
+}
+
 </style>
     <script type="text/javascript">
 $(document).ready(function() {
     var width = 360 -30,
             height = 370-20;
+    var maxBarcount = 10;
 
     var y = d3.scale.linear().range([height, 0]);
+
+    //var x = d3.scale.ordinal().rangeRoundBands([0, width], .05);
+    var x = d3.scale.linear().range([0, width]);
+    var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom")
+    ;   // .tickFormat(d3.time.format("%Y-%m"))
+
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        .orient("left")
+        .ticks(3)
+        ;
 
     var chart = d3.select(".sel_right .chart")
             .attr("width", width)
@@ -123,13 +144,17 @@ $(document).ready(function() {
         return d.pgcount;
     })]);
 
-    var barWidth = width / data2.length;
-
+    var barWidth = width / data2.length;    // 공평한 크기
+    var barWidth2 = 30;
+    var gapWidth2 = (width - barWidth2*maxBarcount)/maxBarcount ;
     var bar = chart.selectAll("g")
             .data(data2)
             .enter().append("g")
             .attr("transform", function (d, i) {
-                return "translate(" + i * barWidth + ",0)";
+                console.log((i+1), parseInt((i+1) * barWidth2), parseInt((i+1)*gapWidth2));
+                var xpoint = parseInt( (i+1) * barWidth2) + parseInt( (i+1)*gapWidth2) - barWidth2/2;
+                console.log(xpoint);
+                return "translate(" + xpoint + ",0)"; // x 축만큼 옆으로 이동
             });
 
     bar.append("rect")
@@ -139,27 +164,55 @@ $(document).ready(function() {
             .attr("height", function (d) {
                 return height - y(d.pgcount) -20;
             })
-            .attr("width", barWidth - 1);
+            .attr("width", barWidth2 - 1);   // 사각형의 넓이
 
     bar.append("text")
-      .attr("x", barWidth / 2)
-      .attr("y", function(d) { return y(d.pgcount); })
+      .attr("x", barWidth2 / 2)
+      .attr("y", function(d) { return y(d.pgcount) +10; })
       .attr("dy", ".75em")
             .style("fill", "black")
       .text(function(d) { return d.pgcount; });
 
     bar.append("text")
-            .attr("x", barWidth / 2 -50)
+            .style("text-anchor", "start")
+            .attr("x", barWidth2 / 2)
             .attr("y", function (d) {
-                return y(d.pgcount) - 3;
+                //return y(d.pgcount) - 3;
+                return height -15;
             })
-            .attr("dy", ".75em")
+                .attr("dy", ".5em")
+                //.style("fill", "black")
             .text(function (d) {
                 return d.name;
             }).attr("transform", function (d, i) {
-        return "rotate(-90 " + barWidth / 2 + " " + (3+ y(d.pgcount))+ ")"
-    } )
+                return "rotate(-90 " + barWidth2 / 2 + " " + (height -15)+ ")"
+            })
     ;
+/*
+    chart.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    .selectAll("text")
+      .style("text-anchor", "end")
+        .style("fill", "black")
+      .attr("dx", "-.8em")
+      .attr("dy", "-.55em")
+      .attr("transform", "rotate(-90)" );
+*/
+
+    chart.append("g")
+      .attr("class", "axis")
+      .attr("transform", "translate(15,20)")
+      .call(yAxis)
+    .append("text")
+        .style("fill", "black")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("");
+
 });
 
 function type(d) {
@@ -174,8 +227,8 @@ function type(d) {
                     <ul class="sel_left">
                         <li>
                             <div class="head">
-                                <h3>TotalVM Info</h3>
-                                <a href="#"><span>More</span></a>
+                                <h3>Total VM Info</h3>
+                                <a href="{% url 'vms' %}"><span>More</span></a>
                             </div>
 
                             <div class="chart_area type01">
@@ -199,7 +252,7 @@ function type(d) {
 
                         <li>
                             <div class="head">
-                                <h3>TotalCPU Info</h3>
+                                <h3>Total CPU Info</h3>
                             </div>
 
                             <div class="chart_area type02">
@@ -223,7 +276,7 @@ function type(d) {
 
                         <li>
                             <div class="head">
-                                <h3>TotalMEM Info</h3>
+                                <h3>Total MEM Info</h3>
                             </div>
 
                             <div class="chart_area type03">
@@ -248,7 +301,7 @@ function type(d) {
                         <li>
                             <div class="head">
                                 <h3>Total Storage Info</h3>
-                                <a href="#"><span>More</span></a>
+                                <a href="{% url 'volumes' %}"><span>More</span></a>
                             </div>
 
                             <div class="chart_area type04">
@@ -276,7 +329,7 @@ function type(d) {
                     <div class="sel_right">
                         <div class="head">
                             <h3>Total Virtual switch Info</h3>
-                            <a href="#"><span>More</span></a>
+                            <a href="{% url 'vnets' %}"><span>More</span></a>
                         </div>
 
                         <div class="info">
@@ -383,7 +436,7 @@ function type(d) {
                             <select>
                                 <option value="description">description</option>
                             </select>
-                            <input type="text">
+                            <input type="text" onkeyup="faults_list('')">
                         </div>
                     </div>
 
@@ -446,8 +499,14 @@ $(document).ready(function(){
    init();
 });
 
+var selected_inventory = "";
+
 function faults_list(target) {
-    var targetarr = target.split("/");
+    if(target.length > 0) {
+        var targetarr = target.split("/");
+        selected_inventory = targetarr[0];
+    }
+
     var skey = $(".search select option:selected").val();
     var stxt = $(".search input[type='text']").val();
     $.ajax({
@@ -457,7 +516,7 @@ function faults_list(target) {
 //                csrfmiddlewaretoken:'{{ csrf_token }}',
             "srch_key" : skey,
             "srch_txt" : stxt,
-            "targetinfra" : targetarr[0]
+            "targetinfra" : selected_inventory
         }
     }).done(function(msg){
         console.log(msg);

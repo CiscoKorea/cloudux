@@ -94,7 +94,7 @@ def dashboard_fault_list(request):
     print("search.srch_key: ", search.srch_key)
     if search.srch_key == "description":
         print("search.srch_txt: ", search.srch_txt)
-        fault_list = BiFaults.objects.filter(target=target_infra, desc__contains=search.srch_txt)
+        fault_list = BiFaults.objects.filter(target=target_infra, desc__icontains=search.srch_txt)
     else:
         fault_list = BiFaults.objects.filter(target=target_infra)
 
@@ -186,7 +186,11 @@ def vms(request):
 
     if len(search.srch_txt) > 0:
         if search.srch_key == "name":
-            vlist = BiVirtualMachine.objects.filter(name__contains=search.srch_txt)
+            vlist = BiVirtualMachine.objects.filter(name__icontains=search.srch_txt)
+        elif search.srch_key == "ip":
+            vlist = BiVirtualMachine.objects.filter(ipAddress__icontains=search.srch_txt)
+        elif search.srch_key == "mac":
+            vlist = BiVirtualMachine.objects.filter(macAddress__icontains=search.srch_txt)
         else:
             vlist = BiVirtualMachine.objects.all()
     else:
@@ -285,7 +289,7 @@ def vms_ajax(request):
 def catalogs(request):
     clist = BiCatalog.objects.all()
 
-    paginator = Paginator(clist, 10)
+    paginator = Paginator(clist, 4)
     page = request.GET.get('page')
     try:
         plist = paginator.page(page)
@@ -397,11 +401,11 @@ def users(request):
 
     if len(search.srch_txt) > 0:
         if search.srch_key == "username":
-            ulist = User.objects.filter(username__contains=search.srch_txt)
+            ulist = User.objects.filter(username__icontains=search.srch_txt)
         elif search.srch_key == "firstname":
-            ulist = User.objects.filter(first_name__contains=search.srch_txt)
+            ulist = User.objects.filter(first_name__icontains=search.srch_txt)
         elif search.srch_key == "email":
-            ulist = User.objects.filter(email__contains=search.srch_txt)
+            ulist = User.objects.filter(email__icontains=search.srch_txt)
         else:
             ulist = User.objects.all()
     else:
