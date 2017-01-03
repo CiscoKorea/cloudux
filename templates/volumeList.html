@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load myfilter %}
 {% load i18n %}
 
 
@@ -38,7 +39,7 @@
                             <tr>
                                 <td><!--<span class="box gray">Offline </span>--></td>
                                 <td>{{ vol.name }}</td>
-                                <td>{{ vol.capacity }}</td>
+                                <td>{{ vol.capacity | megabytes}}</td>
                                 <td>-</td>
                                 <td>
                                     {% for host in vol.host.all %}

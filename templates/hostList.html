@@ -17,16 +17,16 @@
                 <h4>Host List</h4>
                   <table id="content_table" style="width:1400px">
                       <colgroup>
-                          <col width="8%">
-                          <col width="10%">
-                          <col width="*">
-                          <col width="12%">
-                          <col width="10%">
-                          <col width="13%">
-                          <col width="8%">
-                          <col width="12%">
+                          <col width="8%"> <!-- DC -->
+                          <col width="10%"> <!-- Cluster -->
+                          <col width="10%">  <!-- Host -->
+                          <col width="12%"> <!-- OS Version -->
+                          <col width="10%"> <!-- Mgmt IP -->
+                          <col width="13%"> <!-- vNIC -->
+                          <col width="15%"> <!-- vSwitch -->
+                          <col width="12%"> <!-- StorageVolume -->
                           <!-- <col width="5%"> -->
-                          <col width="7%">
+                          <col width="7%"> <!-- status -->
                       </colgroup>
                       <thead>
                           <tr>
@@ -41,7 +41,7 @@
                               <th>Status</th>
                           </tr>
                       </thead>
-                      <tbody>
+                      <tbody text-align="left">
                           {% for host in list %}
                           <tr>
                             <td>{{ host.datacenter.name }}</td>
