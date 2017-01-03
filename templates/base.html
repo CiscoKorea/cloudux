@@ -15,7 +15,7 @@
     	<div class="header">
         	<div>
                 <p>{{ user.first_name }} ({{ user.username }}) {% trans "user.logined" %}</p>
-                <p style="display:none"><span><a href="javascript:;" style="background: url('resources/img/content/refresh.png') no-repeat 5px 50%;padding: 0px 25px 0px 33px;border: 1px solid #eaeaea;height: 34px; line-height: 34px; display: inline-block" onclick="refreshData()">refresh</a></span></p>
+                <p style="display:show"><span><a href="javascript:;" style="background: url('resources/img/content/refresh.png') no-repeat 5px 50%;padding: 0px 25px 0px 33px;border: 1px solid #eaeaea;height: 34px; line-height: 34px; display: inline-block" onclick="refreshData()">refresh</a></span></p>
                 <ul>
                     <li><a href="javascript:;" onclick="open_myinfo()">Your personal info</a></li>
                     <li><a href="{% url 'logout' %}">Logout</a></li>

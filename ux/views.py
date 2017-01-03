@@ -499,6 +499,7 @@ def get_vcenter_info():
     user = ConfigUtil.get_val("VC.USER")
     pwd = ConfigUtil.get_val("VC.PASS")
     port = ConfigUtil.get_val("VC.PORT")
+    print (host,user,pwd,port)
     # host, user, password = GetArgs()
     context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
     context.verify_mode = ssl.CERT_NONE
@@ -778,19 +779,19 @@ def get_ucsd_vdc_list():
     vlist = vdc_list()
     for vdc in vlist:
         entity = UdVDC()
-        entity.status = vdc["Status"]
-        entity.tag = vdc["Tag"]
-        entity.vdc_id = vdc["vDC_ID"]
-        entity.custom_categories = vdc["Custom_Categories"]
-        entity.total_vms = vdc["Total_VMs"]
-        entity.active_vms = vdc["Active_VMs"]
-        entity.dcloud = vdc["dCloud"]
-        entity.vdc = vdc["vDC"]
-        entity.approvers = vdc["Approvers"]
-        entity.lock_state = vdc["Lock_State"]
-        entity.type = vdc["Type"]
-        entity.cloud = vdc["Cloud"]
-        entity.vdc_description = vdc["vDC_Description"]
+        entity.status = vdc["Status"] if vdc.has_key("Status") else None
+        entity.tag = vdc["Tag"] if vdc.has_key("Tag") else None
+        entity.vdc_id = vdc["vDC_ID"] if vdc.has_key("vDC_ID") else None
+        entity.custom_categories = vdc["Custom_Categories"] if vdc.has_key("Custom_Categories") else None
+        entity.total_vms = vdc["Total_VMs"] if vdc.has_key("Total_VMs") else None
+        entity.active_vms = vdc["Active_VMs"] if vdc.has_key("Active_VMs") else None
+        entity.dcloud = vdc["dCloud"] if vdc.has_key("dCloud") else None
+        entity.vdc = vdc["vDC"] if vdc.has_key("vDC") else None
+        entity.approvers = vdc["Approvers"] if vdc.has_key("Approvers") else None
+        entity.lock_state = vdc["Lock_State"] if vdc.has_key("Lock_State") else None
+        entity.type = vdc["Type"] if vdc.has_key("Type") else None
+        entity.cloud = vdc["Cloud"] if vdc.has_key("Type") else None
+        entity.vdc_description = vdc["vDC_Description"] if vdc.has_key("vDC_Description") else None
         entity.save()
 
 
