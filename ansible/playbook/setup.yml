@@ -1,0 +1,11 @@
+---
+ - hosts: portal
+   gather_facts: yes 
+   become: yes
+   vars:
+     user_name : cisco 
+     user_home: /home/cisco
+     app_dir : /home/cisco
+#     ansible_python_interpreter: /Users/hyungsok/mypy/bin/python
+   roles:
+     - portal

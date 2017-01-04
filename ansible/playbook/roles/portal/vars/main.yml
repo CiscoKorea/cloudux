@@ -1,0 +1,28 @@
+---
+basedir: /home/cisco/cloudportal
+
+#Maria database information
+database_host: localhost
+database_name: cloudportal
+database_user: portal
+database_pass: 1234Qwer
+database_port: 3306
+
+#VMWare vcenter information 
+vcenter_host: 10.72.86.43
+vcenter_user: "administrator@vsphere.local"
+vcenter_pass: "!234Qwer"
+vcenter_port: 443
+
+#Cisco UCSM information 
+ucsm_host: 10.72.86.4
+ucsm_user: admin
+ucsm_pass: 1234Qwer
+ucsm_port: 443
+
+#Cisco UCS Director information 
+ucsd_host: 10.72.86.253
+ucsd_apikey: "1FB65FE5F11D43CD9190B67F7DAC7C66"
+
+#database configuration file path 
+dbconfig: "/home/cisco/cloudportal/cloudmgmt/connection.cfg"

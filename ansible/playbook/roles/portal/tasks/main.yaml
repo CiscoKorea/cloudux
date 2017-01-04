@@ -1,0 +1,49 @@
+---
+- name: install required packages on centos 
+  package: name={{item}} state=present
+  with_items:
+    - mariadb
+    - mariadb-server
+    - mariadb-devel 
+    - mariadb-libs
+    - python-devel
+    - gcc 
+    - gcc-c++ 
+    - make 
+    - openssl-devel
+    - openldap-devel
+
+- name: restart mariadb 
+  service: name={{item}} state=restarted
+  with_items:
+    - mariadb
+
+- name: install requirements on portal 
+  pip: requirements={{basedir}}/requirements.txt chdir={{ basedir}}
+
+- name: create database on mariadb
+  mysql_db: name={{ database_name}} state=present
+
+- name: make mariadb account 
+  mysql_user: host={{ database_host}} priv="{{database_name}}.*:ALL" login_user=root name={{ database_user}} password={{ database_pass}}
+
+- name: update mysql ini file 
+  ini_file: dest={{ dbconfig}} section=mysql option={{item.name}} value={{item.value}}
+  with_items:
+    - { name: hostname, value: "{{ database_host}}" }
+    - { name: dbname, value: "{{database_name}}" }
+    - { name: username, value: "{{database_user}}" }
+    - { name: password, value: "{{database_pass}}" }
+    - { name: port, value: "{{database_port}}" }
+
+- name: django makemigrations
+  shell: python manage.py makemigrations chdir={{basedir}}
+
+- name: django migrate
+  shell: python manage.py migrate chdir={{basedir}}
+
+- name: copy sql script 
+  template: src=basic_conf.j2 dest=/tmp/basic_conf.sql force=yes
+
+- name: execute sql queries 
+  shell: /usr/bin/mysql --user={{database_user}} --database={{ database_name}} --password={{database_pass}} < /tmp/basic_conf.sql 
