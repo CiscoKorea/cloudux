@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load myfilter %}
 {% load i18n %}
 
 
@@ -31,21 +32,25 @@
                                             <col width="*">
                                         </colgroup>
                                         <tbody>
-                                        	<tr>
+                                       	    <tr>
                                             	<th valign="top">OS</th>
                                                 <td>{{ catalog.os }}</td>
                                             </tr>
-                                        	<tr>
+                                       	    <tr>
                                             	<th valign="top">CPU</th>
-                                                <td></td>
+                                                <td>{{ catalog.catalog_description | desc:"CPU"}}</td>
                                             </tr>
-                                        	<tr>
+                                            <tr>
+                                            	<th valign="top">Memory</th>
+                                                <td>{{ catalog.catalog_description | desc:"MEMORY"}}</td>
+                                            </tr>
+                                            <tr>
                                             	<th valign="top">DISK</th>
-                                                <td></td>
+                                                <td>{{ catalog.catalog_description | desc:"DISK"}}</td>
                                             </tr>
-                                        	<tr>
+                                            <tr>
                                             	<th valign="top">Networks</th>
-                                                <td></td>
+                                                <td>{{ catalog.catalog_description | desc:"NIC"}}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -56,152 +61,6 @@
                             </div>
                         </li>
                         {% endfor %}
-                    <!--
-                    <li>
-                        	<div class="box">
-                                <h5><span class="box blue">Standard</span> CerCVS VM Wave</h5>
-                                <div class="system">
-                                	<p class="thomb"><img src="../resources/img/content/thomb_centos.jpg" alt=""></p>
-                                    <table>
-                                    	<colgroup>
-                                        	<col width="80px">
-                                            <col width="*">
-                                        </colgroup>
-                                        <tbody>
-                                        	<tr>
-                                            	<th valign="top">OS</th>
-                                                <td>Linux Ubuntu 14.04</td>
-                                            </tr>
-                                        	<tr>
-                                            	<th valign="top">CPU</th>
-                                                <td>2 vCPU</td>
-                                            </tr>
-                                        	<tr>
-                                            	<th valign="top">DISK</th>
-                                                <td>/dev/sda : 50G<br>/deb/sdb : 100G</td>
-                                            </tr>
-                                        	<tr>
-                                            	<th valign="top">Networks</th>
-                                                <td>1st NIC (DHCP) / PortGroup : XXXX </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="btn">
-                                    <a href="#" class="btn_common01">선택하기</a>
-                                </div>
-                            </div>
-                        </li>
-
-                    	<li>
-                        	<div class="box">
-                                <h5><span class="box purple">Advanced</span> CerCVS VM Wave</h5>
-                                <div class="system">
-                                	<p class="thomb"><img src="../resources/img/content/thomb_centos.jpg" alt=""></p>
-                                    <table>
-                                    	<colgroup>
-                                        	<col width="80px">
-                                            <col width="*">
-                                        </colgroup>
-                                        <tbody>
-                                        	<tr>
-                                            	<th valign="top">OS</th>
-                                                <td>Linux Ubuntu 14.04</td>
-                                            </tr>
-                                        	<tr>
-                                            	<th valign="top">CPU</th>
-                                                <td>2 vCPU</td>
-                                            </tr>
-                                        	<tr>
-                                            	<th valign="top">DISK</th>
-                                                <td>/dev/sda : 50G<br>/deb/sdb : 100G</td>
-                                            </tr>
-                                        	<tr>
-                                            	<th valign="top">Networks</th>
-                                                <td>1st NIC (DHCP) / PortGroup : XXXX </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="btn">
-                                    <a href="#" class="btn_common01">선택하기</a>
-                                </div>
-                            </div>
-                        </li>
-
-                    	<li>
-                        	<div class="box">
-                                <h5><span class="box blue">Standard</span> CerCVS VM Wave</h5>
-                                <div class="system">
-                                	<p class="thomb"><img src="../resources/img/content/thomb_centos.jpg" alt=""></p>
-                                    <table>
-                                    	<colgroup>
-                                        	<col width="80px">
-                                            <col width="*">
-                                        </colgroup>
-                                        <tbody>
-                                        	<tr>
-                                            	<th valign="top">OS</th>
-                                                <td>Linux Ubuntu 14.04</td>
-                                            </tr>
-                                        	<tr>
-                                            	<th valign="top">CPU</th>
-                                                <td>2 vCPU</td>
-                                            </tr>
-                                        	<tr>
-                                            	<th valign="top">DISK</th>
-                                                <td>/dev/sda : 50G<br>/deb/sdb : 100G</td>
-                                            </tr>
-                                        	<tr>
-                                            	<th valign="top">Networks</th>
-                                                <td>1st NIC (DHCP) / PortGroup : XXXX </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="btn">
-                                    <a href="#" class="btn_common01">선택하기</a>
-                                </div>
-                            </div>
-                        </li>
-
-                    	<li>
-                        	<div class="box">
-                                <h5><span class="box blue">Standard</span> CerCVS VM Wave</h5>
-                                <div class="system">
-                                	<p class="thomb"><img src="../resources/img/content/thomb_centos.jpg" alt=""></p>
-                                    <table>
-                                    	<colgroup>
-                                        	<col width="80px">
-                                            <col width="*">
-                                        </colgroup>
-                                        <tbody>
-                                        	<tr>
-                                            	<th valign="top">OS</th>
-                                                <td>Linux Ubuntu 14.04</td>
-                                            </tr>
-                                        	<tr>
-                                            	<th valign="top">CPU</th>
-                                                <td>2 vCPU</td>
-                                            </tr>
-                                        	<tr>
-                                            	<th valign="top">DISK</th>
-                                                <td>/dev/sda : 50G<br>/deb/sdb : 100G</td>
-                                            </tr>
-                                        	<tr>
-                                            	<th valign="top">Networks</th>
-                                                <td>1st NIC (DHCP) / PortGroup : XXXX </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="btn">
-                                    <a href="#" class="btn_common01">선택하기</a>
-                                </div>
-                            </div>
-                        </li>
-                    -->
-
                     </ul>
 
                     <div class="paginate">
