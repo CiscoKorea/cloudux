@@ -22,3 +22,14 @@ def kilobytes(value):
 def megabytes(value):
     num = ((value / 1024 ) / 1024) / 1024
     return "{} MB".format( "{:,}".format(num))
+
+
+@register.filter
+def desc(value, arg):
+    if not value:
+        return ""
+    vals = value.split('\n')
+    for val in vals:
+        if arg.upper() in val.upper():
+           return val
+    return ""
