@@ -23,7 +23,7 @@ from cloudmgmt.settings import *
 from models import GlobalConfig, ConfigUtil, BiHost, BiVnic, BiVolume, BiVswitch, BiVirtualMachine, BiPnic, \
     BiPortgroup, BiCluster, BiDatacenter, UserAddInfo, BiInventory, BiFaults, BiCatalog, \
     UdCloud, DashboardAlloc, DashboardVswitch, UdGroup, UdVDC, UdVmDisk
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import MultipleObjectsReturned ,ObjectDoesNotExist
 # import tools.cli as cli
 
 import ssl
@@ -678,8 +678,13 @@ def get_datacenters(content):
                             try:
                                 lnet = BiPortgroup.objects.get(name=vmnet.name)
                                 lvm = BiVirtualMachine.objects.get(name=vnetvm.config.name)
-                                lvm.network.add(lnet)
-                            except ObjectDoesNotExist:
+                                if type(lvm) == list :
+                                    for vm in lvm:
+                                        vm.network.add(lnet)
+                                else:
+                                    lvm.network.add(lnet)
+                            except (MultipleObjectsReturned, ObjectDoesNotExist) as e:
+                                print( "Exception : %s " %e)
                                 pass  # print("DoesNotExist")
 
                 for mnt in host.configManager.storageSystem.fileSystemVolumeInfo.mountInfo:
@@ -728,14 +733,14 @@ def get_catalog():
         entity = BiCatalog()
         entity.status = catalog["Status"]
         entity.gruop = catalog["Group"]
-        entity.template_name = catalog["Template_Name"]
+        entity.template_name = unicode(catalog["Template_Name"])
         entity.image = catalog["Image"]
-        entity.catalog_name = catalog["Catalog_Name"]
-        entity.catalog_type = catalog["Catalog_Type"]
+        entity.catalog_name = unicode(catalog["Catalog_Name"])
+        entity.catalog_type = unicode(catalog["Catalog_Type"])
         entity.catalog_id = catalog["Catalog_ID"]
-        entity.folder = catalog["Folder"]
+        entity.folder = unicode(catalog["Folder"])
         entity.os = catalog["OS"]
-        entity.catalog_description = catalog["Catalog_Description"]
+        entity.catalog_description = unicode(catalog["Catalog_Description"])
         entity.cloud = catalog["Cloud"]
         entity.icon = catalog["Icon"]
         entity.save()
@@ -761,13 +766,13 @@ def get_ucsd_group_list():
             entity = UdGroup()
             entity.group_id = group["groupId"]
             entity.group_name = detail["groupName"]
-            entity.description = detail["description"]
+            entity.description = unicode(detail["description"])
             entity.parent_group_id = detail["parentGroupId"]
             entity.parent_group_name = detail["parentGroupName"]
-            entity.last_name = detail["lastName"]
-            entity.first_name = detail["firstName"]
+            entity.last_name = unicode(detail["lastName"])
+            entity.first_name = unicode(detail["firstName"])
             entity.phone_number = detail["phoneNumber"]
-            entity.address = detail["address"]
+            entity.address = unicode(detail["address"])
             entity.group_type = detail["groupType"]
             entity.enable_budget = detail["enableBudget"]
             entity.save()
@@ -841,23 +846,23 @@ def reload_data(request):
         entity.description = cloud["Description"]
         entity.contact = cloud["Contact"]
         entity.license_status = cloud["License_Status"]
-        entity.location = cloud["Location"]
+        entity.location = unicode(cloud["Location"])
         entity.user_id = cloud["User_ID"]
-        entity.reachable = cloud["Reachable"]
-        entity.message = cloud["Message"]
+        entity.reachable = unicode(cloud["Reachable"])
+        entity.message = unicode(cloud["Message"])
         entity.vmware_server = cloud["VMware_Server"]
         entity.cloud = cloud["Cloud"]
         entity.save()
 
-    total_vm = 0.0
-    active_vm = 0.0
+    total_vm = 0
+    active_vm = 0
     vdc_list = ucsd_vdcs()
     for vdc in vdc_list:
         total_vm += vdc["Total_VMs"]
         active_vm += vdc["Active_VMs"]
 
     dash1 = DashboardAlloc()
-    dash1.total_vm = int(round(active_vm / total_vm * 100))
+    dash1.total_vm = int(round(active_vm / total_vm * 100)) if total_vm != 0 else 0
     dash1.save()
 
     total_cpu = 0.0
@@ -868,7 +873,7 @@ def reload_data(request):
             total_cpu = float(cpu["value"])
         if cpu["name"].__contains__("Provisioned"):
             prov_cpu = float(cpu["value"])
-    dash1.total_cpu = int(round(prov_cpu / total_cpu * 100))
+    dash1.total_cpu = int(round(prov_cpu / total_cpu * 100)) if total_cpu != 0.0 else 0.0
     dash1.save()
 
     total_mem = 0.0
@@ -879,7 +884,7 @@ def reload_data(request):
             total_mem = float(mem["value"])
         if mem["name"].__contains__("Provisioned"):
             prov_mem = float(mem["value"])
-    dash1.total_mem = int(round(prov_mem / total_mem * 100))
+    dash1.total_mem = int(round(prov_mem / total_mem * 100)) if total_mem != 0.0 else 0.0
     dash1.save()
 
     total_stg = 0.0
@@ -890,10 +895,11 @@ def reload_data(request):
             total_stg = float(stg["value"])
         if stg["name"].__contains__("Provisioned"):
             prov_stg = float(stg["value"])
-    dash1.total_stg = int(round(prov_stg / total_stg * 100))
+    dash1.total_stg = int(round(prov_stg / total_stg * 100)) if total_stg != 0.0 else 0.0
     dash1.save()
-
-    net_list = ucsd_network()
+    
+    #javaos74 need to fix
+    net_list = {} #ucsd_network()
     for net in net_list:
         vswtc = DashboardVswitch()
         vswtc.portgroup = int(net["Num_Port_Groups"])
@@ -935,7 +941,7 @@ def catalog_vm_provision(request):
     p_vram = request.GET.get("vram")
     p_datastores = request.GET.get("datastores")
     p_vnics = request.GET.get("vnics")
-    p_comment = request.GET.get("comment")
+    p_comment = unicode(request.GET.get("comment"))
     p_group = request.GET.get("group")
     p_vdc = request.GET.get("vdc")
 
