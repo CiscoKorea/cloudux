@@ -5,7 +5,7 @@
 
 
 # import standard variables and configuration info
-from local_config import url, getstring, parameter_lead, headers
+from local_config import ucsdserver, ucsd_key, url, getstring, parameter_lead, headers
 from cloud_library import dict_filter, list_search
 from models import ConfigUtil
 
@@ -14,7 +14,6 @@ import json
 
 ucsdserver = ConfigUtil.get_val("UCSD.HOST")
 headers["X-Cloupia-Request-Key"] = ConfigUtil.get_val("UCSD.KEY") #ucsd_key
-
 
 def workflow_inputs(workflow):
     """
@@ -595,7 +594,7 @@ def ucsd_disk():
 
     return j['serviceResult']['categories'][0]['nameValuePairs']
 
-
+#javaos74 need to fix 
 def ucsd_network():
     # opName=userAPIGetTabularReport&opData={param0:"1",param1:"dCloud-Cluster",param2:"VSWITCHES-T2"}
     apioperation = "userAPIGetTabularReport"
@@ -607,7 +606,8 @@ def ucsd_network():
 
     r = requests.get(u, headers=headers, verify=False)
     j = json.loads(r.text)
-    return j['serviceResult']['rows']
+   
+    return j['serviceResult']['rows'] if 'rows' in j['serviceResult'] else {}
 
 
 def group_list():
@@ -713,9 +713,7 @@ def tabular_report(context_name, context_value, report_id):
         + '}'
 
     r = requests.get(u, headers=headers, verify=False)
-    # print r.text
     j = json.loads(r.text)
-    # print j
 
     return j['serviceResult']['rows']
 
@@ -724,3 +722,74 @@ def ucsd_vm_disk(p_vm_id):
     # /userAPIGetTabularReport&opData={param0:"3",param1:"70",param2:"DISKS-T0"}
     assert isinstance(p_vm_id, str)
     return tabular_report('3', p_vm_id, 'DISKS-T0')
+
+
+def ucsd_get_restaccesskey( p_user_id):
+    #userAPIGetRESTAccessKey&opData={param0:"sample"}
+    assert isinstance(p_user_id, str)
+    apioperation = "userAPIGetRESTAccessKey"
+    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
+        "{param0:\"" + p_user_id + '"' \
+        + '}'
+    r = requests.get(u, headers=headers, verify=False)
+    j = json.loads(r.text)
+    return j['serviceResult']
+
+def ucsd_get_userprofile( p_user_id):
+    # userAPIGetUserLoginProfile& opData={param0:"sample"}
+    assert isinstance(p_user_id, str)
+    apioperation = "userAPIGetUserLoginProfile"
+    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
+        "{param0:\"" + p_user_id + '"' \
+        + '}'
+    r = requests.get(u, headers=headers, verify=False)
+    j = json.loads(r.text)
+    return j['serviceResult']
+
+def ucsd_get_all_vms():
+    #/app/api/rest?formatType=json&opName=userAPIGetAllVMs& ;opData={}
+    apioperation = "userAPIGetAllVMs"
+    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
+        "{}"
+    r = requests.get(u, headers=headers, verify=False)
+    j = json.loads(r.text)
+
+    rows = j['serviceResult']['rows']
+    for row in rows:
+        print (row)
+    print(j)
+
+def ucsd_get_groups():
+    #/app/api/rest?formatType=json&opName=userAPIGetAllGroups& amp;opData={}
+
+    apioperation = "userAPIGetAllGroups"
+    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
+        "{}"
+    r = requests.get(u, headers=headers, verify=False)
+    j = json.loads(r.text)
+
+    rows = j['serviceResult']['rows']
+    for row in rows:
+        print(row)
+    return rows
+
+def ucsd_get_groupbyname( grp_name):
+    #userAPIGetGroupByName&opData={param0:"grp1"}
+    apioperation = "userAPIGetGroupByName"
+    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
+        "{param0:\"" + grp_name + '"' \
+        + '}'
+    r = requests.get(u, headers=headers, verify=False)
+    j = json.loads(r.text)
+
+    return j['serviceResult']
+
+
+if __name__ == '__main__':
+    #print (ucsd_user_profile('hyungsok'))
+    #print (ucsd_get_all_vms())
+    ret = ucsd_get_userprofile('hyungsok')
+    print( ret )
+    print( ucsd_get_groupbyname(ret['groupName']))
+    print(ucsd_get_restaccesskey('hyungsok'))
+
