@@ -955,7 +955,8 @@ def catalog_vm_provision(request):
         l.append("-")
         l.append(str(cnt).zfill(3))
         vmname = ''.join(l)
-        catalog_order(db_catalog.catalog_name, vdc=p_vdc, group=p_group, comment=p_comment, vmname=vmname,
+        order_status = catalog_order(db_catalog.catalog_name, vdc=p_vdc, group=p_group, comment=p_comment, vmname=vmname,
                        vcpus=p_vcpus, vram=p_vram, datastores=p_datastores, vnics=p_vnics)
         cnt += 1
+        print (order_status)
     return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')

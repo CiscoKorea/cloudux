@@ -1,3 +1,4 @@
+# -*- coding: utf8 -*- 
 """
     Python module of different functions for manipulating UCS Director
     via the API.
@@ -446,7 +447,7 @@ def catalog_order(catalog, vdc, group, comment="", vmname="", vcpus="0", vram="0
     :return:
     """
     # Get the catalog type, only STandard supported
-    if catalog_type(catalog, group) != "Standard":
+    if catalog_type(catalog, group) not in [ "Standard", u'표준', '표준'] :
         return "Error: Only Standard Catalogs Supported.  " \
                 "Use 'workflow_execute' for Advanced Catalogs "
 
@@ -462,7 +463,7 @@ def catalog_order(catalog, vdc, group, comment="", vmname="", vcpus="0", vram="0
     return "Invalid Request Provided"
 
 
-def vmware_provision(catalog, vdc, comment="", vmname="", vcpus="0", vram="0", datastores="", vnics=""):
+def vmware_provision(catalog, vdc, comment="", vmname="", vcpus="0", vram="0", datastores="", vnics="1"):
     """
     Order a VMware based standard catalog
     :param catalog: Name of the catalog
@@ -478,11 +479,11 @@ def vmware_provision(catalog, vdc, comment="", vmname="", vcpus="0", vram="0", d
     param0 = catalog
     param1 = vdc
     param2 = vmname
-    param3 = comment
-    param4 = vcpus
-    param5 = vram
-    param6 = datastores
-    param7 = vnics
+    param3 = comment if comment else ""
+    param4 = vcpus if vcpus else "0"
+    param5 = vram if vram else "0"
+    param6 = datastores if datastores else ""
+    param7 = vnics  if vnics else "1"
 
     apioperation = "userAPIVMWareProvisionRequest"
     u = url % ucsdserver + getstring % apioperation + parameter_lead + \
@@ -495,11 +496,10 @@ def vmware_provision(catalog, vdc, comment="", vmname="", vcpus="0", vram="0", d
         "param6:\"" + param6 + '",' + \
         "param7:\"" + param7 + '"}'
 
-    # print u
+    #print u
 
     r = requests.get(u, headers=headers, verify=False)
-    print r.text
-
+    #print r.text
     j = json.loads(r.text)
     print j
     # vms = sr_vms()
@@ -788,8 +788,12 @@ def ucsd_get_groupbyname( grp_name):
 if __name__ == '__main__':
     #print (ucsd_user_profile('hyungsok'))
     #print (ucsd_get_all_vms())
-    ret = ucsd_get_userprofile('hyungsok')
-    print( ret )
-    print( ucsd_get_groupbyname(ret['groupName']))
-    print(ucsd_get_restaccesskey('hyungsok'))
+    #ret = ucsd_get_userprofile('hyungsok')
+    #print( ret )
+    #print( ucsd_get_groupbyname(ret['groupName']))
+    #print(ucsd_get_restaccesskey('hyungsok'))
+    for catalog in catalog_list_all():
+        #print("Catalog_Type value = {} data_type {}".format(unicode(catalog['Catalog_Type'],'utf8'), type(catalog['Catalog_Type'])))
+        print("Catalog_Type value = data_type {}".format( type(catalog['Catalog_Type'])))
+        #print("Catalog_Type = %s" %(catalog['Catalog_Type'].decode('utf8')))
 
