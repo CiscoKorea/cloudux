@@ -1,6 +1,7 @@
 ---
  - hosts: portal
-   gather_facts: yes 
+   gather_facts: yes
+#   connection: local 
    become: yes
    vars:
      user_name : cisco 
@@ -9,3 +10,4 @@
 #     ansible_python_interpreter: /Users/hyungsok/mypy/bin/python
    roles:
      - portal
+#     - nxapi

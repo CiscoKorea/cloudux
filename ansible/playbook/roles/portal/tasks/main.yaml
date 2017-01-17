@@ -12,20 +12,36 @@
     - make 
     - openssl-devel
     - openldap-devel
+    - libselinux-python
+
+- name: mariadb default character set for mariadb-5.5
+  ini_file: dest=/etc/my.cnf.d/server.cnf section=mariadb-5.5 option={{item.name}} value={{item.value}}
+  with_items:
+    - {name: init_connect, value: '"SET collation_connection = utf8_general_ci"'}
+    - {name: init_connect, value: '"SET NAMES utf8"'}
+    - {name: character-set-server, value: utf8}
+    - {name: collation-server, value: utf8_general_ci}
 
 - name: restart mariadb 
   service: name={{item}} state=restarted
   with_items:
     - mariadb
 
-- name: install requirements on portal 
-  pip: requirements={{basedir}}/requirements.txt chdir={{ basedir}}
+- name: drop database on mariadb
+  mysql_db: name={{ database_name}} state=absent
+  ignore_errors: true
 
 - name: create database on mariadb
   mysql_db: name={{ database_name}} state=present
 
 - name: make mariadb account 
   mysql_user: host={{ database_host}} priv="{{database_name}}.*:ALL" login_user=root name={{ database_user}} password={{ database_pass}}
+
+- name: clone source from git repos
+  git: repo=https://github.com/CiscoKorea/cloudux.git dest={{basedir}} clone=yes version=master
+
+- name: install requirements on portal 
+  pip: requirements={{basedir}}/requirements.txt chdir={{ basedir}}
 
 - name: update mysql ini file 
   ini_file: dest={{ dbconfig}} section=mysql option={{item.name}} value={{item.value}}

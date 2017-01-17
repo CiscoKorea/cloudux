@@ -1,5 +1,5 @@
 ---
-basedir: /home/cisco/cloudportal
+basedir: /home/cisco/cloudux
 
 #Maria database information
 database_host: localhost
@@ -25,4 +25,4 @@ ucsd_host: 10.72.86.243
 ucsd_apikey: EF5A6F2BE93046E0936838BA3BC99D96
 
 #database configuration file path 
-dbconfig: "/home/cisco/cloudportal/cloudmgmt/connection.cfg"
+dbconfig: "{{basedir}}/cloudmgmt/connection.cfg"
