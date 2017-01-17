@@ -336,7 +336,7 @@ div.paginate .total > strong{margin:0; padding:0; color:#333;}
 .catalogue_list > li{width:50%; padding:0 0 30px 30px; float:left;}
 .catalogue_list > li > div.box{background-color:#fff; border:1px solid #eaeaea;}
 .catalogue_list > li > div.box > h5{height:50px; line-height:50px; border-bottom:1px solid #eaeaea; font-size:16px; text-align:left; padding:0 20px;}
-.catalogue_list > li > div.box > h5 > span.box{display:inline-block !important; width:70px; margin-right:5px;}
+.catalogue_list > li > div.box > h5 > span.box{display:inline-block !important; width:120px; margin-right:5px;}
 .catalogue_list > li > div.box > .btn{text-align:center; height:80px; line-height:80px;}
 .catalogue_list > li .system{position:relative; padding:20px 20px 20px 210px; border-bottom:1px solid #eaeaea;}
 .catalogue_list > li .system > table{border:0;}

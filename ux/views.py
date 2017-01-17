@@ -1,3 +1,4 @@
+# -*- coding: utf8 -*-
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.conf import settings
@@ -733,14 +734,14 @@ def get_catalog():
         entity = BiCatalog()
         entity.status = catalog["Status"]
         entity.gruop = catalog["Group"]
-        entity.template_name = unicode(catalog["Template_Name"])
+        entity.template_name = catalog["Template_Name"]
         entity.image = catalog["Image"]
-        entity.catalog_name = unicode(catalog["Catalog_Name"])
-        entity.catalog_type = unicode(catalog["Catalog_Type"])
+        entity.catalog_name = catalog["Catalog_Name"]
+        entity.catalog_type = catalog["Catalog_Type"]
         entity.catalog_id = catalog["Catalog_ID"]
-        entity.folder = unicode(catalog["Folder"])
+        entity.folder = catalog["Folder"]
         entity.os = catalog["OS"]
-        entity.catalog_description = unicode(catalog["Catalog_Description"])
+        entity.catalog_description = catalog["Catalog_Description"]
         entity.cloud = catalog["Cloud"]
         entity.icon = catalog["Icon"]
         entity.save()
