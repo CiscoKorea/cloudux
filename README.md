@@ -6,10 +6,9 @@ Cloudux is built on top of django framework, mariadb and VMWare vCenter, Cisco U
 
 # Required Infrastructure  
 - UCSDirector 6.0 +
-- vCenter 6.0 + 
+- vCenter 5.5 + 
 - UCSM 2.3 + 
 
 # ansible module for installation 
-
 
 
