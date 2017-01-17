@@ -5,8 +5,8 @@ register = template.Library()
 
 @register.filter
 def kmgtbytes(value):
-    unit = None
     units = ["TB", "GB", "MB", "KB", "Bytes"]
+    unit = units.pop()
     num = value
     while num >= 1024:
         num /= 1024
@@ -15,13 +15,18 @@ def kmgtbytes(value):
 
 @register.filter
 def kilobytes(value):
-    num = (value / 1024) / 1024
+    num = (value / 1024)
     return "{} KB".format( "{:,}".format(num))
 
 @register.filter
 def megabytes(value):
-    num = ((value / 1024 ) / 1024) / 1024
+    num = (value / 1024 ) / 1024
     return "{} MB".format( "{:,}".format(num))
+
+@register.filter
+def gigabytes(value):
+    num = ((value / 1024 ) / 1024 ) / 1024
+    return "{} GB".format( "{:,}".format(num))
 
 @register.filter
 def to_utf8(value):

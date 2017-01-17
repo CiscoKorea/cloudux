@@ -39,7 +39,7 @@
                             <tr>
                                 <td><!--<span class="box gray">Offline </span>--></td>
                                 <td>{{ vol.name }}</td>
-                                <td>{{ vol.capacity | megabytes}}</td>
+                                <td>{{ vol.capacity | gigabytes}}</td>
                                 <td>-</td>
                                 <td>
                                     {% for host in vol.host.all %}
