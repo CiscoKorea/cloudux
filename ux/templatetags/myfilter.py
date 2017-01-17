@@ -23,6 +23,9 @@ def megabytes(value):
     num = ((value / 1024 ) / 1024) / 1024
     return "{} MB".format( "{:,}".format(num))
 
+@register.filter
+def to_utf8(value):
+    return unicode(value)
 
 @register.filter
 def desc(value, arg):
