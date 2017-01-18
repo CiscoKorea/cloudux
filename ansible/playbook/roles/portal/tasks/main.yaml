@@ -13,6 +13,7 @@
     - openssl-devel
     - openldap-devel
     - libselinux-python
+    - git
 
 - name: mariadb default character set for mariadb-5.5
   ini_file: dest=/etc/my.cnf.d/server.cnf section=mariadb-5.5 option={{item.name}} value={{item.value}}
@@ -35,15 +36,28 @@
   mysql_db: name={{ database_name}} state=present
 
 - name: make mariadb account 
-  mysql_user: host={{ database_host}} priv="{{database_name}}.*:ALL" login_user=root name={{ database_user}} password={{ database_pass}}
+  mysql_user: host={{ item }} priv="{{database_name}}.*:ALL" login_user=root name={{ database_user}} password={{ database_pass}}
+  with_items:
+    - "{{ database_host}}"
+    - localhost
+    - "64.%"
+    - "10.72.86.%"
+    - "10.139.%"
+
+- name: reset for all modification 
+  become: no
+  shell: git checkout -- * chdir="{{basedir}}"
+  ignore_errors: true
 
 - name: clone source from git repos
-  git: repo=https://github.com/CiscoKorea/cloudux.git dest={{basedir}} clone=yes version=master
+  become: no
+  git: repo=https://github.com/CiscoKorea/cloudux.git dest={{basedir}} clone=yes version=master force=yes
 
 - name: install requirements on portal 
   pip: requirements={{basedir}}/requirements.txt chdir={{ basedir}}
 
-- name: update mysql ini file 
+- name: update mysql ini file
+  become: no
   ini_file: dest={{ dbconfig}} section=mysql option={{item.name}} value={{item.value}}
   with_items:
     - { name: hostname, value: "{{ database_host}}" }
@@ -53,13 +67,17 @@
     - { name: port, value: "{{database_port}}" }
 
 - name: django makemigrations
+  become: no
   shell: python manage.py makemigrations chdir={{basedir}}
 
 - name: django migrate
+  become: no
   shell: python manage.py migrate chdir={{basedir}}
 
 - name: copy sql script 
+  become: no
   template: src=basic_conf.j2 dest=/tmp/basic_conf.sql force=yes
 
 - name: execute sql queries 
+  become: no
   shell: /usr/bin/mysql --user={{database_user}} --database={{ database_name}} --password={{database_pass}} < /tmp/basic_conf.sql 
