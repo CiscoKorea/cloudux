@@ -165,7 +165,7 @@ class BiVirtualMachine(Audited):
     ucsd_vm_id = models.CharField(max_length=20, blank=True, null=True)
     #added items for link vcenter and ucsd
     vcenter_vm_id = models.CharField(max_length=20,blank=True, null=True)
-    assigned_to_user = models.CharField(max_length=30,blank=True, null=True)
+    #assigned_to_user = models.CharField(max_length=30,blank=True, null=True)
     group_name = models.CharField(max_length=30, blank=True, null=True)
     tenant = models.ForeignKey(UdGroup, default=1)
 
