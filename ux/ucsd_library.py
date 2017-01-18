@@ -1,4 +1,4 @@
-# -*- coding: utf8 -*- 
+# -*- coding: utf-8 -*-
 """
     Python module of different functions for manipulating UCS Director
     via the API.
@@ -6,6 +6,8 @@
 
 
 # import standard variables and configuration info
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+
 from local_config import ucsdserver, ucsd_key, url, getstring, parameter_lead, headers
 from cloud_library import dict_filter, list_search
 from models import ConfigUtil
@@ -784,6 +786,84 @@ def ucsd_get_groupbyname( grp_name):
         + '}'
     r = requests.get(u, headers=headers, verify=False)
     j = json.loads(r.text)
+
+    return j['serviceResult']
+
+
+def ucsd_add_user(user_id="", password="", first_name="", last_name="", email="", role="", group_name=""):
+
+    apioperation = "userAPIAddUser"
+    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
+        '{' + \
+        'param0:"' + user_id + '"' + \
+        ',' + 'param1:"' + password + '"' + \
+        ',' + 'param2:"' + first_name + '"' + \
+        ',' + 'param3:"' + last_name + '"' + \
+        ',' + 'param4:"' + email + '"' + \
+        ',' + 'param5:"' + role + '"' + \
+        ',' + 'param6:"' + group_name + '"' + \
+        '}'
+
+    # print(u)
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+    r = requests.get(u, headers=headers, verify=False)
+    # print('end')
+
+    j = json.loads(r.text)
+    print(j)
+
+    if j['serviceError']:
+        print(j['serviceError'])
+        return None
+
+    return j['serviceResult']
+
+
+def ucsd_add_group(group_name="", first_name="", last_name="", contact_email=""):
+    apioperation = "userAPIAddGroup"
+    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
+        '{' + \
+        'param0:"' + group_name + '"' + \
+        ',' + 'param1:"' + '' + '"' + \
+        ',' + 'param2:"' + first_name + '"' + \
+        ',' + 'param3:"' + last_name + '"' + \
+        ',' + 'param4:"' + contact_email + '"' + \
+        '}'
+
+    # print(u)
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+    r = requests.get(u, headers=headers, verify=False)
+    # print('end')
+
+    j = json.loads(r.text)
+    print(j)
+
+    if j['serviceError']:
+        print(j['serviceError'])
+        return None
+
+    return j['serviceResult']
+
+
+def ucsd_verify_user(user_id="", password=""):
+    apioperation = "userAPIVerifyUser"
+    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
+        '{' + \
+        'param0:"' + user_id + '"' + \
+        ',' + 'param1:"' + password + '"' + \
+        '}'
+
+    # print(u)
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+    r = requests.get(u, headers=headers, verify=False)
+    # print('end')
+
+    j = json.loads(r.text)
+    print(j)
+
+    if j['serviceError']:
+        print(j['serviceError'])
+        return None
 
     return j['serviceResult']
 

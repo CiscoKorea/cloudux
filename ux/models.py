@@ -157,11 +157,6 @@ class BiVirtualMachine(Audited):
         return self.name
 
 
-class UserAddInfo(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    contact = models.CharField(max_length=50, blank=True, null=True)
-
-
 class BiInventory(Audited):
     model = models.CharField(max_length=100, blank=True, null=True)
     hwtype = models.CharField(max_length=100, blank=True, null=True)
@@ -277,3 +272,10 @@ class UdVmDisk(Audited):
     vm_id = models.CharField(max_length=100, blank=True, null=True)
     datastore_name = models.CharField(max_length=100, blank=True, null=True)
     disk_name = models.CharField(max_length=100, blank=True, null=True)
+
+
+class UserAddInfo(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    contact = models.CharField(max_length=50, blank=True, null=True)
+    role = models.CharField(max_length=20, blank=True, null=True)
+    tenant = models.ForeignKey(UdGroup, default=1)

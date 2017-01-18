@@ -39,11 +39,11 @@
                         </colgroup>
                         <thead>
                             <tr>
-                                <th>First Name</th>
-                                <th>User Name</th>
-                                <th>이메일</th>
-                                <th>연락처</th>
-                                <th>Tenant</th>
+                                <th>{% trans "userlist.th.name" %}</th>
+                                <th>{% trans "userlist.th.userid" %}</th>
+                                <th>{% trans "userlist.th.email" %}</th>
+                                <th>{% trans "userlist.th.contact" %}</th>
+                                <th>{% trans "userlist.th.tenant" %}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -53,7 +53,7 @@
                                 <td>{{ user.username }}</td>
                                 <td>{{ user.email }}</td>
                                 <td>{{ user.useraddinfo.contact }}</td>
-                                <td>-</td>
+                                <td>{{ user.useraddinfo.tenant.group_name }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -85,7 +85,8 @@
 
                 <div class="btn_area">
                     <p class="right">
-                    	<a href="javaScript:layer_popup('.Profile');" class="btn_common01">사용자 등록</a>
+                    	<a href="javaScript:layer_popup('#add_group_lay');" class="btn_common01">{% trans "userlist.bt.add_group" %}</a>
+                    	<a href="javaScript:layer_popup('#add_user_lay');" class="btn_common01">{% trans "userlist.bt.add_user" %}</a>
                     </p>
                 </div>
                 
@@ -93,9 +94,9 @@
 
 
 	<!-- lay_pop -->
-    <div class="lay_pop Profile">
+    <div class="lay_pop Profile" id="add_user_lay">
         <div class="lay_header">
-            <h1>사용자 등록</h1>
+            <h1>{% trans "userlist.bt.add_user" %}</h1>
             <a href="#nond" class="btn_close"><img src="../resources/img/content/lay_closed.png" alt="닫기"></a>
         </div>
         <form name="useraddform" id="useraddform" method="post">
@@ -108,45 +109,44 @@
                 </colgroup>
                 <tbody>
                     <tr>
-                        <th>아이디</th>
+                        <th>{% trans "userlist.th.userid" %}</th>
                         <td><input type="text" name="username" /> <a href="javascript:;" class="btn_check" onclick="idcheck()">Check</a></td>
                     </tr>
                     <tr>
-                        <th>이름</th>
+                        <th>{% trans "userlist.th.name" %}</th>
                         <td><input type="text" name="first_name" /></td>
                     </tr>
                     <tr>
-                        <th>이메일</th>
+                        <th>{% trans "userlist.th.email" %}</th>
                         <td><input type="text" name="email" /></td>
                     </tr>
                     <tr>
-                        <th>연락처</th>
+                        <th>{% trans "userlist.th.contact" %}</th>
                         <td><input type="text" name="contact" /></td>
                     </tr>
                     <tr>
-                        <th>권한</th>
+                        <th>{% trans "userlist.th.type" %}</th>
                         <td>
-                            <label for="per1"> <input type="radio" id="per1" name="is_staff" value="0" /> 사용자 </label>
-                            <label for="per2"> <input type="radio" id="per2" name="is_staff" value="1" /> 관리자 </label></td>
+                            <none><label for="per1"> <input type="radio" id="per1" name="is_staff" value="0" /> {% trans "userlist.th.type0" %} </label></none>
+                            <none><label for="per2"> <input type="radio" id="per2" name="is_staff" value="1" /> {% trans "userlist.th.type1" %} </label></none>
+                        </td>
                     </tr>
                     <tr>
-                        <th>Tenant</th>
-                        <td><select><option>개발그룹</option></select></td>
-                    </tr>
-                    <tr class="none_tr">
-                        <th>Name</th>
-                        <td><input type="text"></td>
-                    </tr>
-                    <tr class="none_tr">
-                        <th>vDC Name</th>
-                        <td><input type="text"> <a href="#" class="btn_check">Check</a></td>
+                        <th>{% trans "userlist.th.tenant" %}</th>
+                        <td>
+                            <select name="tenant" style="width: 200px;">
+                                {% for tenant in tenantlist %}
+                                <option value="{{ tenant.id }}">{{ tenant.group_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
                     </tr>
                     <tr>
-                        <th>비밀번호</th>
+                        <th>{% trans "userlist.th.password" %}</th>
                         <td><input type="password" name="password" /></td>
                     </tr>
                     <tr>
-                        <th>비밀번호 확인</th>
+                        <th>{% trans "userlist.th.passwordcfm" %}</th>
                         <td><input type="password" name="passwordcfm" /></td>
                     </tr>
                 </tbody>
@@ -154,7 +154,38 @@
         </div>
         </form>
         <div class="lay_footer">
-            <a href="javascript:;" onclick="addUser();" class="btn_common01">등록하기</a>
+            <a href="javascript:;" onclick="addUser();" class="btn_common01">{% trans "userlist.bt.regist" %}</a>
+        </div>
+    </div>
+
+    <div class="lay_pop Profile" id="add_group_lay">
+        <div class="lay_header">
+            <h1>{% trans "userlist.bt.add_group" %}</h1>
+            <a href="#nond" class="btn_close"><img src="../resources/img/content/lay_closed.png" alt="닫기"></a>
+        </div>
+        <form name="groupaddform" id="groupaddform" method="post">
+            {% csrf_token %}
+        <div class="lay_content">
+            <table>
+                <colgroup>
+                    <col width="110px">
+                    <col width="*">
+                </colgroup>
+                <tbody>
+                    <tr>
+                        <th>{% trans "userlist.th.tenant" %}</th>
+                        <td><input type="text" name="group_name" /></td>
+                    </tr>
+                    <tr>
+                        <th>{% trans "userlist.th.email" %}</th>
+                        <td><input type="text" name="email" /></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        </form>
+        <div class="lay_footer">
+            <a href="javascript:;" onclick="addGroup();" class="btn_common01">{% trans "userlist.bt.regist" %}</a>
         </div>
     </div>
 	<!-- //lay_pop -->
@@ -175,8 +206,13 @@ function addUser() {
         type: "POST",
         dataType: "json",
         data: $("#useraddform").serialize(),
-        success: function(result) {
-           location.reload(true);
+        success: function(rtn) {
+           if(rtn.result == "OK") {
+               location.reload(true);
+           } else {
+               alert("{% trans "msg.adduser.add.fail" %}");
+           }
+
            //console.log(result);
         },
         error: function(xhr, resp, text) {
@@ -208,6 +244,29 @@ function idcheck() {
         },
         error: function(xhr, resp, text) {
             console.log(xhr, resp, text);
+        }
+    });
+}
+
+
+function addGroup() {
+
+    $.ajax({
+       url: "/users/groups",
+        type: "POST",
+        dataType: "json",
+        data: $("#groupaddform").serialize(),
+        success: function(rtn) {
+           if(rtn.result == "OK") {
+               location.reload(true);
+           } else {
+               alert("{% trans "msg.adduser.add.fail" %}");
+           }
+
+           //console.log(result);
+        },
+        error: function(xhr, resp, text) {
+           //console.log(xhr, resp, text);
         }
     });
 }

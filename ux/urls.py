@@ -14,8 +14,10 @@ urlpatterns = [
     url(r'^users$', views.users, name='users'),
     url(r'^users/idcheck$', views.users_idcheck, name='idcheck'),
     url(r'^users/modify$', views.users_modify, name='usermodify'),
+    url(r'^users/groups$', views.users_groups, name='groups'),
     url(r'^reloaddata$', views.reload_data, name="reloaddata"),
     url(r'^vm_action$', views.ucsd_vm_action, name="vmaction"),
     url(r'^vm_create$', views.ucsd_vm_create, name="vmcreate"),
     url(r'^catalog_order$', views.catalog_vm_provision, name="catalogorder"),
+    url(r'^test$', views.testpage, name="testpage"),
 ]

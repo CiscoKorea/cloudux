@@ -1,4 +1,4 @@
-# -*- coding: utf8 -*-
+# -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.conf import settings
@@ -33,6 +33,9 @@ from ucsd_library import catalog_list, catalog_list_all, vm_list, vm_action, ucs
     ucsd_cloud, ucsd_cpu, ucsd_disk, catalog_order, group_list, group_detail_by_id, vdc_list, vm_details, \
     global_vms, group_vms, available_reports, ucsd_vm_disk, vmware_provision, ucsd_get_all_vms
 # Create your views here.
+from ux.ucsd_library import ucsd_verify_user, ucsd_add_user, ucsd_add_group
+
+
 class search_form():
     srch_key = ""
     srch_txt = ""
@@ -378,23 +381,41 @@ def monitoring(request):
 
 
 def users(request):
+
+    # ajax Add User
     if request.is_ajax():
+        rtn_result = 'NO'
         username = request.POST.get("username")
         email = request.POST.get("email")
         password = request.POST.get("password")
         contact = request.POST.get("contact")
         first_name = request.POST.get("first_name")
         is_staff = request.POST.get("is_staff")
+        tenant_id = request.POST.get("tenant")
 
-        newuser = User.objects.create_user(username=username, email=email, password=password, first_name=first_name,
-                                           is_staff=is_staff, )
+        # 0. ucsd user add
+        # 0.1 get group name
+        db_group = UdGroup.objects.get(id=tenant_id)
+        group_name = db_group.group_name
+        # add user
+        ucsd_added = ucsd_add_user(user_id=username, password=password, first_name=first_name, last_name='on cloud ux',
+                      email=email, role='Regular', group_name=group_name)
 
-        addinfo = UserAddInfo()
-        addinfo.contact = contact
-        addinfo.user = newuser
-        addinfo.save()
-        return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
+        # 1. create user
+        if ucsd_added :
+            newuser = User.objects.create_user(username=username, email=email, password=password, first_name=first_name,
+                                               is_staff=is_staff, )
 
+            addinfo = UserAddInfo()
+            addinfo.contact = contact
+            addinfo.user = newuser
+            addinfo.tenant_id = db_group.id
+            addinfo.save()
+            rtn_result = 'OK'
+
+        return HttpResponse(json.dumps({'result': rtn_result}), 'application/json')
+
+    # user list page
     search = search_form(request)
     # search.srch_key = request.GET.get("srch_key", "username")
     # search.srch_txt = request.GET.get("srch_txt", "")
@@ -419,12 +440,16 @@ def users(request):
     except EmptyPage:
         plist = paginator.page(paginator.num_pages)
 
-    return render(request, 'userList.html', {'list': plist, 'search': search})
+    tenantlist = UdGroup.objects.all()
+
+    return render(request, 'userList.html', {'list': plist, 'search': search, 'tenantlist': tenantlist})
 
 
 def users_idcheck(request):
     if request.is_ajax():
         username = request.GET.get("username")
+
+        # FIXME ucsd user name check
 
         exist_cnt = User.objects.filter(username=username).count()
 
@@ -723,7 +748,7 @@ def delete_all():
     UdCloud.objects.all().delete()
     DashboardAlloc.objects.all().delete()
     DashboardVswitch.objects.all().delete()
-    UdGroup.objects.all().delete()
+    # UdGroup.objects.all().delete()
     UdVDC.objects.all().delete()
     UdVmDisk.objects.all().delete()
 
@@ -762,7 +787,9 @@ def get_ucsd_vm_list():
 def get_ucsd_group_list():
     glist = group_list()
     for group in glist:
-        # try:
+        # check in db
+        if UdGroup.objects.filter(group_name=unicode(group["groupName"])).count() == 0:
+
             detail = group_detail_by_id(group["groupId"])
             entity = UdGroup()
             entity.group_id = group["groupId"]
@@ -777,9 +804,6 @@ def get_ucsd_group_list():
             entity.group_type = detail["groupType"]
             entity.enable_budget = detail["enableBudget"]
             entity.save()
-        # except:
-        #     print("get_ucsd_group_list exception :")
-
 
 def get_ucsd_vdc_list():
     vlist = vdc_list()
@@ -820,12 +844,12 @@ def get_ucsd_vmdisk_list():
             disk.save()
 
 
-def reload_data_t(request):
-
+def reload_data(request):
+    get_ucsd_group_list()
     return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
 
 
-def reload_data(request):
+def reload_data_t(request):
 
     content = get_vcenter_info()  # get all data!!
 
@@ -975,3 +999,31 @@ def catalog_vm_provision(request):
         cnt += 1
         print (order_status)
     return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
+
+
+def users_groups(request):
+    if request.method == "POST" :
+        group_name = request.POST.get("group_name")
+        email = request.POST.get("email")
+
+        # add ucsd group
+        ucsd_add_group(group_name=group_name, first_name=group_name, last_name='on cloud ux', contact_email=email)
+
+        # refresh ucsd group
+        get_ucsd_group_list()
+
+    else:
+        pass
+
+    return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
+
+
+def testpage(request):
+    # print(ucsd_add_user(user_id='test01', password='test00', first_name='kim', last_name='hanguk',
+    #                     email='test01@neocyon.com', role='Regular', group_name='Sales Group'))
+    #
+    # print(ucsd_add_group(group_name='test_group01', first_name='test', last_name='group', contact_email='email@test.com'))
+    #
+    # print(ucsd_verify_user(user_id='test01', password='test00'))
+
+    return render(request, 'test.html', {})

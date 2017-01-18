@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-21 02:57+0000\n"
+"POT-Creation-Date: 2017-01-18 08:27+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -33,6 +33,10 @@ msgstr " logined."
 msgid "site.title"
 msgstr "CISCO Cloud Management Portal"
 
+#: templates/catalogList.html:10 templates/left.html:14
+msgid "menu.catalog"
+msgstr "Catalog List"
+
 #: templates/hostList.html:7 templates/left.html:12
 msgid "menu.hostlist"
 msgstr "Host List"
@@ -45,15 +49,11 @@ msgstr "Dashboard"
 msgid "menu.vmlist"
 msgstr "VM List"
 
-#: templates/left.html:14
-msgid "menu.catalog"
-msgstr "Catalog List"
-
 #: templates/left.html:19 templates/virtualNetworkList.html:8
 msgid "menu.vnetlist"
 msgstr "Virtual Network List"
 
-#: templates/left.html:24 templates/volumeList.html:8
+#: templates/left.html:24 templates/volumeList.html:9
 msgid "site.volumelist"
 msgstr "Volume List"
 
@@ -61,14 +61,72 @@ msgstr "Volume List"
 msgid "menu.disklist"
 msgstr "VM Disk List"
 
-#: templates/left.html:30 templates/userList.html:7
+#: templates/left.html:30 templates/test.html:7 templates/userList.html:7
 msgid "menu.userlist"
 msgstr "User List"
 
-#: templates/userList.html:169
+#: templates/userList.html:42 templates/userList.html:116
+msgid "userlist.th.name"
+msgstr "Name"
+
+#: templates/userList.html:43 templates/userList.html:112
+msgid "userlist.th.userid"
+msgstr "User ID"
+
+#: templates/userList.html:44 templates/userList.html:120
+#: templates/userList.html:180
+msgid "userlist.th.email"
+msgstr "Email"
+
+#: templates/userList.html:45 templates/userList.html:124
+msgid "userlist.th.contact"
+msgstr "Contact"
+
+#: templates/userList.html:46 templates/userList.html:135
+#: templates/userList.html:176
+msgid "userlist.th.tenant"
+msgstr "Tenant"
+
+#: templates/userList.html:88 templates/userList.html:163
+msgid "userlist.bt.add_group"
+msgstr "Add Group"
+
+#: templates/userList.html:89 templates/userList.html:99
+msgid "userlist.bt.add_user"
+msgstr "Add User"
+
+#: templates/userList.html:128
+msgid "userlist.th.type"
+msgstr "Auth"
+
+#: templates/userList.html:130
+msgid "userlist.th.type0"
+msgstr "User"
+
+#: templates/userList.html:131
+msgid "userlist.th.type1"
+msgstr "Admin"
+
+#: templates/userList.html:145
+msgid "userlist.th.password"
+msgstr "Password"
+
+#: templates/userList.html:149
+msgid "userlist.th.passwordcfm"
+msgstr "Password Confirm"
+
+#: templates/userList.html:157 templates/userList.html:188
+msgid "userlist.bt.regist"
+msgstr "Regist"
+
+#: templates/userList.html:200
 msgid "msg.idchecked.require"
 msgstr "ID check required"
 
-#: templates/userList.html:204
+#: templates/userList.html:213 templates/userList.html:263
+msgid "msg.adduser.add.fail"
+msgstr "Fail User Registration"
+
+#: templates/userList.html:241
 msgid "msg.idchecked.exist"
 msgstr " is already existed."

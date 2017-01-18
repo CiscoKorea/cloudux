@@ -26,7 +26,7 @@ python2.7 -m pip install -r requirements.txt
 
 # Mysql DB create
 mysql -u root -p
-create database cloudportal;
+create database cloudportal character set utf8 collate utf8_general_ci;
 
 # DB Connection config
 vi cloudmgmt/connection.cfg
