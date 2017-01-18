@@ -2,7 +2,7 @@ pyvmomi
 Django>1.10
 celery==3.1.24
 django-celery==3.1.17
-python-ldap>=2.0
-django-auth-ldap==1.2.8
+#python-ldap>=2.0
+#django-auth-ldap==1.2.8
 ucsmsdk
 mysql-python>=1.2.5
