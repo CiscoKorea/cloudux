@@ -136,6 +136,21 @@ class BiVolume(Audited):
         ordering = ('name',)
 
 
+class UdGroup(Audited):
+    group_id = models.IntegerField(default=0)
+    group_name = models.CharField(max_length=100, blank=True, null=True)
+    description = models.CharField(max_length=255, blank=True, null=True)
+    parent_group_id = models.IntegerField(default=0)
+    parent_group_name = models.CharField(max_length=100, blank=True, null=True)
+    email_address = models.CharField(max_length=100, blank=True, null=True)
+    last_name = models.CharField(max_length=100, blank=True, null=True)
+    first_name = models.CharField(max_length=100, blank=True, null=True)
+    phone_number = models.CharField(max_length=100, blank=True, null=True)
+    address = models.CharField(max_length=100, blank=True, null=True)
+    group_type = models.IntegerField(default=0)
+    enable_budget = models.BooleanField(default=False)
+
+
 class BiVirtualMachine(Audited):
     name = models.CharField(max_length=100, blank=True, null=True)
     ipAddress = models.CharField(max_length=20, blank=True, null=True)
@@ -152,6 +167,7 @@ class BiVirtualMachine(Audited):
     vcenter_vm_id = models.CharField(max_length=20,blank=True, null=True)
     assigned_to_user = models.CharField(max_length=30,blank=True, null=True)
     group_name = models.CharField(max_length=30, blank=True, null=True)
+    tenant = models.ForeignKey(UdGroup, default=1)
 
     def __unicode__(self):
         return self.name
@@ -232,21 +248,6 @@ class DashboardVswitch(Audited):
     portgroup = models.IntegerField(default=0)
 
 
-class UdGroup(Audited):
-    group_id = models.IntegerField(default=0)
-    group_name = models.CharField(max_length=100, blank=True, null=True)
-    description = models.CharField(max_length=255, blank=True, null=True)
-    parent_group_id = models.IntegerField(default=0)
-    parent_group_name = models.CharField(max_length=100, blank=True, null=True)
-    email_address = models.CharField(max_length=100, blank=True, null=True)
-    last_name = models.CharField(max_length=100, blank=True, null=True)
-    first_name = models.CharField(max_length=100, blank=True, null=True)
-    phone_number = models.CharField(max_length=100, blank=True, null=True)
-    address = models.CharField(max_length=100, blank=True, null=True)
-    group_type = models.IntegerField(default=0)
-    enable_budget = models.BooleanField(default=False)
-
-
 class UdVDC(Audited):
     status = models.CharField(max_length=100, blank=True, null=True)
     tag = models.CharField(max_length=100, blank=True, null=True)
@@ -261,6 +262,7 @@ class UdVDC(Audited):
     type = models.CharField(max_length=100, blank=True, null=True)
     cloud = models.CharField(max_length=100, blank=True, null=True)
     vdc_description = models.CharField(max_length=255, blank=True, null=True)
+    tenant = models.ForeignKey(UdGroup, default=1)
 
 
 class UdVmDisk(Audited):

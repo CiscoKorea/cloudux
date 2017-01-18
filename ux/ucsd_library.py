@@ -136,6 +136,7 @@ def vdc_list(group="", provider="", key_filter=None, result_filter=None):
     u = url % ucsdserver + getstring % apioperation
 
     r = requests.get(u, headers=headers, verify=False)
+    print(r.text)
 
     j = json.loads(r.text)
 
@@ -643,7 +644,7 @@ def group_detail_by_id(group_id):
     return j['serviceResult'][0]
 
 
-def vdc_list():
+def vdc_list_all():
     """
     Get a list of Group
     :return:

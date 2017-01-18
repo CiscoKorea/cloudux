@@ -20,4 +20,5 @@ urlpatterns = [
     url(r'^vm_create$', views.ucsd_vm_create, name="vmcreate"),
     url(r'^catalog_order$', views.catalog_vm_provision, name="catalogorder"),
     url(r'^test$', views.testpage, name="testpage"),
+    url(r'^login2$', views.my_login, name="my_login"),
 ]

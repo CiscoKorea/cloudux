@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
+from django.contrib.auth import authenticate, login
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core import serializers
 from django.forms.models import model_to_dict
@@ -183,21 +187,49 @@ def hosts(request):
 def vms(request):
     # print("vm69:", vm_details(vmid="69"))
 
+    # user group
+    tenant = None
+    db_add_info = None
+    if not request.user.is_staff:
+        db_add_info = UserAddInfo.objects.get(user=request.user)
+    if db_add_info:
+        tenant = db_add_info.tenant
+
+
+    # db_add_info = UserAddInfo.objects.get(user_id=request.user.id)
+    # print(request.user.useraddinfo.tenant.group_name);
+    # print(request.user.useraddinfo.tenant.id);
+
     search = search_form(request)
     # search.srch_key = request.GET.get("srch_key", "name")
     # search.srch_txt = request.GET.get("srch_txt", "")
 
-    if len(search.srch_txt) > 0:
-        if search.srch_key == "name":
-            vlist = BiVirtualMachine.objects.filter(name__icontains=search.srch_txt)
-        elif search.srch_key == "ip":
-            vlist = BiVirtualMachine.objects.filter(ipAddress__icontains=search.srch_txt)
-        elif search.srch_key == "mac":
-            vlist = BiVirtualMachine.objects.filter(macAddress__icontains=search.srch_txt)
+    vlist = []
+    # admin get all list
+    if request.user.is_staff:
+        if len(search.srch_txt) > 0:
+            if search.srch_key == "name":
+                vlist = BiVirtualMachine.objects.filter(name__icontains=search.srch_txt)
+            elif search.srch_key == "ip":
+                vlist = BiVirtualMachine.objects.filter(ipAddress__icontains=search.srch_txt)
+            elif search.srch_key == "mac":
+                vlist = BiVirtualMachine.objects.filter(macAddress__icontains=search.srch_txt)
+            else:
+                vlist = BiVirtualMachine.objects.all()
         else:
             vlist = BiVirtualMachine.objects.all()
     else:
-        vlist = BiVirtualMachine.objects.all()
+        if len(search.srch_txt) > 0:
+            if search.srch_key == "name":
+                vlist = BiVirtualMachine.objects.filter(name__icontains=search.srch_txt, tenant=tenant)
+            elif search.srch_key == "ip":
+                vlist = BiVirtualMachine.objects.filter(ipAddress__icontains=search.srch_txt, tenant=tenant)
+            elif search.srch_key == "mac":
+                vlist = BiVirtualMachine.objects.filter(macAddress__icontains=search.srch_txt, tenant=tenant)
+            else:
+                vlist = BiVirtualMachine.objects.filter(tenant=tenant)
+        else:
+            vlist = BiVirtualMachine.objects.filter(tenant=tenant)
 
     paginator = Paginator(vlist, 10)
     page = request.GET.get('page')
@@ -778,7 +810,10 @@ def get_ucsd_vm_list():
     for vm in vlist:
         try:
             dbvm = BiVirtualMachine.objects.get(name=vm["VM_Name"])
+            dbvm.group_name = vm["Group_Name"]
             dbvm.ucsd_vm_id = vm["VM_ID"]
+            db_group = UdGroup.objects.get(group_name=vm["Group_Name"])
+            dbvm.tenant = db_group
             dbvm.save()
         except:
             print("get_ucsd_vm exception : ", vm["VM_Name"])
@@ -806,23 +841,34 @@ def get_ucsd_group_list():
             entity.save()
 
 def get_ucsd_vdc_list():
-    vlist = vdc_list()
+    vlist = vdc_list('','')
     for vdc in vlist:
-        entity = UdVDC()
-        entity.status = vdc["Status"] if vdc.has_key("Status") else None
-        entity.tag = vdc["Tag"] if vdc.has_key("Tag") else None
-        entity.vdc_id = vdc["vDC_ID"] if vdc.has_key("vDC_ID") else None
-        entity.custom_categories = vdc["Custom_Categories"] if vdc.has_key("Custom_Categories") else None
-        entity.total_vms = vdc["Total_VMs"] if vdc.has_key("Total_VMs") else None
-        entity.active_vms = vdc["Active_VMs"] if vdc.has_key("Active_VMs") else None
-        entity.dcloud = vdc["dCloud"] if vdc.has_key("dCloud") else None
-        entity.vdc = vdc["vDC"] if vdc.has_key("vDC") else None
-        entity.approvers = vdc["Approvers"] if vdc.has_key("Approvers") else None
-        entity.lock_state = vdc["Lock_State"] if vdc.has_key("Lock_State") else None
-        entity.type = vdc["Type"] if vdc.has_key("Type") else None
-        entity.cloud = vdc["Cloud"] if vdc.has_key("Type") else None
-        entity.vdc_description = vdc["vDC_Description"] if vdc.has_key("vDC_Description") else None
-        entity.save()
+
+        # get group id
+        db_group = UdGroup.objects.get(group_name=vdc["Group"])
+
+        if db_group :
+
+            # check exist data
+            if UdVDC.objects.filter(vdc=vdc["vDC"]).count() == 0:
+                entity = UdVDC()
+                entity.status = vdc["Status"] if vdc.has_key("Status") else None
+                entity.tag = vdc["Tag"] if vdc.has_key("Tag") else None
+                entity.vdc_id = vdc["vDC_ID"] if vdc.has_key("vDC_ID") else None
+                entity.custom_categories = vdc["Custom_Categories"] if vdc.has_key("Custom_Categories") else None
+                entity.total_vms = vdc["Total_VMs"] if vdc.has_key("Total_VMs") else None
+                entity.active_vms = vdc["Active_VMs"] if vdc.has_key("Active_VMs") else None
+                entity.dcloud = vdc["dCloud"] if vdc.has_key("dCloud") else None
+                entity.vdc = vdc["vDC"] if vdc.has_key("vDC") else None
+                entity.approvers = vdc["Approvers"] if vdc.has_key("Approvers") else None
+                entity.lock_state = vdc["Lock_State"] if vdc.has_key("Lock_State") else None
+                entity.type = vdc["Type"] if vdc.has_key("Type") else None
+                entity.cloud = vdc["Cloud"] if vdc.has_key("Type") else None
+                entity.vdc_description = vdc["vDC_Description"] if vdc.has_key("vDC_Description") else None
+                entity.tenant = db_group
+                entity.save()
+            else:
+                print '' + vdc["vDC"] + ' is in DB'
 
 
 def get_ucsd_vmdisk_list():
@@ -844,23 +890,26 @@ def get_ucsd_vmdisk_list():
             disk.save()
 
 
-def reload_data(request):
-    get_ucsd_group_list()
+def reload_data_t(request):
+    #get_ucsd_group_list()
+    get_ucsd_vdc_list()
+    #sync_vcenter_with_ucsd()
+    get_ucsd_vm_list()
     return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
 
 
-def reload_data_t(request):
+def reload_data(request):
 
     content = get_vcenter_info()  # get all data!!
 
     delete_all()
     dcs = get_datacenters(content)
-    sync_vcenter_with_ucsd()
+    # sync_vcenter_with_ucsd()
 
     get_ucsm_info()  # get ucsd inventory
     get_catalog()
-    get_ucsd_vm_list()  # get ucsd vm id
     get_ucsd_group_list()   # get ucsd group
+    get_ucsd_vm_list()  # get ucsd vm id
     get_ucsd_vdc_list()
     get_ucsd_vmdisk_list()
 
@@ -1024,6 +1073,44 @@ def testpage(request):
     #
     # print(ucsd_add_group(group_name='test_group01', first_name='test', last_name='group', contact_email='email@test.com'))
     #
-    # print(ucsd_verify_user(user_id='test01', password='test00'))
+    print(ucsd_verify_user(user_id='test3', password='test'))
 
     return render(request, 'test.html', {})
+
+
+def my_login(request):
+    form = AuthenticationForm(request.POST)
+    p_username = request.POST.get('username')
+    password = request.POST.get('password')
+    # tenant_id = request.POST.get("tenant")
+
+    # ucsd verify
+    ucsd_user = ucsd_verify_user(user_id=p_username, password=password)
+    print ucsd_user
+    if ucsd_user == None:
+        return HttpResponseRedirect('/login')
+
+    # check user
+    if User.objects.filter(username=p_username).count()==0:
+        db_group = UdGroup.objects.get(group_name=ucsd_user["groupName"])
+
+        newuser = User.objects.create_user(username=p_username, email=ucsd_user['email'], password=password, first_name=p_username)
+        addinfo = UserAddInfo()
+        addinfo.contact = ''
+        addinfo.user = newuser
+        addinfo.tenant_id = db_group.id
+        addinfo.save()
+
+    user = authenticate(username=p_username, password=password)
+    if user is not None:
+        login(request, user)
+        # Redirect to a success page.
+        return HttpResponseRedirect('/')
+
+    else:
+        # Return an 'invalid login' error message.
+        # messages.error(request, 'Invalid login credentials')
+        # return HttpResponseRedirect('/login')
+        # form.add_error(error='invalid login')
+        variables = {'form': form}
+        return render(request, 'registration/login.html', variables)
