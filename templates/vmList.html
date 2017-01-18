@@ -62,7 +62,7 @@
                         {% for vm in list %}
                           <tr>
                             <td><label><input type="checkbox" name="chk_vm_name" value="{{ vm.ucsd_vm_id }}" {% if vm.ucsd_vm_id == None %}disabled{% endif %}></label></td>
-                            <td></td>
+                            <td>{{ vm.group_name}}</td>
                             <td>{{ vm.name }}</td>
                             <td>{{ vm.ipAddress }}</td>
                             <td>{{ vm.macAddress }}</td>

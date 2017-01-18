@@ -31,8 +31,7 @@ import ssl
 from ucsm_inventory import get_ucsm_info
 from ucsd_library import catalog_list, catalog_list_all, vm_list, vm_action, ucsd_vdcs, ucsd_memory, ucsd_network, \
     ucsd_cloud, ucsd_cpu, ucsd_disk, catalog_order, group_list, group_detail_by_id, vdc_list, vm_details, \
-    global_vms, group_vms, available_reports, ucsd_vm_disk, vmware_provision
-
+    global_vms, group_vms, available_reports, ucsd_vm_disk, vmware_provision, ucsd_get_all_vms
 # Create your views here.
 class search_form():
     srch_key = ""
@@ -661,6 +660,7 @@ def get_datacenters(content):
                             vportgroup.save()
                 for vm in host.vm:
                     vvm = BiVirtualMachine()
+                    vvm.vcenter_vm_id = vm._moId
                     vvm.name = vm.config.name
                     vvm.ipAddress = vm.guest.ipAddress
                     # vvm.macAddress = ''
@@ -685,7 +685,7 @@ def get_datacenters(content):
                                 else:
                                     lvm.network.add(lnet)
                             except (MultipleObjectsReturned, ObjectDoesNotExist) as e:
-                                print( "Exception : %s " %e)
+                                #print( "Exception : %s " %e)
                                 pass  # print("DoesNotExist")
 
                 for mnt in host.configManager.storageSystem.fileSystemVolumeInfo.mountInfo:
@@ -831,6 +831,7 @@ def reload_data(request):
 
     delete_all()
     dcs = get_datacenters(content)
+    sync_vcenter_with_ucsd()
 
     get_ucsm_info()  # get ucsd inventory
     get_catalog()
@@ -908,6 +909,20 @@ def reload_data(request):
         vswtc.save()
 
     return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
+
+def sync_vcenter_with_ucsd(request = None):
+    try:
+        ucsd_vms = ucsd_get_all_vms()
+        for vm in ucsd_vms:
+            bivm = BiVirtualMachine.objects.get( vcenter_vm_id=vm['vCenter_VM_Id'])
+            if bivm:
+                bivm.group_name = vm['Group_Name']
+                bivm.ucsd_vm_id = str(vm['VM_ID'])
+                bivm.save()
+    except KeyError as ke:
+        pass
+    if request:
+        return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
 
 
 def ucsd_vm_create(request):

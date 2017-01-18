@@ -666,9 +666,9 @@ def global_vms():
         + '}'
 
     r = requests.get(u, headers=headers, verify=False)
-    print r
+    #print r
     j = json.loads(r.text)
-    print j
+    #print j
 
     return j    # ['serviceResult']['rows']
 
@@ -753,11 +753,12 @@ def ucsd_get_all_vms():
         "{}"
     r = requests.get(u, headers=headers, verify=False)
     j = json.loads(r.text)
-
-    rows = j['serviceResult']['rows']
-    for row in rows:
-        print (row)
-    print(j)
+    rows = []
+    try :
+        rows = j['serviceResult']['rows']
+    except KeyError as ke:
+        pass
+    return rows
 
 def ucsd_get_groups():
     #/app/api/rest?formatType=json&opName=userAPIGetAllGroups& amp;opData={}
@@ -768,9 +769,11 @@ def ucsd_get_groups():
     r = requests.get(u, headers=headers, verify=False)
     j = json.loads(r.text)
 
-    rows = j['serviceResult']['rows']
-    for row in rows:
-        print(row)
+    rows = []
+    try:
+        rows = j['serviceResult']['rows']
+    except KeyError as ke:
+        pass
     return rows
 
 def ucsd_get_groupbyname( grp_name):
@@ -786,14 +789,11 @@ def ucsd_get_groupbyname( grp_name):
 
 
 if __name__ == '__main__':
+    print('test code')
     #print (ucsd_user_profile('hyungsok'))
     #print (ucsd_get_all_vms())
     #ret = ucsd_get_userprofile('hyungsok')
     #print( ret )
     #print( ucsd_get_groupbyname(ret['groupName']))
     #print(ucsd_get_restaccesskey('hyungsok'))
-    for catalog in catalog_list_all():
-        #print("Catalog_Type value = {} data_type {}".format(unicode(catalog['Catalog_Type'],'utf8'), type(catalog['Catalog_Type'])))
-        print("Catalog_Type value = data_type {}".format( type(catalog['Catalog_Type'])))
-        #print("Catalog_Type = %s" %(catalog['Catalog_Type'].decode('utf8')))
-
+ 
