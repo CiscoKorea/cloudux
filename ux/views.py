@@ -38,7 +38,7 @@ from ucsd_library import catalog_list, catalog_list_all, vm_list, vm_action, ucs
     global_vms, group_vms, available_reports, ucsd_vm_disk, vmware_provision, ucsd_get_all_vms
 # Create your views here.
 from ux.ucsd_library import ucsd_verify_user, ucsd_add_user, ucsd_add_group
-
+from patch_db import patch_data_vcenter_datacenter
 
 class search_form():
     srch_key = ""
@@ -891,10 +891,7 @@ def get_ucsd_vmdisk_list():
 
 
 def reload_data_t(request):
-    #get_ucsd_group_list()
-    get_ucsd_vdc_list()
-    #sync_vcenter_with_ucsd()
-    get_ucsd_vm_list()
+    patch_data_vcenter_datacenter()
     return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
 
 
@@ -982,6 +979,7 @@ def reload_data(request):
         vswtc.save()
 
     return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
+
 
 def sync_vcenter_with_ucsd(request = None):
     try:
@@ -1073,7 +1071,11 @@ def testpage(request):
     #
     # print(ucsd_add_group(group_name='test_group01', first_name='test', last_name='group', contact_email='email@test.com'))
     #
-    print(ucsd_verify_user(user_id='test3', password='test'))
+    # print(ucsd_verify_user(user_id='test3', password='test'))
+
+    # from cloudmgmt.tasks import update_dcs
+    # result = update_dcs.delay()
+    # print("result:", result)
 
     return render(request, 'test.html', {})
 
@@ -1092,13 +1094,18 @@ def my_login(request):
 
     # check user
     if User.objects.filter(username=p_username).count()==0:
-        db_group = UdGroup.objects.get(group_name=ucsd_user["groupName"])
+        t_id = None
+        if UdGroup.objects.filter(group_name=ucsd_user["groupName"]).count() ==0:
+            t_id = None
+        else:
+            db_group = UdGroup.objects.get(group_name=ucsd_user["groupName"])
+            t_id = db_group.id
 
         newuser = User.objects.create_user(username=p_username, email=ucsd_user['email'], password=password, first_name=p_username)
         addinfo = UserAddInfo()
         addinfo.contact = ''
         addinfo.user = newuser
-        addinfo.tenant_id = db_group.id
+        addinfo.tenant_id = t_id
         addinfo.save()
 
     user = authenticate(username=p_username, password=password)
@@ -1114,3 +1121,6 @@ def my_login(request):
         # form.add_error(error='invalid login')
         variables = {'form': form}
         return render(request, 'registration/login.html', variables)
+
+
+
