@@ -167,7 +167,7 @@ class BiVirtualMachine(Audited):
     vcenter_vm_id = models.CharField(max_length=20,blank=True, null=True)
     #assigned_to_user = models.CharField(max_length=30,blank=True, null=True)
     group_name = models.CharField(max_length=30, blank=True, null=True)
-    tenant = models.ForeignKey(UdGroup, default=1)
+    tenant = models.ForeignKey(UdGroup, null=True)
 
     def __unicode__(self):
         return self.name
@@ -262,7 +262,7 @@ class UdVDC(Audited):
     type = models.CharField(max_length=100, blank=True, null=True)
     cloud = models.CharField(max_length=100, blank=True, null=True)
     vdc_description = models.CharField(max_length=255, blank=True, null=True)
-    tenant = models.ForeignKey(UdGroup, default=1)
+    tenant = models.ForeignKey(UdGroup, null=True)
 
 
 class UdVmDisk(Audited):
@@ -280,4 +280,4 @@ class UserAddInfo(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     contact = models.CharField(max_length=50, blank=True, null=True)
     role = models.CharField(max_length=20, blank=True, null=True)
-    tenant = models.ForeignKey(UdGroup, default=1)
+    tenant = models.ForeignKey(UdGroup, null=True)
