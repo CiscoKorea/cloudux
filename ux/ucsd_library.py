@@ -27,6 +27,7 @@ def workflow_inputs(workflow):
     apioperation = "userAPIGetWorkflowInputs"
     u = url % ucsdserver + getstring % apioperation + parameter_lead + "{param0:\"" + workflow + '"' + '}'
 
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
 
     j = json.loads(r.text)
@@ -50,6 +51,7 @@ def workflow_list(folder="", key_filter=None, result_filter=None):
     u = url % ucsdserver + getstring % apioperation + parameter_lead + \
         "{param0:\"" + folder + '"' + '}'
 
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
     j = json.loads(r.text)
 
@@ -80,6 +82,7 @@ def workflow_execute(workflow, inputs):
         'param1:{"list":' + json.dumps(param1) + '}' + \
         ',param2:' + param2 + '}'
 
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
 
     j = json.loads(r.text)
@@ -97,6 +100,7 @@ def sr_rollback(srnumber):
     u = url % ucsdserver + getstring % apioperation + parameter_lead + \
         "{param0:\"" + srnumber + '"' + '}'
 
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers)
 
     return r.text
@@ -113,6 +117,7 @@ def sr_details(srnumber):
     u = url % ucsdserver + getstring % apioperation + parameter_lead + \
         "{param0:\"" + srnumber + '"' + '}'
 
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers)
 
     return r.text
@@ -135,6 +140,7 @@ def vdc_list(group="", provider="", key_filter=None, result_filter=None):
     apioperation = "userAPIGetAllVDCs"
     u = url % ucsdserver + getstring % apioperation
 
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
     print(r.text)
 
@@ -168,6 +174,7 @@ def vm_list(key_filter=None, result_filter=None):
     apioperation = "userAPIGetAllVMs"
     u = url % ucsdserver + getstring % apioperation
 
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
 
     j = json.loads(r.text)
@@ -202,6 +209,7 @@ def vm_details(vmid, key_filter=None, result_filter=None):
     u = url % ucsdserver + getstring % apioperation + parameter_lead + \
         "{param0:\"" + vmid + '"' + '}'
 
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
 
     j = json.loads(r.text)
@@ -248,6 +256,7 @@ def vm_action(vmid, action, comments=""):
         'param1:"' + action + '"' + \
         ',param2:"' + comments + '"}'
 
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
 
     j = json.loads(r.text)
@@ -265,6 +274,7 @@ def vm_getactions(vmid):
     u = url % ucsdserver + getstring % apioperation + parameter_lead + \
         "{param0:\"" + vmid + '"' + '}'
 
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
 
     j = json.loads(r.text)
@@ -287,6 +297,7 @@ def vm_terminate(vmid, comments=""):
         'param1:"' + action + '"' + \
         ',param2:"' + comments + '"}'
 
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
 
     j = json.loads(r.text)
@@ -343,6 +354,7 @@ def catalog_list(group="", key_filter=None, result_filter=None):
     u = url % ucsdserver + getstring % apioperation + parameter_lead + \
         "{param0:\"" + group + '"' + '}'
 
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
 
     j = json.loads(r.text)
@@ -369,6 +381,7 @@ def catalog_list_all(key_filter=None, result_filter=None):
     u = url % ucsdserver + getstring % apioperation + parameter_lead + \
         "{}"
 
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
 
     j = json.loads(r.text)
@@ -394,6 +407,7 @@ def cloud_list(key_filter=None, result_filter=None):
     apioperation = "userAPIGetCloudsListReport"
     u = url % ucsdserver + getstring % apioperation
 
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
 
     j = json.loads(r.text)
@@ -501,6 +515,7 @@ def vmware_provision(catalog, vdc, comment="", vmname="", vcpus="0", vram="0", d
 
     #print u
 
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
     #print r.text
     j = json.loads(r.text)
@@ -520,6 +535,7 @@ def sr_vms(srnumber):
     u = url % ucsdserver + getstring % apioperation + parameter_lead + \
         "{param0:\"" + srnumber + '"' + '}'
 
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers)
     j = json.loads(r.text)
 
@@ -534,6 +550,7 @@ def ucsd_cloud():
         + ',param2:\"' + 'CLOUDS-T0' + '"' \
         + '}'
 
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
     j = json.loads(r.text)
 
@@ -550,6 +567,7 @@ def ucsd_vdcs():
         + ',param2:\"' + 'VDCS-T0' + '"' \
         + '}'
 
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
     j = json.loads(r.text)
 
@@ -564,6 +582,7 @@ def ucsd_cpu():
         + ',param2:\"' + 'CPU-S0' + '"' \
         + '}'
 
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
     j = json.loads(r.text)
 
@@ -578,6 +597,7 @@ def ucsd_memory():
         + ',param2:\"' + 'MEMORY-S0' + '"' \
         + '}'
 
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
     j = json.loads(r.text)
 
@@ -592,6 +612,7 @@ def ucsd_disk():
         + ',param2:\"' + 'DISK-S0' + '"' \
         + '}'
 
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
     j = json.loads(r.text)
 
@@ -607,6 +628,7 @@ def ucsd_network():
         + ',param2:\"' + 'VSWITCHES-T2' + '"' \
         + '}'
 
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
     j = json.loads(r.text)
    
@@ -622,6 +644,7 @@ def group_list():
     u = url % ucsdserver + getstring % apioperation + parameter_lead + \
         "{param0:\"" + "" + '"' + '}'
 
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
     # print r.text
     j = json.loads(r.text)
@@ -637,6 +660,7 @@ def group_detail_by_id(group_id):
     u = url % ucsdserver + getstring % apioperation + parameter_lead + \
         "{param0:\"" + str(group_id) + '"' + '}'
 
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
     # print r.text
     j = json.loads(r.text)
@@ -653,6 +677,7 @@ def vdc_list_all():
     u = url % ucsdserver + getstring % apioperation + parameter_lead + \
         "{param0:\"" + "" + '"' + '}'
 
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
     # print r.text
     j = json.loads(r.text)
@@ -668,6 +693,7 @@ def global_vms():
         + ',param2:\"' + 'VMS-T0' + '"' \
         + '}'
 
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
     #print r
     j = json.loads(r.text)
@@ -684,6 +710,7 @@ def group_vms(group_id):
         + ',param2:\"' + 'VMS-T14' + '"' \
         + '}'
 
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
     # print r.text
     j = json.loads(r.text)
@@ -699,6 +726,7 @@ def available_reports(group_name):
         + ',param1:\"' + group_name + '"' \
         + '}'
 
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
     # print r.text
     j = json.loads(r.text)
@@ -715,6 +743,7 @@ def tabular_report(context_name, context_value, report_id):
         + ',param2:\"' + report_id + '"' \
         + '}'
 
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
     j = json.loads(r.text)
 
@@ -734,6 +763,7 @@ def ucsd_get_restaccesskey( p_user_id):
     u = url % ucsdserver + getstring % apioperation + parameter_lead + \
         "{param0:\"" + p_user_id + '"' \
         + '}'
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
     j = json.loads(r.text)
     return j['serviceResult']
@@ -745,6 +775,7 @@ def ucsd_get_userprofile( p_user_id):
     u = url % ucsdserver + getstring % apioperation + parameter_lead + \
         "{param0:\"" + p_user_id + '"' \
         + '}'
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
     j = json.loads(r.text)
     return j['serviceResult']
@@ -754,6 +785,7 @@ def ucsd_get_all_vms():
     apioperation = "userAPIGetAllVMs"
     u = url % ucsdserver + getstring % apioperation + parameter_lead + \
         "{}"
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
     j = json.loads(r.text)
     rows = []
@@ -769,6 +801,7 @@ def ucsd_get_groups():
     apioperation = "userAPIGetAllGroups"
     u = url % ucsdserver + getstring % apioperation + parameter_lead + \
         "{}"
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
     j = json.loads(r.text)
 
@@ -785,6 +818,7 @@ def ucsd_get_groupbyname( grp_name):
     u = url % ucsdserver + getstring % apioperation + parameter_lead + \
         "{param0:\"" + grp_name + '"' \
         + '}'
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
     j = json.loads(r.text)
 
@@ -854,9 +888,10 @@ def ucsd_verify_user(user_id="", password=""):
         ',' + 'param1:"' + password + '"' + \
         '}'
 
-    # print(u)
+    print(u)
     requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
+    print r
     # print('end')
 
     j = json.loads(r.text)

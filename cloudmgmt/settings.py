@@ -179,14 +179,19 @@ t1 = 20
 t2 = 10
 
 CELERYBEAT_SCHEDULE = {
-      'update-hosts': {
+    'update-all': {
+        'task': 'cloudmgmt.tasks.update_all',
+        'schedule': timedelta(minutes=5),  # minutes=10
+        'args': ()
+    },
+    'update-hosts': {
         'task': 'cloudmgmt.tasks.update_hosts',
         'schedule': timedelta(minutes=10),
         'args': ()
     },
     'update-vms': {
         'task': 'cloudmgmt.tasks.update_vms',
-        'schedule': timedelta(minutes=5),
+        'schedule': timedelta(minutes=15),
         'args': ()
     },
 }

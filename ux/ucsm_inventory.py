@@ -74,14 +74,18 @@ def _get_inventory(phandle, subject=None):
                 for fw in fws:
                     if fw.deployment == 'system': firmware = fw.version
             print (blade.model, blade.serial, _convert_name(blade.dn), firmware, blade.mfg_time)
-            entity = BiInventory()
+
+            if BiInventory.objects.filter(serial=blade.serial).count() ==0:
+                entity = BiInventory()
+            else:
+                entity = BiInventory.objects.get(serial=blade.serial)
             entity.model = blade.model
             entity.hwtype = 'Blade'
             entity.serial = blade.serial
             entity.name = _convert_name(blade.dn)
             entity.firmwareVersion = firmware
             entity.mfgtime = blade.mfg_time
-            entity.ipAddress = ''
+            entity.ipAddress = ''  # FIXME
             # entity.lastModified
             # entity.desc
             entity.save()
@@ -96,7 +100,10 @@ def _get_inventory(phandle, subject=None):
             for fw in fws:
                 if fw.deployment == 'system': firmware = fw.version
         print(rack.model, rack.serial, _convert_name(rack.dn), firmware, rack.mfg_time)
-        entity = BiInventory()
+        if BiInventory.objects.filter(serial=rack.serial).count() == 0:
+            entity = BiInventory()
+        else:
+            entity = BiInventory.objects.get(serial=rack.serial)
         entity.model = rack.model
         entity.hwtype = 'Rack'
         entity.serial = rack.serial
@@ -117,7 +124,10 @@ def _get_inventory(phandle, subject=None):
             for fw in fws:
                 if fw.deployment == 'system': firmware = fw.version
         print (network.model, network.serial, network.oob_if_ip, _convert_name(network.dn), firmware)
-        entity = BiInventory()
+        if BiInventory.objects.filter(serial=network.serial).count() == 0:
+            entity = BiInventory()
+        else:
+            entity = BiInventory.objects.get(serial=network.serial)
         entity.model = network.model
         entity.hwtype = 'Network'
         entity.serial = network.serial
@@ -131,6 +141,7 @@ def _get_inventory(phandle, subject=None):
 
 
 def _print_fault_info(faults):
+    BiFaults.objects.all().delete()     # FIXME
     for fault in faults:
         print(fault.severity, fault.code, _fault_target(fault.dn), fault.created, fault.descr, fault.occur)
         entity = BiFaults()

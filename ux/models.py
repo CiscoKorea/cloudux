@@ -43,6 +43,7 @@ class Audited(models.Model):
     created = models.DateTimeField(blank=True, null=True)
     modified = models.DateTimeField(auto_now=True)
     dbstatus = models.CharField(max_length=1, default='A')
+    old = models.BooleanField(default=False)
 
     class Meta:
         abstract = True
@@ -185,7 +186,7 @@ class BiInventory(Audited):
     desc = models.CharField(max_length=100, blank=True, null=True)
 
 
-class BiFaults(models.Model):
+class BiFaults(Audited):
     severity = models.CharField(max_length=100, blank=True, null=True)
     target = models.CharField(max_length=100, blank=True, null=True)
     faultType = models.CharField(max_length=100, blank=True, null=True)
@@ -276,7 +277,7 @@ class UdVmDisk(Audited):
     disk_name = models.CharField(max_length=100, blank=True, null=True)
 
 
-class UserAddInfo(models.Model):
+class UserAddInfo(Audited):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     contact = models.CharField(max_length=50, blank=True, null=True)
     role = models.CharField(max_length=20, blank=True, null=True)
