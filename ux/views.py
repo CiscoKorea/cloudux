@@ -1094,6 +1094,7 @@ def my_login(request):
 
     # check user
     if User.objects.filter(username=p_username).count()==0:
+        # new User
         t_id = None
         if UdGroup.objects.filter(group_name=ucsd_user["groupName"]).count() ==0:
             t_id = None
@@ -1105,6 +1106,23 @@ def my_login(request):
         addinfo = UserAddInfo()
         addinfo.contact = ''
         addinfo.user = newuser
+        addinfo.tenant_id = t_id
+        addinfo.save()
+
+        user = authenticate(username=p_username, password=password)
+    else:
+        # user in DB
+        # update tenant_id
+        user = authenticate(username=p_username, password=password)
+        addinfo = UserAddInfo.objects.get(user=user)
+
+        t_id = None
+        if UdGroup.objects.filter(group_name=ucsd_user["groupName"]).count() == 0:
+            t_id = None
+        else:
+            db_group = UdGroup.objects.get(group_name=ucsd_user["groupName"])
+            t_id = db_group.id
+
         addinfo.tenant_id = t_id
         addinfo.save()
 
