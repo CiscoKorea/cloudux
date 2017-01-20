@@ -449,7 +449,7 @@ def catalog_type(catalog, group):
     return c[0]["Catalog_Type"]
 
 
-def catalog_order(catalog, vdc, group, comment="", vmname="", vcpus="0", vram="0", datastores="", vnics=""):
+def catalog_order(catalog, vdc, group, comment="", vmname="", vcpus="0", vram="0", datastores="", vnics="", username=""):
     """
     Order a Standard Catalog Item
     :param catalog:
@@ -474,13 +474,13 @@ def catalog_order(catalog, vdc, group, comment="", vmname="", vcpus="0", vram="0
 
     # Only support vCenter so far
     if catalog_cloud_type == "VMware":
-        order = vmware_provision(catalog, vdc, comment, vmname, vcpus, vram, datastores, vnics)
+        order = vmware_provision(catalog, vdc, comment, vmname, vcpus, vram, datastores, vnics, username)
         return order
 
     return "Invalid Request Provided"
 
 
-def vmware_provision(catalog, vdc, comment="", vmname="", vcpus="0", vram="0", datastores="", vnics="1"):
+def vmware_provision(catalog, vdc, comment="", vmname="", vcpus="0", vram="0", datastores="", vnics="0", username=""):
     """
     Order a VMware based standard catalog
     :param catalog: Name of the catalog
@@ -500,7 +500,7 @@ def vmware_provision(catalog, vdc, comment="", vmname="", vcpus="0", vram="0", d
     param4 = vcpus if vcpus else "0"
     param5 = vram if vram else "0"
     param6 = datastores if datastores else ""
-    param7 = vnics  if vnics else "1"
+    param7 = vnics if vnics else "0"
 
     apioperation = "userAPIVMWareProvisionRequest"
     u = url % ucsdserver + getstring % apioperation + parameter_lead + \
@@ -513,10 +513,14 @@ def vmware_provision(catalog, vdc, comment="", vmname="", vcpus="0", vram="0", d
         "param6:\"" + param6 + '",' + \
         "param7:\"" + param7 + '"}'
 
-    #print u
+    print u
 
     requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
-    r = requests.get(u, headers=headers, verify=False)
+    if username != "":
+        myheaders = {"X-Cloupia-Request-Key": ucsd_get_restaccesskey(username)}
+        r = requests.get(u, headers=myheaders, verify=False)
+    else :
+        r = requests.get(u, headers=headers, verify=False)
     #print r.text
     j = json.loads(r.text)
     print j
@@ -766,6 +770,7 @@ def ucsd_get_restaccesskey( p_user_id):
     requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
     j = json.loads(r.text)
+    print(j)
     return j['serviceResult']
 
 def ucsd_get_userprofile( p_user_id):
@@ -904,6 +909,73 @@ def ucsd_verify_user(user_id="", password=""):
     return j['serviceResult']
 
 
+# def change_header_rest_key(p_user_id):
+#     key = ucsd_get_restaccesskey(p_user_id=p_user_id)
+#     headers["X-Cloupia-Request-Key"] = key
+#     return key
+#
+#
+# def get_header_rest_key():
+#     return headers["X-Cloupia-Request-Key"]
+#
+#
+# def set_header_rest_key(key):
+#     headers["X-Cloupia-Request-Key"] = key
+
+
+def ucsd_provision_request(catalog, vdc, comment="", vmname="", vcpus="0", vram="0", datastores="", vnics="0", username=""):
+    """
+    Order a VMware based standard catalog
+    :param catalog: Name of the catalog
+    :param vdc: Name of the vDC
+    :param comment: Comment that is set as the VM label
+    :param vmname: Name of the VM to be provisioned
+    :param vcpus: Number of CPUs
+    :param vram: Size of memory in GB
+    :param datastores: Number of VM Disks
+    :param vnics: VM networks
+    :return:
+    """
+    # param0 = catalog
+    # param1 = vdc
+    # param2 = vmname
+    # param3 = comment if comment else ""
+    # param4 = vcpus if vcpus else "0"
+    # param5 = vram if vram else "0"
+    # param6 = datastores if datastores else ""
+    # param7 = vnics if vnics else "0"
+    param0 = {"catalogName": catalog, "vdcName": vdc, "userID": 'test3'}
+
+    if username == "":
+        username = 'admin'
+
+    apioperation = "userAPIProvisionRequest"
+    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
+        '{param0:{"catalogName":"' + catalog + '"' \
+                  + ',"vdcName":"' + vdc + '"' \
+                  + ',"userID":"'+username + '"' \
+                  + ',"vmName":"'+vmname + '"' \
+                  + ',"resourceAllocated":'+'true' + '' \
+                  + ',"cores":'+vcpus + '' \
+                  + ',"memoryMB":'+vram + '' \
+                  + ',"diskGB":'+'15' + '' \
+                  + ',"comments":"'+'abc' + '"' \
+        '}}'
+    print u
+
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+    if username != "":
+        myheaders = {"X-Cloupia-Request-Key": ucsd_get_restaccesskey(username)}
+        r = requests.get(u, headers=myheaders, verify=False)
+    else :
+        r = requests.get(u, headers=headers, verify=False)
+    print r.text
+    j = json.loads(r.text)
+    print j
+    # vms = sr_vms()
+
+    return j
+
 if __name__ == '__main__':
     print('test code')
     #print (ucsd_user_profile('hyungsok'))
@@ -912,4 +984,4 @@ if __name__ == '__main__':
     #print( ret )
     #print( ucsd_get_groupbyname(ret['groupName']))
     #print(ucsd_get_restaccesskey('hyungsok'))
- 
+

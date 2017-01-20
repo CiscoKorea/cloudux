@@ -35,7 +35,7 @@ import ssl
 from ucsm_inventory import get_ucsm_info
 from ucsd_library import catalog_list, catalog_list_all, vm_list, vm_action, ucsd_vdcs, ucsd_memory, ucsd_network, \
     ucsd_cloud, ucsd_cpu, ucsd_disk, catalog_order, group_list, group_detail_by_id, vdc_list, vm_details, \
-    global_vms, group_vms, available_reports, ucsd_vm_disk, vmware_provision, ucsd_get_all_vms
+    global_vms, group_vms, available_reports, ucsd_vm_disk, vmware_provision, ucsd_get_all_vms, ucsd_provision_request
 # Create your views here.
 from ux.ucsd_library import ucsd_verify_user, ucsd_add_user, ucsd_add_group
 from patch_db import patch_data_vcenter_datacenter
@@ -1284,6 +1284,7 @@ def catalog_vm_provision(request):
     p_vdc = request.GET.get("vdc")
 
     cnt = 1
+    sr_num = ''
     while cnt <= int(p_vmcount):
         db_catalog = BiCatalog.objects.filter(catalog_id=p_catalog_id).first()
         # FIXME check catalog type
@@ -1292,11 +1293,22 @@ def catalog_vm_provision(request):
         l.append("-")
         l.append(str(cnt).zfill(3))
         vmname = ''.join(l)
-        order_status = catalog_order(db_catalog.catalog_name, vdc=p_vdc, group=p_group, comment=p_comment, vmname=vmname,
-                       vcpus=p_vcpus, vram=p_vram, datastores=p_datastores, vnics=p_vnics)
+
+        username = ''
+        if not request.user.is_staff:
+            username = str(request.user.username)
+
+
+        # order_status = catalog_order(db_catalog.catalog_name, vdc=p_vdc, group=p_group, comment=p_comment, vmname=vmname,
+        #                vcpus=p_vcpus, vram=p_vram, datastores=p_datastores, vnics=p_vnics, username=username)
+        order_status = ucsd_provision_request(db_catalog.catalog_name, vdc=p_vdc, comment=p_comment, vmname=vmname,
+                       vcpus=p_vcpus, vram=p_vram, datastores=p_datastores, vnics=p_vnics, username=username)
+
+
         cnt += 1
         print (order_status)
-    return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
+        sr_num = sr_num + str(order_status['serviceResult']) + ","
+    return HttpResponse(json.dumps({'result': 'OK', 'sr_num': sr_num}), 'application/json')
 
 
 def users_groups(request):
@@ -1327,6 +1339,9 @@ def testpage(request):
     # from cloudmgmt.tasks import update_dcs
     # result = update_dcs.delay()
     # print("result:", result)
+    print("userid :", request.user.username)
+
+    vdc_list('','')
 
     return render(request, 'test.html', {})
 
