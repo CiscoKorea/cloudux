@@ -44,8 +44,8 @@
                       <tbody text-align="left">
                           {% for host in list %}
                           <tr>
-                            <td>{{ host.datacenter.name }}</td>
-                            <td>{{ host.cluster.name }}</td>
+                            <td data-mg="{{ host.datacenter.name }}">{{ host.datacenter.name }}</td>
+                            <td data-mg="{{ host.datacenter.name }}|{{ host.cluster.name }}">{{ host.cluster.name }}</td>
                             <td>{{ host.host }}</td>
                             <td>{{ host.os }} <br/> {{ host.version }}</td>
                             <td>{{ host.ip }}</td>

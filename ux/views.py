@@ -240,7 +240,7 @@ def vms(request):
     except EmptyPage:
         plist = paginator.page(paginator.num_pages)
 
-    clist = BiCatalog.objects.filter(catalog_type='Standard')
+    clist = BiCatalog.objects.filter(catalog_type__in=['Standard', '표준'])
     return render(request, "vmList.html", {'list': plist, 'search': search, 'clist': clist})
 
 # def vms_old(request):
@@ -322,7 +322,7 @@ def vms_ajax(request):
 
 @login_required
 def catalogs(request):
-    clist = BiCatalog.objects.all()
+    clist = BiCatalog.objects.filter(catalog_type__in=['Standard', '표준'])
 
     paginator = Paginator(clist, 4)
     page = request.GET.get('page')
@@ -1254,7 +1254,7 @@ def ucsd_vm_create(request):
     p_cpu = resource[0]
     p_mem = resource[1]
     p_disk = ""  # FIXME resource[2]
-    p_vdc = request.POST.get("vdc", "Sales Bronze VDC") # FIXME
+    p_vdc = request.POST.get("vdc", "Sales Bronze vDC") # FIXME
 
     vmware_provision(p_catalog, p_vdc, comment="", vmname="", vcpus=p_cpu, vram=p_mem, datastores=p_disk, vnics="")
 

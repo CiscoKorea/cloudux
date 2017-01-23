@@ -254,7 +254,7 @@ function doRowSpan(tid){
     for(var i=0; i<tObj.rows.length; i++){
         if(tObj.rows[i]!=null){
             for(var j in tObj.rows[i].cells){
-                if(tObj.rows[i].cells[j].innerHTML && j < 2){
+                if(tObj.rows[i].cells[j].innerHTML){
                     rowSpanCount = getRowSpanCount(tObj, i, j);
                     if(rowSpanCount > 1){
                         tObj.rows[i].cells[j].rowSpan = rowSpanCount;
@@ -279,7 +279,13 @@ function getRowSpanCount(tObj, i, j){
     return rowSpanCount;
 }
 function isEqualToNextUnderCell(tObj, i, j, nextY){
-    return tObj.rows[nextY] && tObj.rows[nextY].cells[j] && tObj.rows[i].cells[j].innerHTML == tObj.rows[nextY].cells[j].innerHTML
+    // return false;
+    try {
+        return tObj.rows[nextY] && tObj.rows[nextY].cells[j] && tObj.rows[i].cells[j].dataset.mg && tObj.rows[i].cells[j].dataset.mg == tObj.rows[nextY].cells[j].dataset.mg
+    } catch(e) {
+
+    }
+    // return tObj.rows[nextY] && tObj.rows[nextY].cells[j] && tObj.rows[i].cells[j].innerHTML == tObj.rows[nextY].cells[j].innerHTML
 }
 function deleteCellsByCol(tid){
     var s="";
