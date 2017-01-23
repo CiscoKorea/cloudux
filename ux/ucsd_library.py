@@ -500,7 +500,7 @@ def vmware_provision(catalog, vdc, comment="", vmname="", vcpus="0", vram="0", d
     param4 = vcpus if vcpus else "0"
     param5 = vram if vram else "0"
     param6 = datastores if datastores else ""
-    param7 = vnics if vnics else "0"
+    param7 = vnics if vnics else ""
 
     apioperation = "userAPIVMWareProvisionRequest"
     u = url % ucsdserver + getstring % apioperation + parameter_lead + \

@@ -246,7 +246,7 @@ def vms(request):
         plist = paginator.page(paginator.num_pages)
 
     clist = BiCatalog.objects.filter(catalog_type__in=['Standard', '표준'])
-    return render(request, "vmList.html", {'list': plist, 'search': search, 'clist': clist})
+    return render(request, "vmList.html", {'list': plist, 'search': search, 'clist': clist, 'tenant': tenant})
 
 # def vms_old(request):
 #
@@ -1333,9 +1333,25 @@ def ucsd_vm_create(request):
     p_cpu = resource[0]
     p_mem = resource[1]
     p_disk = ""  # FIXME resource[2]
-    p_vdc = request.POST.get("vdc", "Sales Bronze vDC") # FIXME
 
-    vmware_provision(p_catalog, p_vdc, comment="", vmname="", vcpus=p_cpu, vram=p_mem, datastores=p_disk, vnics="")
+    # p_vdc = request.POST.get("vdc", "Sales Bronze vDC")
+    group_name = request.POST.get("group_name")
+    # group_name = "Sales"
+    vdc_cnt = UdVDC.objects.filter(vdc__contains=group_name).count()
+    if vdc_cnt == 0:
+        p_vdc = UdVDC.objects.all()[:1].get().vdc
+    if vdc_cnt > 0:
+        p_vdc = UdVDC.objects.filter(vdc__contains=group_name)[:1].get().vdc
+
+    print(request.user.username)
+    print(p_vdc)
+
+    username = ''
+    if not request.user.is_staff:
+        username = str(request.user.username)
+
+    vmware_provision(p_catalog, p_vdc, comment="", vmname="", vcpus=p_cpu, vram=p_mem,
+                     datastores=p_disk, vnics="", username=username)
 
     return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
 

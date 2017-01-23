@@ -1,6 +1,7 @@
     <!-- lay_pop -->
     <form name="create_vm" id="create_vm">
-    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" />
+    <input type="hidden" name="group_name" value="{{ tenant.group_name }}" />
     <div class="lay_pop create">
         <div class="lay_header">
             <h1>Create VM</h1>
@@ -20,14 +21,15 @@
             <h3><a href="#">VM Resource</a></h3>
             <div class="sub">
             	<ul>
-                	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="1|1|20"> CPU 1. 1G Memory. 20G Disk</label></li>
-                	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="1|2|20"> CPU 1. 2G Memory. 20G Disk</label></li>
-                	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="1|4|20"> CPU 1. 4G Memory. 20G Disk</label></li>
-                	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="1|8|20"> CPU 1. 8G Memory. 20G Disk</label></li>
-                	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="2|1|20"> CPU 2. 1G Memory. 20G Disk</label></li>
-                	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="2|2|20"> CPU 2. 2G Memory. 20G Disk</label></li>
-                	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="2|4|20"> CPU 2. 4G Memory. 20G Disk</label></li>
-                	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="2|8|20"> CPU 2. 8G Memory. 20G Disk</label></li>
+                	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="0|0|20"> CPU 0. 0G Memory. 20G Disk</label></li>
+                    <li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="1|1024|20"> CPU 1. 1G Memory. 20G Disk</label></li>
+                	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="1|2048|20"> CPU 1. 2G Memory. 20G Disk</label></li>
+                	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="1|4096|20"> CPU 1. 4G Memory. 20G Disk</label></li>
+                	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="1|8192|20"> CPU 1. 8G Memory. 20G Disk</label></li>
+                	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="2|1024|20"> CPU 2. 1G Memory. 20G Disk</label></li>
+                	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="2|2048|20"> CPU 2. 2G Memory. 20G Disk</label></li>
+                	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="2|4096|20"> CPU 2. 4G Memory. 20G Disk</label></li>
+                	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="2|8192|20"> CPU 2. 8G Memory. 20G Disk</label></li>
                 </ul>
             </div>
 
