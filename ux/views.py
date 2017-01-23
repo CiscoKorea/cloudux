@@ -1137,6 +1137,62 @@ def get_ucsd_vmdisk_list():
             disk.save()
 
 
+def get_ucsd_stat1():
+    total_vm = 0
+    active_vm = 0
+    vdc_list = ucsd_vdcs()
+    for vdc in vdc_list:
+        total_vm += vdc["Total_VMs"]
+        active_vm += vdc["Active_VMs"]
+
+    DashboardAlloc.objects.all().delete()
+    dash1 = DashboardAlloc()    # FIXME 기존 1행으로 처리 해도 됨
+    dash1.total_vm = int(round(active_vm / float(total_vm) * 100)) if total_vm != 0 else 0
+    dash1.save()
+
+    total_cpu = 0.0
+    prov_cpu = 0.0
+    cpu_alloc = ucsd_cpu()
+    for cpu in cpu_alloc:
+        if cpu["name"].find("Capacity") >= 0 or cpu["name"].find(u"용량") >= 0 :
+            total_cpu = float(cpu["value"])
+        if cpu["name"].find("Provisioned") >=0 or cpu["name"].find(u"프로비저닝") >=0 :
+            prov_cpu = float(cpu["value"])
+    dash1.total_cpu = int(round(prov_cpu / total_cpu * 100)) if total_cpu != 0.0 else 0.0
+    dash1.save()
+
+    total_mem = 0.0
+    prov_mem = 0.0
+    mem_alloc = ucsd_memory()
+    for mem in mem_alloc:
+        if mem["name"].find("Capacity") >= 0 or mem["name"].find(u"용량") >= 0:
+            total_mem = float(mem["value"])
+        if mem["name"].find("Provisioned") >= 0 or mem["name"].find(u"프로비저닝") >= 0:
+            prov_mem = float(mem["value"])
+    dash1.total_mem = int(round(prov_mem / total_mem * 100)) if total_mem != 0.0 else 0.0
+    dash1.save()
+
+    total_stg = 0.0
+    prov_stg = 0.0
+    stg_alloc = ucsd_disk()
+    for stg in stg_alloc:
+        if stg["name"].find("Capacity") >= 0 or stg["name"].find(u"용량") >= 0:
+            total_stg = float(stg["value"])
+        if stg["name"].find("Provisioned") >= 0 or stg["name"].find(u"프로비저닝") >= 0:
+            prov_stg = float(stg["value"])
+    dash1.total_stg = int(round(prov_stg / total_stg * 100)) if total_stg != 0.0 else 0.0
+    dash1.save()
+
+
+def get_ucsd_stat2():
+    DashboardVswitch.objects.all().delete()
+    net_list = ucsd_network()
+    for net in net_list:
+        vswtc = DashboardVswitch()
+        vswtc.portgroup = int(net["Num_Port_Groups"])
+        vswtc.switch = net["Switch_Name"]
+        vswtc.save()
+
 def reload_data_none(request):
     return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
 
@@ -1175,59 +1231,8 @@ def reload_data(request):
         entity.cloud = cloud["Cloud"]
         entity.save()
 
-    total_vm = 0
-    active_vm = 0
-    vdc_list = ucsd_vdcs()
-    for vdc in vdc_list:
-        total_vm += vdc["Total_VMs"]
-        active_vm += vdc["Active_VMs"]
-
-    DashboardAlloc.objects.all().delete()
-    dash1 = DashboardAlloc()
-    dash1.total_vm = int(round(active_vm / total_vm * 100)) if total_vm != 0 else 0
-    dash1.save()
-
-    total_cpu = 0.0
-    prov_cpu = 0.0
-    cpu_alloc = ucsd_cpu()
-    for cpu in cpu_alloc:
-        if cpu["name"].__contains__("Capacity"):
-            total_cpu = float(cpu["value"])
-        if cpu["name"].__contains__("Provisioned"):
-            prov_cpu = float(cpu["value"])
-    dash1.total_cpu = int(round(prov_cpu / total_cpu * 100)) if total_cpu != 0.0 else 0.0
-    dash1.save()
-
-    total_mem = 0.0
-    prov_mem = 0.0
-    mem_alloc = ucsd_memory()
-    for mem in mem_alloc:
-        if mem["name"].__contains__("Capacity"):
-            total_mem = float(mem["value"])
-        if mem["name"].__contains__("Provisioned"):
-            prov_mem = float(mem["value"])
-    dash1.total_mem = int(round(prov_mem / total_mem * 100)) if total_mem != 0.0 else 0.0
-    dash1.save()
-
-    total_stg = 0.0
-    prov_stg = 0.0
-    stg_alloc = ucsd_disk()
-    for stg in stg_alloc:
-        if stg["name"].__contains__("Capacity"):
-            total_stg = float(stg["value"])
-        if stg["name"].__contains__("Provisioned"):
-            prov_stg = float(stg["value"])
-    dash1.total_stg = int(round(prov_stg / total_stg * 100)) if total_stg != 0.0 else 0.0
-    dash1.save()
-    
-    #javaos74 need to fix
-    DashboardVswitch.objects.all().delete()
-    net_list = {} #ucsd_network()
-    for net in net_list:
-        vswtc = DashboardVswitch()
-        vswtc.portgroup = int(net["Num_Port_Groups"])
-        vswtc.switch = net["Switch_Name"]
-        vswtc.save()
+    get_ucsd_stat1()
+    get_ucsd_stat2()
 
     return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
 
