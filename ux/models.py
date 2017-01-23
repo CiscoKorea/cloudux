@@ -277,6 +277,38 @@ class UdVmDisk(Audited):
     disk_name = models.CharField(max_length=100, blank=True, null=True)
 
 
+class UdPolicySystem(Audited):
+    policy_id = models.IntegerField(default=0)
+    policy_name = models.CharField(max_length=100, blank=True, null=True)
+    policy_description = models.CharField(max_length=100, blank=True, null=True)
+    vdcs = models.CharField(max_length=200, blank=True, null=True)
+
+
+class UdPolicyComputing(Audited):
+    policy_id = models.IntegerField(default=0)
+    policy_name = models.CharField(max_length=100, blank=True, null=True)
+    policy_description = models.CharField(max_length=100, blank=True, null=True)
+    vdcs = models.CharField(max_length=200, blank=True, null=True)
+
+
+class UdPolicyStorage(Audited):
+    policy_id = models.IntegerField(default=0)
+    policy_name = models.CharField(max_length=100, blank=True, null=True)
+    policy_description = models.CharField(max_length=100, blank=True, null=True)
+    cloud_name = models.CharField(max_length=100, blank=True, null=True)
+    status = models.CharField(max_length=100, blank=True, null=True)
+    vdcs = models.CharField(max_length=200, blank=True, null=True)
+
+
+class UdPolicyNetwork(Audited):
+    policy_id = models.IntegerField(default=0)
+    policy_name = models.CharField(max_length=100, blank=True, null=True)
+    policy_description = models.CharField(max_length=100, blank=True, null=True)
+    cloud_name = models.CharField(max_length=100, blank=True, null=True)
+    status = models.CharField(max_length=100, blank=True, null=True)
+    vdcs = models.CharField(max_length=200, blank=True, null=True)
+
+
 class UserAddInfo(Audited):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     contact = models.CharField(max_length=50, blank=True, null=True)

@@ -976,6 +976,117 @@ def ucsd_provision_request(catalog, vdc, comment="", vmname="", vcpus="0", vram=
 
     return j
 
+
+def ucsd_create_vdc(vdcName,  group_id,  cloudName, systemPolicy, computingPolicy, storagePolicy, networkPolicy):
+    apioperation = "userAPICreateVDC"
+    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
+        '{param0:{"vdcName":"' + vdcName + '"' \
+        + ',"vdcDescription":"' + 'vdcDescription' + '"' \
+        + ',"cloudName":"' + cloudName + '"' \
+        + ',"groupName":' + str(group_id) + '' \
+        + ',"approver1":"' + '' + '"' \
+        + ',"approver1":"' + '' + '"' \
+        + ',"vdcSupportEmail":"' + '' + '"' \
+        + ',"vdcCustomerNoticationEmail":"' + '' + '"' \
+        + ',"systemPolicy":"' + systemPolicy + '"' \
+        + ',"deploymentPolicy":"' + '' + '"' \
+        + ',"slaPolicy":"' + '' + '"' \
+        + ',"computingPolicy":"' + computingPolicy + '"' \
+        + ',"storagePolicy":"' + storagePolicy + '"' \
+        + ',"networkPolicy":"' + networkPolicy + '"' \
+        + ',"costModel":"' + '' + '"' \
+        + ',"isLocked":' + 'false' + '' \
+        + ',"isDeletable":' + 'true' + '' \
+        + ',"inactivityPeriodForDeletion":' + '-1' + '' \
+        + ',"selfServiceEndUserPolicy":"' + '' + '"' \
+                                                 '}}'
+
+    print(u)
+    print(headers)
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+    r = requests.get(u, headers=headers, verify=False)
+    print r
+    print r.text
+    # print('end')
+
+    j = json.loads(r.text)
+    print(j)
+
+    if j['serviceError']:
+        print(j['serviceError'])
+        return None
+
+    return j['serviceResult']
+
+
+def ucsd_vmware_system_policy():
+    apioperation = "userAPIGetTabularReport"
+    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
+        "{param0:\"" + '10' + '"' \
+        + ',param1:\"' + '' + '"' \
+        + ',param2:\"' + 'VMWARE-SYSTEM-POLICY-T41' + '"' \
+        + '}'
+
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+    r = requests.get(u, headers=headers, verify=False)
+    print r.text
+    j = json.loads(r.text)
+    #print j
+
+    return j['serviceResult']['rows']
+
+
+def ucsd_vmware_computing_policy():
+    apioperation = "userAPIGetTabularReport"
+    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
+        "{param0:\"" + '10' + '"' \
+        + ',param1:\"' + '' + '"' \
+        + ',param2:\"' + 'VMWARE-COMPUTING-POLICY-T42' + '"' \
+        + '}'
+
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+    r = requests.get(u, headers=headers, verify=False)
+    print r.text
+    j = json.loads(r.text)
+    #print j
+
+    return j['serviceResult']['rows']
+
+
+def ucsd_vmware_storage_policy():
+    apioperation = "userAPIGetTabularReport"
+    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
+        "{param0:\"" + '10' + '"' \
+        + ',param1:\"' + '' + '"' \
+        + ',param2:\"' + 'VMWARE-STORAGE-POLICY-T43' + '"' \
+        + '}'
+
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+    r = requests.get(u, headers=headers, verify=False)
+    print r.text
+    j = json.loads(r.text)
+    #print j
+
+    return j['serviceResult']['rows']
+
+
+def ucsd_vmware_network_policy():
+    apioperation = "userAPIGetTabularReport"
+    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
+        "{param0:\"" + '10' + '"' \
+        + ',param1:\"' + '' + '"' \
+        + ',param2:\"' + 'VMWARE-NETWORK-POLICY-T44' + '"' \
+        + '}'
+
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+    r = requests.get(u, headers=headers, verify=False)
+    print r.text
+    j = json.loads(r.text)
+    #print j
+
+    return j['serviceResult']['rows']
+
+
 if __name__ == '__main__':
     print('test code')
     #print (ucsd_user_profile('hyungsok'))

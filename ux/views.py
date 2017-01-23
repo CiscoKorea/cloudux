@@ -27,8 +27,9 @@ from cloudmgmt.settings import *
 
 from models import GlobalConfig, ConfigUtil, BiHost, BiVnic, BiVolume, BiVswitch, BiVirtualMachine, BiPnic, \
     BiPortgroup, BiCluster, BiDatacenter, UserAddInfo, BiInventory, BiFaults, BiCatalog, \
-    UdCloud, DashboardAlloc, DashboardVswitch, UdGroup, UdVDC, UdVmDisk
-from django.core.exceptions import MultipleObjectsReturned ,ObjectDoesNotExist
+    UdCloud, DashboardAlloc, DashboardVswitch, UdGroup, UdVDC, UdVmDisk, UdPolicySystem, UdPolicyComputing, \
+    UdPolicyStorage, UdPolicyNetwork
+from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 # import tools.cli as cli
 
 import ssl
@@ -37,7 +38,8 @@ from ucsd_library import catalog_list, catalog_list_all, vm_list, vm_action, ucs
     ucsd_cloud, ucsd_cpu, ucsd_disk, catalog_order, group_list, group_detail_by_id, vdc_list, vm_details, \
     global_vms, group_vms, available_reports, ucsd_vm_disk, vmware_provision, ucsd_get_all_vms, ucsd_provision_request
 # Create your views here.
-from ux.ucsd_library import ucsd_verify_user, ucsd_add_user, ucsd_add_group
+from ux.ucsd_library import ucsd_verify_user, ucsd_add_user, ucsd_add_group, ucsd_create_vdc, \
+    ucsd_vmware_system_policy, ucsd_vmware_computing_policy, ucsd_vmware_storage_policy, ucsd_vmware_network_policy
 from patch_db import patch_data_vcenter_datacenter
 
 class search_form():
@@ -98,12 +100,15 @@ def dashboard_fault_list(request):
     # search.srch_txt = request.GET.get("srch_txt", "")
 
     # json_list = []
-    print("search.srch_key: ", search.srch_key)
-    if search.srch_key == "description":
-        print("search.srch_txt: ", search.srch_txt)
-        fault_list = BiFaults.objects.filter(target=target_infra, desc__icontains=search.srch_txt)
+    # print("search.srch_key: ", search.srch_key)
+    if target_infra == "":
+        fault_list = BiFaults.objects.all()
     else:
-        fault_list = BiFaults.objects.filter(target=target_infra)
+        if search.srch_key == "description":
+            # print("search.srch_txt: ", search.srch_txt)
+            fault_list = BiFaults.objects.filter(target=target_infra, desc__icontains=search.srch_txt)
+        else:
+            fault_list = BiFaults.objects.filter(target=target_infra)
 
     json_list = []
     for fault in fault_list:
@@ -1065,6 +1070,7 @@ def get_ucsd_group_list():
     glist = group_list()
     for group in glist:
 
+        # groupId? groupName?
         if UdGroup.objects.filter(group_id=group["groupId"]).count() == 0:
             entity = UdGroup()
         else:
@@ -1193,11 +1199,73 @@ def get_ucsd_stat2():
         vswtc.switch = net["Switch_Name"]
         vswtc.save()
 
+
+def get_ucsd_policy_system():
+    all_policy = ucsd_vmware_system_policy()
+    for pol in all_policy:
+        if UdPolicySystem.objects.filter(policy_id=pol["Policy_ID"]).count() ==0:
+            policy = UdPolicySystem()
+            policy.policy_id = pol["Policy_ID"]
+        else:
+            policy = UdPolicySystem.objects.get(policy_id=pol["Policy_ID"])
+        policy.policy_name = pol["Policy_Name"]
+        policy.policy_description = pol["Policy_Description"]
+        policy.vdcs = pol["vDCs"]
+        policy.save()
+
+
+def get_ucsd_policy_computing():
+    all_policy = ucsd_vmware_computing_policy()
+    for pol in all_policy:
+        if UdPolicyComputing.objects.filter(policy_id=pol["Policy_ID"]).count() ==0:
+            policy = UdPolicyComputing()
+            policy.policy_id = pol["Policy_ID"]
+        else:
+            policy = UdPolicyComputing.objects.get(policy_id=pol["Policy_ID"])
+        policy.policy_name = pol["Policy_Name"]
+        policy.policy_description = pol["Policy_Description"]
+        policy.vdcs = pol["vDCs"]
+        policy.save()
+
+
+def get_ucsd_policy_storage():
+    all_policy = ucsd_vmware_storage_policy()
+    for pol in all_policy:
+        if UdPolicyStorage.objects.filter(policy_id=pol["Policy_ID"]).count() ==0:
+            policy = UdPolicyStorage()
+            policy.policy_id = pol["Policy_ID"]
+        else:
+            policy = UdPolicyStorage.objects.get(policy_id=pol["Policy_ID"])
+        policy.policy_name = pol["Policy_Name"]
+        policy.policy_description = pol["Policy_Description"]
+        policy.vdcs = pol["vDCs"]
+        policy.cloud_name = pol["Cloud_Name"]
+        policy.status = pol["Status"]
+        policy.save()
+
+
+def get_ucsd_policy_network():
+    all_policy = ucsd_vmware_network_policy()
+    for pol in all_policy:
+        if UdPolicyNetwork.objects.filter(policy_id=pol["Policy_ID"]).count() ==0:
+            policy = UdPolicyNetwork()
+            policy.policy_id = pol["Policy_ID"]
+        else:
+            policy = UdPolicyNetwork.objects.get(policy_id=pol["Policy_ID"])
+        policy.policy_name = pol["Policy_Name"]
+        policy.policy_description = pol["Policy_Description"]
+        policy.vdcs = pol["vDCs"]
+        policy.cloud_name = pol["Cloud_Name"]
+        policy.status = pol["Status"]
+        policy.save()
+
+
 def reload_data_none(request):
     return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
 
 
 def reload_data(request):
+
 
     content = get_vcenter_info()  # get all data!!
 
@@ -1206,6 +1274,12 @@ def reload_data(request):
     # sync_vcenter_with_ucsd()
 
     get_ucsm_info()  # get ucsd inventory
+
+    get_ucsd_policy_system()    # get ucsd policy
+    get_ucsd_policy_computing()
+    get_ucsd_policy_storage()
+    get_ucsd_policy_network()
+
     get_catalog()
     get_ucsd_group_list()   # get ucsd group
     get_ucsd_vm_list()  # get ucsd vm id
@@ -1317,15 +1391,57 @@ def catalog_vm_provision(request):
 
 
 def users_groups(request):
-    if request.method == "POST" :
+    if request.method == "POST":
         group_name = request.POST.get("group_name")
         email = request.POST.get("email")
 
         # add ucsd group
         ucsd_add_group(group_name=group_name, first_name=group_name, last_name='on cloud ux', contact_email=email)
 
+        # FIXME only OK
         # refresh ucsd group
         get_ucsd_group_list()
+
+        group_id = UdGroup.objects.filter(group_name=group_name)[:1].get().group_id
+        cloud_name = BiCluster.objects.all()[:1].get().name
+
+        pcnt = UdPolicySystem.objects.filter(policy_name__contains=group_name).count()
+        if pcnt == 0:
+            system_policy = UdPolicySystem.objects.all()[:1].get()
+        if pcnt == 1:
+            system_policy = UdPolicySystem.objects.get(policy_name__contains=group_name)
+        if pcnt > 1:
+            system_policy = UdPolicySystem.objects.filter(policy_name__contains=group_name)[:1].get()
+
+        pcnt = UdPolicyComputing.objects.filter(policy_name__contains=group_name).count()
+        if pcnt == 0:
+            computing_policy = UdPolicyComputing.objects.all()[:1].get()
+        if pcnt == 1:
+            computing_policy = UdPolicyComputing.objects.get(policy_name__contains=group_name)
+        if pcnt > 1:
+            computing_policy = UdPolicyComputing.objects.filter(policy_name__contains=group_name)[:1].get()
+
+        pcnt = UdPolicyStorage.objects.filter(policy_name__contains=group_name).count()
+        if pcnt == 0:
+            storage_policy = UdPolicyStorage.objects.all()[:1].get()
+        if pcnt == 1:
+            storage_policy = UdPolicyStorage.objects.get(policy_name__contains=group_name)
+        if pcnt > 1:
+            storage_policy = UdPolicyStorage.objects.filter(policy_name__contains=group_name)[:1].get()
+
+        pcnt = UdPolicyNetwork.objects.filter(policy_name__contains=group_name).count()
+        if pcnt == 0:
+            network_policy = UdPolicyNetwork.objects.all()[:1].get()
+        if pcnt == 1:
+            network_policy = UdPolicyNetwork.objects.get(policy_name__contains=group_name)
+        if pcnt > 1:
+            network_policy = UdPolicyNetwork.objects.filter(policy_name__contains=group_name)[:1].get()
+
+
+        # ucsd vdc add
+        ucsd_create_vdc(group_name, group_id, cloudName=cloud_name,
+                        systemPolicy=system_policy.policy_name, computingPolicy=computing_policy.policy_name,
+                        storagePolicy=storage_policy.policy_name, networkPolicy=network_policy.policy_name)
 
     else:
         pass
