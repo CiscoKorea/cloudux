@@ -19,19 +19,19 @@
                     <h4>Volume List</h4>
                     <table>
                         <colgroup>
+                            <col width="10%">
+                            <col width="20%">
                             <col width="15%">
-                            <col width="15%">
-                            <col width="15%">
-                            <col width="*">
                             <col width="23%">
+                            <col width="*">
                         </colgroup>
                         <thead>
                             <tr>
                                 <th>Status</th>
                                 <th>Volume Name</th>
                                 <th>Size</th>
-                                <th>Create Date</th>
                                 <th>Connected Hosts</th>
+                                <th>Create Date</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -40,12 +40,12 @@
                                 <td><!--<span class="box gray">Offline </span>--></td>
                                 <td>{{ vol.name }}</td>
                                 <td>{{ vol.capacity | gigabytes}}</td>
-                                <td>-</td>
                                 <td>
                                     {% for host in vol.host.all %}
                                         {{ host.host }}<br/>
                                     {% endfor %}
                                 </td>
+                                <td>-</td> <!-- creation date -->
                             </tr>
                             {% endfor %}
 {#                            <tr>#}

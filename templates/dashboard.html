@@ -360,12 +360,12 @@ function type(d) {
                         <colgroup>
                             <col width="5%">
                             <col width="14%">
-                            <col width="14%">
                             <col width="10%">
                             <col width="14%">
                             <col width="14%">
                             <col width="14%">
-                            <col width="*">
+                            <col width="14%">
+                            <!-- <col width="*"> -->
                         </colgroup>
                         <thead>
                             <tr>
@@ -376,7 +376,7 @@ function type(d) {
                                 <th>MGMT IP</th>
                                 <th>FIRMWARE Ver.</th>
                                 <th>Last Modified</th>
-                                <th>Description</th>
+                                <!-- <th>Description</th> -->
                             </tr>
                         </thead>
                         <tbody>
@@ -389,41 +389,9 @@ function type(d) {
                                 <td>{{ inven.ipAddress }}</td>
                                 <td>{{ inven.firmwareVersion }}</td>
                                 <td>{{ inven.lastModified }}</td>
-                                <td>{{ inven.desc }}</td>
+                                <!-- <td>{{ inven.desc }}</td> -->
                             </tr>
                             {% endfor %}
-                            <!--
-                            <tr>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                            </tr>
-                            <tr>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                            </tr>
-                            <tr>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                            </tr>
-                            -->
                         </tbody>
                     </table>
                 </div>
@@ -444,11 +412,11 @@ function type(d) {
 
                     <table id="fault_table">
                         <colgroup>
+                            <col width="10%">
                             <col width="15%">
-                            <col width="15%">
-                            <col width="15%">
-                            <col width="20%">
-                            <col width="15%">
+                            <col width="10%">
+                            <col width="17%">
+                            <col width="6%">
                             <col width="*">
                         </colgroup>
                         <thead>
