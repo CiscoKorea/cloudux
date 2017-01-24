@@ -1337,23 +1337,26 @@ def ucsd_vm_create(request):
     # p_vdc = request.POST.get("vdc", "Sales Bronze vDC")
     group_name = request.POST.get("group_name")
     # group_name = "Sales"
-    vdc_cnt = UdVDC.objects.filter(vdc__contains=group_name).count()
+    vdc_cnt = UdVDC.objects.filter(vdc=group_name).count()
     if vdc_cnt == 0:
         p_vdc = UdVDC.objects.all()[:1].get().vdc
     if vdc_cnt > 0:
-        p_vdc = UdVDC.objects.filter(vdc__contains=group_name)[:1].get().vdc
+        p_vdc = UdVDC.objects.filter(vdc=group_name)[:1].get().vdc
 
-    print(request.user.username)
-    print(p_vdc)
+    # print(request.user.username)
+    # print(p_vdc)
 
     username = ''
     if not request.user.is_staff:
         username = str(request.user.username)
 
-    vmware_provision(p_catalog, p_vdc, comment="", vmname="", vcpus=p_cpu, vram=p_mem,
+    rtn = vmware_provision(p_catalog, p_vdc, comment="", vmname="", vcpus=p_cpu, vram=p_mem,
                      datastores=p_disk, vnics="", username=username)
 
-    return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
+    if rtn["serviceError"]:
+        return HttpResponse(json.dumps({'result': 'NO', 'serviceError': rtn["serviceError"]}), 'application/json')
+
+    return HttpResponse(json.dumps({'result': 'OK', 'serviceResult': rtn["serviceResult"]}), 'application/json')
 
 
 def ucsd_vm_action(request):
@@ -1418,46 +1421,47 @@ def users_groups(request):
         # refresh ucsd group
         get_ucsd_group_list()
 
-        group_id = UdGroup.objects.filter(group_name=group_name)[:1].get().group_id
-        cloud_name = BiCluster.objects.all()[:1].get().name
-
-        pcnt = UdPolicySystem.objects.filter(policy_name__contains=group_name).count()
-        if pcnt == 0:
-            system_policy = UdPolicySystem.objects.all()[:1].get()
-        if pcnt == 1:
-            system_policy = UdPolicySystem.objects.get(policy_name__contains=group_name)
-        if pcnt > 1:
-            system_policy = UdPolicySystem.objects.filter(policy_name__contains=group_name)[:1].get()
-
-        pcnt = UdPolicyComputing.objects.filter(policy_name__contains=group_name).count()
-        if pcnt == 0:
-            computing_policy = UdPolicyComputing.objects.all()[:1].get()
-        if pcnt == 1:
-            computing_policy = UdPolicyComputing.objects.get(policy_name__contains=group_name)
-        if pcnt > 1:
-            computing_policy = UdPolicyComputing.objects.filter(policy_name__contains=group_name)[:1].get()
-
-        pcnt = UdPolicyStorage.objects.filter(policy_name__contains=group_name).count()
-        if pcnt == 0:
-            storage_policy = UdPolicyStorage.objects.all()[:1].get()
-        if pcnt == 1:
-            storage_policy = UdPolicyStorage.objects.get(policy_name__contains=group_name)
-        if pcnt > 1:
-            storage_policy = UdPolicyStorage.objects.filter(policy_name__contains=group_name)[:1].get()
-
-        pcnt = UdPolicyNetwork.objects.filter(policy_name__contains=group_name).count()
-        if pcnt == 0:
-            network_policy = UdPolicyNetwork.objects.all()[:1].get()
-        if pcnt == 1:
-            network_policy = UdPolicyNetwork.objects.get(policy_name__contains=group_name)
-        if pcnt > 1:
-            network_policy = UdPolicyNetwork.objects.filter(policy_name__contains=group_name)[:1].get()
-
-
-        # ucsd vdc add
-        ucsd_create_vdc(group_name, group_id, cloudName=cloud_name,
-                        systemPolicy=system_policy.policy_name, computingPolicy=computing_policy.policy_name,
-                        storagePolicy=storage_policy.policy_name, networkPolicy=network_policy.policy_name)
+        # Don't Create VDC, because it exists already
+        # group_id = UdGroup.objects.filter(group_name=group_name)[:1].get().group_id
+        # cloud_name = BiCluster.objects.all()[:1].get().name
+        #
+        # pcnt = UdPolicySystem.objects.filter(policy_name__contains=group_name).count()
+        # if pcnt == 0:
+        #     system_policy = UdPolicySystem.objects.all()[:1].get()
+        # if pcnt == 1:
+        #     system_policy = UdPolicySystem.objects.get(policy_name__contains=group_name)
+        # if pcnt > 1:
+        #     system_policy = UdPolicySystem.objects.filter(policy_name__contains=group_name)[:1].get()
+        #
+        # pcnt = UdPolicyComputing.objects.filter(policy_name__contains=group_name).count()
+        # if pcnt == 0:
+        #     computing_policy = UdPolicyComputing.objects.all()[:1].get()
+        # if pcnt == 1:
+        #     computing_policy = UdPolicyComputing.objects.get(policy_name__contains=group_name)
+        # if pcnt > 1:
+        #     computing_policy = UdPolicyComputing.objects.filter(policy_name__contains=group_name)[:1].get()
+        #
+        # pcnt = UdPolicyStorage.objects.filter(policy_name__contains=group_name).count()
+        # if pcnt == 0:
+        #     storage_policy = UdPolicyStorage.objects.all()[:1].get()
+        # if pcnt == 1:
+        #     storage_policy = UdPolicyStorage.objects.get(policy_name__contains=group_name)
+        # if pcnt > 1:
+        #     storage_policy = UdPolicyStorage.objects.filter(policy_name__contains=group_name)[:1].get()
+        #
+        # pcnt = UdPolicyNetwork.objects.filter(policy_name__contains=group_name).count()
+        # if pcnt == 0:
+        #     network_policy = UdPolicyNetwork.objects.all()[:1].get()
+        # if pcnt == 1:
+        #     network_policy = UdPolicyNetwork.objects.get(policy_name__contains=group_name)
+        # if pcnt > 1:
+        #     network_policy = UdPolicyNetwork.objects.filter(policy_name__contains=group_name)[:1].get()
+        #
+        #
+        # # ucsd vdc add
+        # ucsd_create_vdc(group_name, group_id, cloudName=cloud_name,
+        #                 systemPolicy=system_policy.policy_name, computingPolicy=computing_policy.policy_name,
+        #                 storagePolicy=storage_policy.policy_name, networkPolicy=network_policy.policy_name)
 
     else:
         pass

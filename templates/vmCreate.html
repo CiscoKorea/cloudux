@@ -1,7 +1,7 @@
     <!-- lay_pop -->
     <form name="create_vm" id="create_vm">
     <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" />
-    <input type="hidden" name="group_name" value="{{ tenant.group_name }}" />
+    <input type="hidden" name="group_name" value="{{ user.useraddinfo.tenant.group_name }}" />
     <div class="lay_pop create">
         <div class="lay_header">
             <h1>Create VM</h1>
@@ -145,12 +145,14 @@
             method: "post",
             data: param
         }).done(function(msg){
-            if(msg) {
-                alert(msg);
+            if(msg && msg.result=="OK") {
+                alert("Create SR : " + msg.serviceResult);
+            } else {
+                alert(msg.serviceError);
             }
 
         }).fail(function(err){
-            alert(err);
+            alert(err.serrviceError);
         });
     }
 </script>
