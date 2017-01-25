@@ -7,15 +7,20 @@
 
         <!-- nav -->
         <div class="nav">
+            <p>Service Requests</p>
+            <ul>
+                <li class="ico00"><a href="{% url 'myrequests' %}">{% trans "menu.catalog" %}</a></li>    
+            </ul>
         	<p>Servers</p>
             <ul>
-                {% if role in adminroles %}
+                {% if user.username == 'admin' %}
             	<li class="ico02"><a href="{% url 'hosts' %}">{% trans "menu.hostlist" %}</a></li>
                 {% endif %}
             	<li class="ico03"><a href="{% url 'vms' %}">{% trans "menu.vmlist" %}</a></li>
                 <li class="ico00"><a href="{% url 'catalogs' %}">{% trans "menu.catalog" %}</a></li>
             </ul>
 
+            {% if user.username == 'admin' %}
         	<p>Network</p>
             <ul>
             	<li class="ico04"><a href="{% url 'vnets' %}">{% trans "menu.vnetlist" %}</a></li>
@@ -23,21 +28,16 @@
 
         	<p>Storage</p>
             <ul>
-                {% if role in adminroles %}
             	<li class="ico05"><a href="{% url 'volumes' %}">{% trans "site.volumelist" %}</a></li>
-                {% endif %}
             	<li class="ico06"><a href="{% url 'disks' %}">{% trans "menu.disklist" %}</a></li>
             </ul>
-
-            {% if user.is_staff == True %}
+            
             <ul>
-            	<li class="ico07"><a href="#">Monitoring</a></li>
-                {% if role in adminroles %}
             	<li class="ico08"><a href="{% url 'users' %}">{% trans "menu.userlist" %}</a></li>
-                {% endif %}
             </ul>
             {% endif %}
-
+            
+            <!-- 
             <p>Menu Sample</p>
             <ul>
             	{% if 'r1' in user.useraddinfo.role %}
@@ -45,7 +45,7 @@
                 {% endif %}
                 <li class="ico07"><a href="#">Menu 2</a></li>
                 <li class="ico07"><a href="#">Menu 3</a></li>
-            </ul>
+            </ul> -->
         </div>
         <!-- //nav -->
 {% endblock %}
