@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-18 08:27+0000\n"
+"POT-Creation-Date: 2017-01-25 08:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,7 +26,7 @@ msgstr ""
 msgid "English"
 msgstr ""
 
-#: templates/base.html:17
+#: templates/base.html:21
 msgid "user.logined"
 msgstr " 님이 로그인되었습니다."
 
@@ -34,11 +34,11 @@ msgstr " 님이 로그인되었습니다."
 msgid "site.title"
 msgstr "CISCO Cloud Management Portal"
 
-#: templates/catalogList.html:10 templates/left.html:14
+#: templates/catalogList.html:10 templates/left.html:12
 msgid "menu.catalog"
 msgstr "Catalog List"
 
-#: templates/hostList.html:7 templates/left.html:12
+#: templates/hostList.html:7 templates/left.html:15
 msgid "menu.hostlist"
 msgstr "Host List"
 
@@ -46,23 +46,29 @@ msgstr "Host List"
 msgid "menu.dashboard"
 msgstr "Dashboard"
 
-#: templates/left.html:13 templates/vmList.html:9
+#: templates/left.html:13
+#, fuzzy
+#| msgid "menu.userlist"
+msgid "menu.myrequests"
+msgstr "서비스 요청 내역"
+
+#: templates/left.html:17 templates/vmList.html:7
 msgid "menu.vmlist"
 msgstr "VM List"
 
-#: templates/left.html:19 templates/virtualNetworkList.html:8
+#: templates/left.html:23 templates/virtualNetworkList.html:8
 msgid "menu.vnetlist"
 msgstr "Virtual Network List"
 
-#: templates/left.html:24 templates/volumeList.html:9
+#: templates/left.html:28 templates/volumeList.html:9
 msgid "site.volumelist"
 msgstr "Volume List"
 
-#: templates/left.html:25 templates/vmDiskList.html:8
+#: templates/left.html:29 templates/vmDiskList.html:8
 msgid "menu.disklist"
 msgstr "VM Disk List"
 
-#: templates/left.html:30 templates/test.html:7 templates/userList.html:7
+#: templates/left.html:33 templates/test.html:7 templates/userList.html:7
 msgid "menu.userlist"
 msgstr "사용자관리"
 
