@@ -1495,7 +1495,6 @@ def my_login(request):
 
     # ucsd verify
     ucsd_user = ucsd_verify_user(user_id=p_username, password=password)
-    print ucsd_user
     if ucsd_user == None:
         return HttpResponseRedirect('/login')
 
@@ -1547,5 +1546,6 @@ def my_login(request):
         variables = {'form': form}
         return render(request, 'registration/login.html', variables)
 
-
+def myrequests(request):
+    return "Not Implemented"
 

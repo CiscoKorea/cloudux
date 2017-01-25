@@ -21,4 +21,5 @@ urlpatterns = [
     url(r'^catalog_order$', views.catalog_vm_provision, name="catalogorder"),
     url(r'^test$', views.testpage, name="testpage"),
     url(r'^login2$', views.my_login, name="my_login"),
+    url(r'^myrequests$', views.myrequests, name="myrequests"),
 ]
