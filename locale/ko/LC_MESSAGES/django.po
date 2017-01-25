@@ -47,8 +47,6 @@ msgid "menu.dashboard"
 msgstr "Dashboard"
 
 #: templates/left.html:13
-#, fuzzy
-#| msgid "menu.userlist"
 msgid "menu.myrequests"
 msgstr "서비스 요청 내역"
 

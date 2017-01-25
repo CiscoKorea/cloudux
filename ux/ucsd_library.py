@@ -635,8 +635,12 @@ def ucsd_network():
     requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
     j = json.loads(r.text)
-   
-    return j['serviceResult']['rows'] if 'rows' in j['serviceResult'] else {}
+    try:
+        ret = j['serviceResult']['rows']
+        return ret
+    except KeyError as ke:
+        pass
+    return [] 
 
 
 def group_list():
