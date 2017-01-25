@@ -635,8 +635,12 @@ def ucsd_network():
     requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
     j = json.loads(r.text)
-   
-    return j['serviceResult']['rows'] if 'rows' in j['serviceResult'] else {}
+    try:
+        ret = j['serviceResult']['rows']
+        return ret
+    except KeyError as ke:
+        pass
+    return []
 
 
 def group_list():
@@ -784,6 +788,25 @@ def ucsd_get_userprofile( p_user_id):
     r = requests.get(u, headers=headers, verify=False)
     j = json.loads(r.text)
     return j['serviceResult']
+
+def ucsd_get_useraccessprofile( p_user_id):
+    # userAPIgetAllUserAccessProfile& opData={param0:"sample"}
+    assert isinstance(p_user_id, str)
+    apioperation = "userAPIgetAllUserAccessProfiles"
+    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
+        "{param0:\"" + p_user_id + '"' \
+        + '}'
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+    r = requests.get(u, headers=headers, verify=False)
+    j = json.loads(r.text)
+    ret = []
+    try:
+        profiles = j['serviceResult']
+        for profile in profiles:
+            ret.append( profile['accessLevel'])
+    except KeyError as ke:
+        pass
+    return ret
 
 def ucsd_get_all_vms():
     #/app/api/rest?formatType=json&opName=userAPIGetAllVMs& ;opData={}
@@ -1089,9 +1112,11 @@ def ucsd_vmware_network_policy():
 
 if __name__ == '__main__':
     print('test code')
-    #print (ucsd_user_profile('hyungsok'))
+    print(ucsd_get_userprofile('admin'))
+    #print(ucsd_verify_user('hyungsok', '1234Qwer'))
+    print(ucsd_get_useraccessprofile('admin'))
     #print (ucsd_get_all_vms())
-    #ret = ucsd_get_userprofile('hyungsok')
+    #ret = ucsd_get_userprofile('admin')
     #print( ret )
     #print( ucsd_get_groupbyname(ret['groupName']))
     #print(ucsd_get_restaccesskey('hyungsok'))
