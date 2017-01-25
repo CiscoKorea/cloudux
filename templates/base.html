@@ -43,7 +43,7 @@
                     <tbody>
                     <tr>
                         <th>Name</th>
-                        <td>{{ user.first_name }}<input type="hidden" name="first_name" value="{{ user.first_name }}"></td>
+                        <td>{{ user.first_name }} {{ user.last_name}} <input type="hidden" name="first_name" value="{{ user.first_name }} "></td>
                     </tr>
                     <tr>
                         <th>ID</th>
@@ -54,7 +54,7 @@
                     </tr>
                     <tr>
                         <th>Tenant</th>
-                        <td><strong>개발그룹</strong></td>
+                        <td><strong>{{ user.useraddinfo.tenant.group_name}} </strong></td>
                     </tr>
                     <tr>
                         <th>Email</th>
