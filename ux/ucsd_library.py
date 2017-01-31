@@ -1164,12 +1164,14 @@ def ucsd_get_vms_per_group( username=None, groupId='0'):
 
 if __name__ == '__main__':
     print('test code')
+    print( group_list())
+    print( vdc_list())
     #print(ucsd_get_userprofile('admin'))
     #print(ucsd_verify_user('hyungsok', '1234Qwer'))
-    userinfo = ucsd_get_userprofile('hyungsok')
-    grp = ucsd_get_groupbyname( userinfo['groupName'])
-    print(len(ucsd_get_service_requests('hyungsok', str(grp[0]['groupId']))))
-    print( ucsd_get_vms_per_group('hyungsok', str(grp[0]['groupId'])))
+    #userinfo = ucsd_get_userprofile('hyungsok')
+    #grp = ucsd_get_groupbyname( userinfo['groupName'])
+    #print(len(ucsd_get_service_requests('hyungsok', str(grp[0]['groupId']))))
+    #print( ucsd_get_vms_per_group('hyungsok', str(grp[0]['groupId'])))
     #print( ucsd_get_service_request_workflow( 'hyungsok', '56'))
     #ret = ucsd_get_userprofile('admin')
     #print( ret )

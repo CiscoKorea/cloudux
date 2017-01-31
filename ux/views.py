@@ -325,41 +325,6 @@ def catalogs(request):
                   , 'group_list': glist, 'vdc_list': vdclist})
 
 
-@login_required
-def vnets(request):
-
-    slist = BiVswitch.objects.all()
-    return render(request, 'virtualNetworkList.html', {'list': slist})
-
-
-@login_required
-def volumes(request):
-
-    slist = BiVolume.objects.all()
-    return render(request, 'volumeList.html', {'list': slist})
-
-
-
-def disks(request):
-    dlist = UdVmDisk.objects.all()
-
-    paginator = Paginator(dlist, 10)
-    page = request.GET.get('page')
-    try:
-        plist = paginator.page(page)
-    except PageNotAnInteger:
-        plist = paginator.page(1)
-    except EmptyPage:
-        plist = paginator.page(paginator.num_pages)
-
-    return render(request, 'vmDiskList.html', {'list': plist})
-
-
-def monitoring(request):
-    # return render(request, 'Mmonitoring.html', {})
-    return "Not Now"
-
-
 def users(request):
 
     # ajax Add User
@@ -456,45 +421,6 @@ def users_modify(request):
     return HttpResponse(json.dumps({'result': 'NO'}), 'application/json')
 
 
-def print_vm_info(virtual_machine):
-    """
-    Print information for a particular virtual machine or recurse into a
-    folder with depth protection
-    """
-    summary = virtual_machine.summary
-    print("Name       : ", summary.config.name)
-    print("Template   : ", summary.config.template)
-    print("Path       : ", summary.config.vmPathName)
-    print("Guest      : ", summary.config.guestFullName)
-    print("Instance UUID : ", summary.config.instanceUuid)
-    print("Bios UUID     : ", summary.config.uuid)
-
-    ##################
-
-    settings.t1 = 2
-
-    ##################
-     
-    annotation = summary.config.annotation
-    if annotation:
-        print("Annotation : ", annotation)
-    print("State      : ", summary.runtime.powerState)
-    if summary.guest is not None:
-        ip_address = summary.guest.ipAddress
-        tools_version = summary.guest.toolsStatus
-        if tools_version is not None:
-            print("VMware-tools: ", tools_version)
-        else:
-            print("Vmware-tools: None")
-        if ip_address:
-            print("IP         : ", ip_address)
-        else:
-            print("IP         : None")
-    if summary.runtime.question is not None:
-        print("Question  : ", summary.runtime.question.text)
-    print("")
-
-
 def get_vcenter_info():
     # global content, hosts, hostPgDict#
     # config = GlobalConfig.objects.all()
@@ -531,293 +457,6 @@ def get_portgroup(portgroups):
     #     vals.append('')
     return "[" + ",".join(vals) + "]"
 
-
-def get_network(network):
-    # global pnicmap
-    dpnic = {}
-    dpg = {}
-    for nic in network.pnic:
-        # print("pnic key: %s name: %s " %(nic.key, nic.device))
-        # pnicmap[nic.key] = nic.device
-        dpnic[nic.key] = nic.device
-    for pg in network.portgroup:
-        # pnicmap[pg.key] = pg.spec.name + ":" + str(pg.spec.vlanId)
-        dpg[pg.key] = pg.spec.name + ":" + str(pg.spec.vlanId)
-    for nic in network.vnic:
-        print("vnic name: %s connected portgroup: %s" % (nic.device, nic.portgroup))
-    for sw in network.vswitch:
-        #    	print("vSwitch name: %s, numPort: %d pnics: %s" %(sw.name, sw.numPorts, sw.pnic))
-        # print("vSwicth name: %s uplink: %s portgroup: %s" % (sw.name, get_uplink(sw.pnic),
-        #   get_portgroup(sw.portgroup)))
-        print("vSwicth name: %s uplink: %s portgroup: %s" % (sw.name, dpnic, dpg))
-
-
-def get_host(phosts):
-    for host in phosts:
-        #print("Host Name=%s" % host.name)
-        get_network(host.config.network)
-
-
-def get_cluster(folder):
-    for entity in folder.childEntity:
-        #print("Cluster name = %s" % entity.name)
-        get_host(entity.host)
-
-
-def get_datacenters(content):
-    # delete_all()     # delete all data !!!
-    print("Getting all Datacenter...")
-    dc_view = content.viewManager.CreateContainerView(content.rootFolder, [vim.Datacenter], True)
-    obj = [dc for dc in dc_view.view]
-    for dc in obj:
-        print("Datacenter %s" % dc.name)
-        vdc = BiDatacenter()
-        vdc.name = dc.name
-        vdc.save()
-        for entity in dc.hostFolder.childEntity:
-            print("Cluster name = %s" % entity.name)
-            vcls = BiCluster()
-            vcls.name = entity.name
-            vcls.save()
-            for host in entity.host:
-                print("Host Name=%s" % host.name)
-                h = BiHost()
-                h.datacenter = vdc
-                h.cluster = vcls
-                h.host = host.name
-                h.os = host.config.product.licenseProductName
-                h.version = host.config.product.licenseProductVersion
-                if len(host.config.network.vnic) > 0:
-                    h.ip = host.config.network.vnic[0].spec.ip.ipAddress
-                h.status = host.summary.overallStatus
-                h.save()
-
-                dpnic = {}
-                dpg = {}
-                dvlanid = {}
-                network = host.config.network
-                for nic in network.pnic:
-                    # print("pnic key: %s name: %s " %(nic.key, nic.device))
-                    # pnicmap[nic.key] = nic.device
-                    dpnic[nic.key] = nic.device
-                    # pnic = BiPnic()
-                    # pnic.device = nic.device
-                    # pnic.save()
-                for pg in network.portgroup:
-                    # pnicmap[pg.key] = pg.spec.name + ":" + str(pg.spec.vlanId)
-                    dpg[pg.key] = pg    # .spec.name
-                    dvlanid[pg.key] = pg.spec.vlanId
-                    # vportgroup = BiPortgroup()
-                    # vportgroup.name = pg.spec.name
-                    # vportgroup.vlanId = pg.spec.vlanId
-                    # vportgroup.save()
-                for nic in network.vnic:
-                    # print("vnic name: %s connected portgroup: %s" % (nic.device, nic.portgroup))
-                    vnic = BiVnic()
-                    vnic.device = nic.device
-                    vnic.key = nic.key
-                    vnic.ipAddress = nic.spec.ip.ipAddress
-                    vnic.mac = nic.spec.mac
-                    vnic.save()
-                    vnic.host.add(h)
-                for sw in network.vswitch:
-                    #    	print("vSwitch name: %s, numPort: %d pnics: %s" %(sw.name, sw.numPorts, sw.pnic))
-                    # print("vSwicth name: %s uplink: %s portgroup: %s" % (sw.name, get_uplink(sw.pnic),
-                    #   get_portgroup(sw.portgroup)))
-                    # print("vSwicth name: %s uplink: %s portgroup: %s" % (sw.name, dpnic, dpg))
-
-                    if BiVswitch.objects.filter(key=sw.key).__len__() == 0:
-                        bsw = BiVswitch()
-                        bsw.name = sw.name
-                        bsw.key = sw.key
-                        bsw.save()
-                        bsw.host.add(h)
-                    else:
-                        bsw = BiVswitch.objects.get(key=sw.key)
-                        bsw.host.add(h)
-
-                    for p in sw.pnic:
-                        pnic = BiPnic()
-                        pnic.device = dpnic[p]
-                        pnic.vswitch = bsw
-                        pnic.save()
-                    for g in sw.portgroup:
-                        # only one key
-                        if BiPortgroup.objects.filter(key=g).__len__() == 0:
-                            vportgroup = BiPortgroup()
-                            vportgroup.key = g
-                            vportgroup.name = dpg[g].spec.name
-                            vportgroup.vlanId = dvlanid[g]
-                            vportgroup.vswitch = bsw
-                            vportgroup.save()
-                for vm in host.vm:
-                    vvm = BiVirtualMachine()
-                    vvm.vcenter_vm_id = vm._moId
-                    vvm.name = vm.config.name
-                    vvm.ipAddress = vm.guest.ipAddress
-                    # vvm.macAddress = ''
-                    vvm.cpuUsage = vm.summary.quickStats.overallCpuUsage
-                    vvm.memUsage = vm.summary.quickStats.hostMemoryUsage
-                    # vvm.netUsage
-                    # vvm.stgUsage
-                    vvm.status = vm.summary.overallStatus
-                    vvm.host = h
-                    vvm.save()
-
-                for nvm in host.vm:
-                    for vmnet in nvm.network:
-                        for vnetvm in vmnet.vm:
-                            # print(vmnet.name, "<->", vnetvm.config.name)
-                            try:
-                                lnet = BiPortgroup.objects.get(name=vmnet.name)
-                                lvm = BiVirtualMachine.objects.get(name=vnetvm.config.name)
-                                if type(lvm) == list :
-                                    for vm in lvm:
-                                        vm.network.add(lnet)
-                                else:
-                                    lvm.network.add(lnet)
-                            except (MultipleObjectsReturned, ObjectDoesNotExist) as e:
-                                #print( "Exception : %s " %e)
-                                pass  # print("DoesNotExist")
-
-                for mnt in host.configManager.storageSystem.fileSystemVolumeInfo.mountInfo:
-                    if len(mnt.volume.name) > 0:
-                        if BiVolume.objects.filter(name=mnt.volume.name).__len__() == 0:
-                            vvol = BiVolume()
-                            vvol.name = mnt.volume.name
-                            vvol.capacity = mnt.volume.capacity
-                            vvol.type = mnt.volume.type
-                            vvol.save()
-                            vvol.host.add(h)
-                        else:
-                            vvol = BiVolume.objects.get(name=mnt.volume.name)
-                            vvol.host.add(h)
-
-    dc_view.Destroy()
-    return obj
-
-
-def merge_datacenter(dc):
-    vdc = None
-    # new item
-    if BiDatacenter.objects.filter(name=dc.name).count() == 0:
-        vdc = BiDatacenter()
-        vdc.name = dc.name
-        vdc.old = False   # for No delete
-        vdc.save()
-    else:
-        # modified item
-        vdc = BiDatacenter.objects.get(name=dc.name)
-        vdc.old = False   # for No delete
-        vdc.save()
-    return vdc
-
-
-def merge_cluster(cl):
-    vcls = None
-    # new item
-    if BiCluster.objects.filter(name=cl.name).count() == 0:
-        vcls = BiCluster()
-        vcls.name = cl.name
-        vcls.old = False
-        vcls.save()
-
-    else:
-        # modified item
-        vcls = BiCluster.objects.get(name=cl.name)
-        vcls.old = False  # for No delete
-        vcls.save()
-    return vcls
-
-
-def merge_host(host, vdc, vcls):
-    h = None
-    # new item
-    if BiHost.objects.filter(host=host.name).count() == 0:
-        h = BiHost()
-    else:
-        # modified item
-        h = BiHost.objects.get(host=host.name)
-
-    h.datacenter = vdc
-    h.cluster = vcls
-    h.host = host.name
-    h.os = host.config.product.licenseProductName
-    h.version = host.config.product.licenseProductVersion
-    if len(host.config.network.vnic) > 0:
-        h.ip = host.config.network.vnic[0].spec.ip.ipAddress
-    h.status = host.summary.overallStatus
-    h.old = False
-    h.save()
-
-    return h
-
-
-def merge_vnic(nic, h):
-    vnic = None
-    # new item
-    if BiVnic.objects.filter(key=nic.key).count() == 0:
-        vnic = BiVnic()
-    else:
-        # modified item
-        vnic = BiVnic.objects.get(key=nic.key)
-
-    vnic.device = nic.device
-    vnic.key = nic.key
-    vnic.ipAddress = nic.spec.ip.ipAddress
-    vnic.mac = nic.spec.mac
-    vnic.old = False
-    vnic.save()
-    vnic.host.add(h)
-
-    return vnic
-
-
-def merge_vswitch(sw, h):
-    bsw = None
-    if BiVswitch.objects.filter(key=sw.key).count() == 0:
-        bsw = BiVswitch()
-    else:
-        bsw = BiVswitch.objects.get(key=sw.key)
-
-    bsw.name = sw.name
-    bsw.key = sw.key
-    bsw.old = False
-    bsw.save()
-    bsw.host.add(h)
-
-    return bsw
-
-
-def merge_pnic(p, dpnic, bsw):
-    pnic = None
-    if BiPnic.objects.filter(key=p).count() == 0:
-        pnic = BiPnic()
-    else:
-        pnic = BiPnic.objects.get(key=p)
-
-    pnic.device = dpnic[p]
-    pnic.vswitch = bsw
-    pnic.old = False
-    pnic.key = p
-    pnic.save()
-
-
-def merge_portgroup(g, dpg, dvlanid, bsw):
-    vportgroup = None
-    if BiPortgroup.objects.filter(key=g).count() == 0:
-        vportgroup = BiPortgroup()
-    else:
-        vportgroup = BiPortgroup.objects.get(key=g)
-
-    vportgroup.key = g
-    vportgroup.name = dpg[g].spec.name
-    vportgroup.vlanId = dvlanid[g]
-    vportgroup.vswitch = bsw
-    vportgroup.old = False
-    vportgroup.save()
-
-
 def merge_virtualmachine(vm, h):
     vportgroup = None
     if BiVirtualMachine.objects.filter(vcenter_vm_id=vm._moId).count() == 0:
@@ -839,123 +478,6 @@ def merge_virtualmachine(vm, h):
     vvm.save()
 
 
-def merge_volume(mnt, h):
-    if len(mnt.volume.name) > 0:
-        if BiVolume.objects.filter(name=mnt.volume.name).count() == 0:
-            vvol = BiVolume()
-        else:
-            vvol = BiVolume.objects.get(name=mnt.volume.name)
-
-        vvol.name = mnt.volume.name
-        vvol.capacity = mnt.volume.capacity
-        vvol.type = mnt.volume.type
-        vvol.old = False
-        vvol.save()
-        vvol.host.add(h)
-
-
-def get_datacenters_new(content):
-
-    # set old data
-    BiDatacenter.objects.all().update(old=True)
-    BiCluster.objects.all().update(old=True)
-    BiHost.objects.all().update(old=True)
-    BiVnic.objects.all().update(old=True)
-    BiVswitch.objects.all().update(old=True)
-    BiPnic.objects.all().update(old=True)
-    BiPortgroup.objects.all().update(old=True)
-    BiVirtualMachine.objects.all().update(old=True)
-    BiVolume.objects.all().update(old=True)
-
-    # get data
-    dc_view = content.viewManager.CreateContainerView(content.rootFolder, [vim.Datacenter], True)
-    obj = [dc for dc in dc_view.view]
-    for dc in obj:
-        vdc = merge_datacenter(dc)
-        for cl in dc.hostFolder.childEntity:
-            vcls = merge_cluster(cl)
-
-            for host in cl.host:
-                h = merge_host(host, vdc, vcls)
-
-                dpnic = {}
-                dpg = {}
-                dvlanid = {}
-                network = host.config.network
-                for nic in network.pnic:
-                    dpnic[nic.key] = nic.device
-                for pg in network.portgroup:
-                    dpg[pg.key] = pg    # .spec.name
-                    dvlanid[pg.key] = pg.spec.vlanId
-                for nic in network.vnic:
-                    merge_vnic(nic, h)
-                for sw in network.vswitch:
-                    bsw = merge_vswitch(sw, h)
-
-                    for p in sw.pnic:
-                        merge_pnic(p, dpnic, bsw)
-                    for g in sw.portgroup:
-                        merge_portgroup(g, dpg, dvlanid, bsw)
-                for vm in host.vm:
-                    merge_virtualmachine(vm, h)
-
-                for nvm in host.vm:
-                    for vmnet in nvm.network:
-                        for vnetvm in vmnet.vm:
-                            # print(vmnet.name, "<->", vnetvm.config.name)
-                            try:
-                                lnet = BiPortgroup.objects.get(name=vmnet.name)
-                                lvm = BiVirtualMachine.objects.get(name=vnetvm.config.name)
-                                if type(lvm) == list:
-                                    for vm in lvm:
-                                        vm.network.add(lnet)
-                                else:
-                                    lvm.network.add(lnet)
-                            except (MultipleObjectsReturned, ObjectDoesNotExist) as e:
-                                #print( "Exception : %s " %e)
-                                pass  # print("DoesNotExist")
-
-                for mnt in host.configManager.storageSystem.fileSystemVolumeInfo.mountInfo:
-                    merge_volume(mnt, h)
-
-    dc_view.Destroy()
-
-    # delete old data
-    BiVolume.objects.filter(old=True).delete()
-    BiVirtualMachine.objects.filter(old=True).delete()
-    BiPortgroup.objects.filter(old=True).delete()
-    BiPnic.objects.filter(old=True).delete()
-    BiVswitch.objects.filter(old=True).delete()
-    BiVnic.objects.filter(old=True).delete()
-    BiHost.objects.filter(old=True).delete()
-    BiCluster.objects.filter(old=True).delete()
-    BiDatacenter.objects.filter(old=True).delete()
-
-    return obj
-
-'''
-def delete_all():
-    BiVirtualMachine.objects.all().delete()
-    BiVolume.objects.all().delete()
-    BiPortgroup.objects.all().delete()
-    BiPnic.objects.all().delete()
-    BiVswitch.objects.all().delete()
-    BiVnic.objects.all().delete()
-    BiHost.objects.all().delete()
-    BiDatacenter.objects.all().delete()
-
-    BiInventory.objects.all().delete()
-    BiFaults.objects.all().delete()     # refresh !!
-
-    BiCatalog.objects.all().delete()
-
-    UdCloud.objects.all().delete()
-    DashboardAlloc.objects.all().delete()
-    DashboardVswitch.objects.all().delete()
-    # UdGroup.objects.all().delete()
-    UdVDC.objects.all().delete()
-    UdVmDisk.objects.all().delete()
-'''
 
 def get_catalog():
     clist = catalog_list_all()
@@ -999,14 +521,13 @@ def get_ucsd_vm_list():
 def get_ucsd_group_list():
     glist = group_list()
     for group in glist:
-
         # groupId? groupName?
         if UdGroup.objects.filter(group_id=group["groupId"]).count() == 0:
             entity = UdGroup()
         else:
             entity = UdGroup.objects.get(group_id=group["groupId"])
 
-        detail = group_detail_by_id(group["groupId"])
+        #detail = group_detail_by_id(group["groupId"])
         entity.group_id = group["groupId"]
         entity.group_name = detail["groupName"]
         entity.description = unicode(detail["description"])
@@ -1024,17 +545,15 @@ def get_ucsd_group_list():
 def get_ucsd_vdc_list():
     vlist = vdc_list('','')
     for vdc in vlist:
-
         # get group id
         db_group = UdGroup.objects.get(group_name=vdc["Group"])
-
         if db_group :
             # check exist data
             if UdVDC.objects.filter(vdc=vdc["vDC"]).count() == 0:
                 entity = UdVDC()
             else:
                 entity = UdVDC.objects.get(vdc=vdc["vDC"])
-            entity.status = vdc["Status"] if vdc.has_key("Status") else None
+            entity.status = unicode(vdc["Status"]) if vdc.has_key("Status") else None
             entity.tag = vdc["Tag"] if vdc.has_key("Tag") else None
             entity.vdc_id = vdc["vDC_ID"] if vdc.has_key("vDC_ID") else None
             entity.custom_categories = vdc["Custom_Categories"] if vdc.has_key("Custom_Categories") else None
@@ -1046,11 +565,11 @@ def get_ucsd_vdc_list():
             entity.lock_state = vdc["Lock_State"] if vdc.has_key("Lock_State") else None
             entity.type = vdc["Type"] if vdc.has_key("Type") else None
             entity.cloud = vdc["Cloud"] if vdc.has_key("Type") else None
-            entity.vdc_description = vdc["vDC_Description"] if vdc.has_key("vDC_Description") else None
+            entity.vdc_description = unicode(vdc["vDC_Description"]) if vdc.has_key("vDC_Description") else None
             entity.tenant = db_group
             entity.save()
 
-
+'''
 def get_ucsd_vmdisk_list():
     vmlist = BiVirtualMachine.objects.filter(ucsd_vm_id__isnull=False)
     for vm in vmlist:
@@ -1071,7 +590,7 @@ def get_ucsd_vmdisk_list():
             disk.datastore_name = vmdisk["Datastore_Name"]
             disk.disk_name = vmdisk["Disk_Name"]
             disk.save()
-
+'''
 
 def get_ucsd_stat1():
     total_vm = 0
@@ -1119,7 +638,7 @@ def get_ucsd_stat1():
     dash1.total_stg = int(round(prov_stg / total_stg * 100)) if total_stg != 0.0 else 0.0
     dash1.save()
 
-
+'''
 def get_ucsd_stat2():
     DashboardVswitch.objects.all().delete()
     net_list = ucsd_network()
@@ -1128,7 +647,7 @@ def get_ucsd_stat2():
         vswtc.portgroup = int(net["Num_Port_Groups"])
         vswtc.switch = net["Switch_Name"]
         vswtc.save()
-
+'''
 
 def get_ucsd_policy_system():
     all_policy = ucsd_vmware_system_policy()
@@ -1196,64 +715,7 @@ def reload_data_none(request):
 
 def reload_data(request):
 
-
-    content = get_vcenter_info()  # get all data!!
-
-    # delete_all()
-    dcs = get_datacenters_new(content)
-    # sync_vcenter_with_ucsd()
-
-    get_ucsm_info()  # get ucsd inventory
-
-    get_ucsd_policy_system()    # get ucsd policy
-    get_ucsd_policy_computing()
-    get_ucsd_policy_storage()
-    get_ucsd_policy_network()
-
-    get_catalog()
-    get_ucsd_group_list()   # get ucsd group
-    get_ucsd_vm_list()  # get ucsd vm id
-    get_ucsd_vdc_list()
-    get_ucsd_vmdisk_list()
-
-    cloud_list = ucsd_cloud()  # cloud list from ucsd
-    for cloud in cloud_list:
-        if UdCloud.objects.filter(cloud=cloud["Cloud"]).count() == 0:
-            entity = UdCloud()
-        else:
-            entity = UdCloud.objects.get(cloud=cloud["Cloud"])
-        entity.tag = cloud["Tag"]
-        entity.cloud_type = cloud["Cloud_Type"]
-        entity.description = cloud["Description"]
-        entity.contact = cloud["Contact"]
-        entity.license_status = cloud["License_Status"]
-        entity.location = unicode(cloud["Location"])
-        entity.user_id = cloud["User_ID"]
-        entity.reachable = unicode(cloud["Reachable"])
-        entity.message = unicode(cloud["Message"])
-        entity.vmware_server = cloud["VMware_Server"]
-        entity.cloud = cloud["Cloud"]
-        entity.save()
-
-    get_ucsd_stat1()
-    get_ucsd_stat2()
-
     return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
-
-
-def sync_vcenter_with_ucsd(request = None):
-    try:
-        ucsd_vms = ucsd_get_all_vms()
-        for vm in ucsd_vms:
-            bivm = BiVirtualMachine.objects.get( vcenter_vm_id=vm['vCenter_VM_Id'])
-            if bivm:
-                bivm.group_name = vm['Group_Name']
-                bivm.ucsd_vm_id = str(vm['VM_ID'])
-                bivm.save()
-    except KeyError as ke:
-        pass
-    if request:
-        return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
 
 
 def ucsd_vm_create(request):
@@ -1264,7 +726,6 @@ def ucsd_vm_create(request):
     p_mem = resource[1]
     p_disk = ""  # FIXME resource[2]
 
-    # p_vdc = request.POST.get("vdc", "Sales Bronze vDC")
     group_name = request.POST.get("group_name")
     # group_name = "Sales"
     vdc_cnt = UdVDC.objects.filter(vdc=group_name).count()
@@ -1272,9 +733,6 @@ def ucsd_vm_create(request):
         p_vdc = UdVDC.objects.all()[:1].get().vdc
     if vdc_cnt > 0:
         p_vdc = UdVDC.objects.filter(vdc=group_name)[:1].get().vdc
-
-    # print(request.user.username)
-    # print(p_vdc)
 
     username = ''
     if not request.user.is_staff:
@@ -1290,8 +748,6 @@ def ucsd_vm_create(request):
 
 
 def ucsd_vm_action(request):
-    # print(request.GET.get("action"))
-    # print(request.GET.get("vmid"))
     action = request.GET.get("action")
     vmid = request.GET.get("vmid").split(",")
     for vm in vmid:
@@ -1351,48 +807,6 @@ def users_groups(request):
         # FIXME only OK
         # refresh ucsd group
         get_ucsd_group_list()
-
-        # Don't Create VDC, because it exists already
-        # group_id = UdGroup.objects.filter(group_name=group_name)[:1].get().group_id
-        # cloud_name = BiCluster.objects.all()[:1].get().name
-        #
-        # pcnt = UdPolicySystem.objects.filter(policy_name__contains=group_name).count()
-        # if pcnt == 0:
-        #     system_policy = UdPolicySystem.objects.all()[:1].get()
-        # if pcnt == 1:
-        #     system_policy = UdPolicySystem.objects.get(policy_name__contains=group_name)
-        # if pcnt > 1:
-        #     system_policy = UdPolicySystem.objects.filter(policy_name__contains=group_name)[:1].get()
-        #
-        # pcnt = UdPolicyComputing.objects.filter(policy_name__contains=group_name).count()
-        # if pcnt == 0:
-        #     computing_policy = UdPolicyComputing.objects.all()[:1].get()
-        # if pcnt == 1:
-        #     computing_policy = UdPolicyComputing.objects.get(policy_name__contains=group_name)
-        # if pcnt > 1:
-        #     computing_policy = UdPolicyComputing.objects.filter(policy_name__contains=group_name)[:1].get()
-        #
-        # pcnt = UdPolicyStorage.objects.filter(policy_name__contains=group_name).count()
-        # if pcnt == 0:
-        #     storage_policy = UdPolicyStorage.objects.all()[:1].get()
-        # if pcnt == 1:
-        #     storage_policy = UdPolicyStorage.objects.get(policy_name__contains=group_name)
-        # if pcnt > 1:
-        #     storage_policy = UdPolicyStorage.objects.filter(policy_name__contains=group_name)[:1].get()
-        #
-        # pcnt = UdPolicyNetwork.objects.filter(policy_name__contains=group_name).count()
-        # if pcnt == 0:
-        #     network_policy = UdPolicyNetwork.objects.all()[:1].get()
-        # if pcnt == 1:
-        #     network_policy = UdPolicyNetwork.objects.get(policy_name__contains=group_name)
-        # if pcnt > 1:
-        #     network_policy = UdPolicyNetwork.objects.filter(policy_name__contains=group_name)[:1].get()
-        #
-        #
-        # # ucsd vdc add
-        # ucsd_create_vdc(group_name, group_id, cloudName=cloud_name,
-        #                 systemPolicy=system_policy.policy_name, computingPolicy=computing_policy.policy_name,
-        #                 storagePolicy=storage_policy.policy_name, networkPolicy=network_policy.policy_name)
 
     else:
         pass

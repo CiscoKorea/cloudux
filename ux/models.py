@@ -48,7 +48,7 @@ class Audited(models.Model):
     class Meta:
         abstract = True
 
-
+'''
 class BiDatacenter(Audited):
     name = models.CharField(max_length=100, blank=True, null=True)
 
@@ -136,7 +136,7 @@ class BiVolume(Audited):
     class Meta:
         ordering = ('name',)
 
-
+'''
 class UdGroup(Audited):
     group_id = models.IntegerField(default=0)
     group_name = models.CharField(max_length=100, blank=True, null=True)
@@ -161,19 +161,17 @@ class BiVirtualMachine(Audited):
     netUsage = models.CharField(max_length=5, blank=True, null=True)
     stgUsage = models.CharField(max_length=30, blank=True, null=True)
     status = models.CharField(max_length=20, blank=True, null=True)
-    host = models.ForeignKey(BiHost, blank=True, null=True, on_delete=models.CASCADE)
-    network = models.ManyToManyField(BiPortgroup)
+    #host = models.ForeignKey(BiHost, blank=True, null=True, on_delete=models.CASCADE)
+    #network = models.ManyToManyField(BiPortgroup)
     ucsd_vm_id = models.CharField(max_length=20, blank=True, null=True)
-    #added items for link vcenter and ucsd
     vcenter_vm_id = models.CharField(max_length=20,blank=True, null=True)
-    #assigned_to_user = models.CharField(max_length=30,blank=True, null=True)
-    group_name = models.CharField(max_length=30, blank=True, null=True)
+    #group_name = models.CharField(max_length=30, blank=True, null=True)
     tenant = models.ForeignKey(UdGroup, null=True)
 
     def __unicode__(self):
         return self.name
 
-
+'''
 class BiInventory(Audited):
     model = models.CharField(max_length=100, blank=True, null=True)
     hwtype = models.CharField(max_length=100, blank=True, null=True)
@@ -206,7 +204,7 @@ class BiFaults(Audited):
         dc["occur"] = self.occur
         return dc
 
-
+'''
 class BiCatalog(Audited):
     status = models.CharField(max_length=100, blank=True, null=True)
     group = models.CharField(max_length=100, blank=True, null=True)
@@ -222,7 +220,7 @@ class BiCatalog(Audited):
     cloud = models.CharField(max_length=100, blank=True, null=True)
     icon = models.CharField(max_length=100, blank=True, null=True)
 
-
+'''
 class UdCloud(Audited):
     tag = models.CharField(max_length=100, blank=True, null=True)
     cloud_type = models.CharField(max_length=100, blank=True, null=True)
@@ -235,19 +233,20 @@ class UdCloud(Audited):
     message = models.CharField(max_length=100, blank=True, null=True)
     vmware_server = models.CharField(max_length=100, blank=True, null=True)
     cloud = models.CharField(max_length=100, blank=True, null=True)
-
+'''
 
 class DashboardAlloc(Audited):
     total_vm = models.IntegerField(default=0)
     total_cpu = models.IntegerField(default=0)
     total_mem = models.IntegerField(default=0)
     total_stg = models.IntegerField(default=0)
+    tenant = models.ForeignKey(UdGroup, null=True)
 
-
+'''
 class DashboardVswitch(Audited):
     switch = models.CharField(max_length=100, blank=True, null=True)
     portgroup = models.IntegerField(default=0)
-
+'''
 
 class UdVDC(Audited):
     status = models.CharField(max_length=100, blank=True, null=True)
@@ -265,7 +264,7 @@ class UdVDC(Audited):
     vdc_description = models.CharField(max_length=255, blank=True, null=True)
     tenant = models.ForeignKey(UdGroup, null=True)
 
-
+'''
 class UdVmDisk(Audited):
     vm_name = models.CharField(max_length=100, blank=True, null=True)
     datacenter_name = models.CharField(max_length=100, blank=True, null=True)
@@ -308,7 +307,7 @@ class UdPolicyNetwork(Audited):
     status = models.CharField(max_length=100, blank=True, null=True)
     vdcs = models.CharField(max_length=200, blank=True, null=True)
 
-
+'''
 class UserAddInfo(Audited):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     contact = models.CharField(max_length=50, blank=True, null=True)
