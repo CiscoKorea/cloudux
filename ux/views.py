@@ -39,7 +39,7 @@ from ucsd_library import catalog_list, catalog_list_all, vm_list, vm_action, ucs
     global_vms, group_vms, available_reports, ucsd_vm_disk, vmware_provision, ucsd_get_all_vms, ucsd_provision_request
 # Create your views here.
 from ux.ucsd_library import ucsd_verify_user, ucsd_add_user, ucsd_add_group, ucsd_create_vdc, \
-    ucsd_vmware_system_policy, ucsd_vmware_computing_policy, ucsd_vmware_storage_policy, ucsd_vmware_network_policy
+    ucsd_vmware_system_policy, ucsd_vmware_computing_policy, ucsd_vmware_storage_policy, ucsd_vmware_network_policy, ucsd_get_groupbyname, ucsd_get_service_requests
 from patch_db import patch_data_vcenter_datacenter
 
 class search_form():
@@ -187,6 +187,40 @@ def hosts(request):
 #     if request.is_ajax():
 #         return HttpResponse(json.dumps(results), 'application/json')
 #     return render(request, 'hostList.html', {'list': children})
+
+@login_required
+def myrequests(request):
+
+    tenant = None
+    db_add_info = None
+    if not request.user.is_staff:
+        db_add_info = UserAddInfo.objects.get(user=request.user)
+    if db_add_info:
+        tenant = db_add_info.tenant
+    group = tenant.group_name
+    grpId = 0
+    try:
+        groups = ucsd_get_groupbyname(group)
+        grpId = groups[0]['groupId']
+    except KeyError as ke:
+        print(ke)
+        pass
+
+    vlist = []
+    vlist = ucsd_get_service_requests( str(request.user.username), str(grpId))
+    for req in vlist:
+        print( req['Service_Request_Id'], req['Request_Time'])
+    paginator = Paginator(vlist, 10)
+    page = request.GET.get('page')
+    try:
+        plist = paginator.page(page)
+    except PageNotAnInteger:
+        plist = paginator.page(1)
+    except EmptyPage:
+        plist = paginator.page(paginator.num_pages)
+
+    return render(request, "myRequestsList.html", {'list': plist })
+
 
 @login_required
 def vms(request):
@@ -337,9 +371,13 @@ def catalogs(request):
         plist = paginator.page(1)
     except EmptyPage:
         plist = paginator.page(paginator.num_pages)
-
-    glist = UdGroup.objects.all()
-    vdclist = UdVDC.objects.all()
+    #fixme with dedicated group & vdc for login user request.user.useraddinfo.tenant.group_name
+    if request.user.useraddinfo.tenant:
+        glist = [request.user.useraddinfo.tenant] #UdGroup.objects.all()
+        vdclist = [UdVDC.objects.get(tenant = request.user.useraddinfo.tenant)]
+    else:
+        glist = UdGroup.objects.all()
+        vdclist = UdVDC.objects.all()
 
     return render(request, "catalogList.html", {'list': plist, 'ucsd_server': ConfigUtil.get_val("UCSD.HOST")
                   , 'group_list': glist, 'vdc_list': vdclist})
@@ -1003,7 +1041,7 @@ def get_datacenters_new(content):
 
     return obj
 
-
+'''
 def delete_all():
     BiVirtualMachine.objects.all().delete()
     BiVolume.objects.all().delete()
@@ -1025,7 +1063,7 @@ def delete_all():
     # UdGroup.objects.all().delete()
     UdVDC.objects.all().delete()
     UdVmDisk.objects.all().delete()
-
+'''
 
 def get_catalog():
     clist = catalog_list_all()
@@ -1389,7 +1427,8 @@ def catalog_vm_provision(request):
         l = list()
         l.append(p_vmname)
         l.append("-")
-        l.append(str(cnt).zfill(3))
+        l.append(str(cnt).zfill(2))
+        l.append("-")
         vmname = ''.join(l)
 
         username = ''
@@ -1545,7 +1584,4 @@ def my_login(request):
         # form.add_error(error='invalid login')
         variables = {'form': form}
         return render(request, 'registration/login.html', variables)
-
-def myrequests(request):
-    return "Not Implemented"
 

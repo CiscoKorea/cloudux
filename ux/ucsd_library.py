@@ -1110,12 +1110,51 @@ def ucsd_vmware_network_policy():
     return j['serviceResult']['rows']
 
 
+#https://10.72.86.243/app/api/rest?formatType=json&opName=userAPIGetTabularReport&opData={param0:"6",param1:"",param2:"SERVICE-REQUESTS-T10"}
+def ucsd_get_service_requests(username=None, groupId='0'):
+    apioperation = "userAPIGetTabularReport"
+    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
+        "{param0:\"7\",param1:\"" + groupId + "\",param2:\"SERVICE-REQUESTS-T10\"}"
+
+    myheaders = None
+    if username:
+        myheaders = {"X-Cloupia-Request-Key": ucsd_get_restaccesskey(username)}
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+    r = requests.get(u, headers=myheaders if myheaders else headers, verify=False)
+    j = json.loads(r.text)
+
+    rows = []
+    try:
+        rows = j['serviceResult']['rows']
+    except KeyError as ke:
+        pass
+    return rows
+
+def ucsd_get_service_request_workflow( username=None, reqId='0'):
+    apioperation = "userAPIGetServiceRequestWorkFlow"
+    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
+        "{param0:\"" + reqId+"\"}"
+    myheaders = None
+    if username:
+        myheaders = {"X-Cloupia-Request-Key": ucsd_get_restaccesskey(username)}
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+    r = requests.get(u, headers=myheaders if myheaders else headers, verify=False)
+    j = json.loads(r.text)
+    print(j)
+    rows = []
+    try:
+        rows = j['serviceResult']['rows']
+    except KeyError as ke:
+        pass
+    return rows
 if __name__ == '__main__':
     print('test code')
-    print(ucsd_get_userprofile('admin'))
+    #print(ucsd_get_userprofile('admin'))
     #print(ucsd_verify_user('hyungsok', '1234Qwer'))
-    print(ucsd_get_useraccessprofile('admin'))
-    #print (ucsd_get_all_vms())
+    userinfo = ucsd_get_userprofile('hyungsok')
+    grp = ucsd_get_groupbyname( userinfo['groupName'])
+    print(len(ucsd_get_service_requests('hyungsok', str(grp[0]['groupId']))))
+    ucsd_get_service_request_workflow( 'hyungsok', '58')
     #ret = ucsd_get_userprofile('admin')
     #print( ret )
     #print( ucsd_get_groupbyname(ret['groupName']))

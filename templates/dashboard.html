@@ -243,7 +243,10 @@ function type(d) {
                                         <p>활성VM</p>
                                         <p><strong>{{ chart1.0 }}</strong><span>%</span></p>
                                     </div>
-
+                                    <div class="center">
+                                        <p>VM개수</p>
+                                        <p><strong>10</strong><span>개</span></p>
+                                    </div>
                                     <div class="right">
                                         <p>비활성VM</p>
                                         <p><strong>{{ chart1d.0 }}</strong><span>%</span></p>
@@ -263,12 +266,12 @@ function type(d) {
                                     <svg width="230" height="120" id="totalcpu" />
                                 </div>
                                 <div class="clear">
-                                    <div class="left">
+                                    <div class="left" style="width: 50%;">
                                         <p>할당된CPU</p>
                                         <p><strong>{{ chart1.1 }}</strong><span>%</span></p>
                                     </div>
 
-                                    <div class="right">
+                                    <div class="right" style="width: 50%;">
                                         <p>유휴CPU</p>
                                         <p><strong>{{ chart1d.1 }}</strong><span>%</span></p>
                                     </div>
@@ -287,12 +290,12 @@ function type(d) {
                                     <svg width="230" height="120" id="totalmem" />
                                 </div>
                                 <div class="clear">
-                                    <div class="left">
+                                    <div class="left" style="width: 50%;">
                                         <p>할당된MEM</p>
                                         <p><strong>{{ chart1.2 }}</strong><span>%</span></p>
                                     </div>
 
-                                    <div class="right">
+                                    <div class="right" style="width: 50%;">
                                         <p>유휴MEM</p>
                                         <p><strong>{{ chart1d.2 }}</strong><span>%</span></p>
                                     </div>
@@ -303,7 +306,7 @@ function type(d) {
                         <li>
                             <div class="head">
                                 <h3>Total Storage Info</h3>
-                                <a href="{% url 'volumes' %}"><span>More</span></a>
+                                <!-- <a href="{% url 'volumes' %}"><span>More</span></a> -->
                             </div>
 
                             <div class="chart_area type04">
@@ -316,7 +319,10 @@ function type(d) {
                                         <p>할당된스토리지</p>
                                         <p><strong>{{ chart1.3 }}</strong><span>%</span></p>
                                     </div>
-
+                                    <div class="center">
+                                        <p>스토리지</p>
+                                        <p><strong> </strong><span>GB</span></p>
+                                    </div>
                                     <div class="right">
                                         <p>유휴스토리지</p>
                                         <p><strong>{{ chart1d.3 }}</strong><span>%</span></p>
@@ -327,7 +333,7 @@ function type(d) {
                     </ul>
                     <!-- //sel_left -->
 
-                    <!-- sel_right -->
+                    <!-- sel_right 
                     <div class="sel_right">
                         <div class="head">
                             <h3>Total Virtual switch Info</h3>
@@ -343,17 +349,17 @@ function type(d) {
                         <div class="chart_area">
                             <p>Port group</p>
                             <svg class="chart">
-                                <!-- 그래프영역 -->
+                                
                             </svg>
                             <p class="tr">Switch</p>
                         </div>
                     </div>
-                    <!-- //sel_right -->
+                    //sel_right -->
 
                 </div>
                 <!-- //chart_list -->
 
-                <!-- inner -->
+                <!-- inner 
                 <div class="inner">
                     <h3>Infra Inventory</h3>
                     <table>
@@ -365,7 +371,6 @@ function type(d) {
                             <col width="14%">
                             <col width="14%">
                             <col width="14%">
-                            <!-- <col width="*"> -->
                         </colgroup>
                         <thead>
                             <tr>
@@ -376,11 +381,10 @@ function type(d) {
                                 <th>MGMT IP</th>
                                 <th>FIRMWARE Ver.</th>
                                 <th>Last Modified</th>
-                                <!-- <th>Description</th> -->
                             </tr>
                         </thead>
                         <tbody>
-                            {% for inven in inventorylist %}
+                            {# % for inven in inventorylist % #}
                             <tr onclick="faults_list('{{ inven.name }}')">
                                 <td>{{ forloop.counter }}</td>
                                 <td>{{ inven.model }}</td>
@@ -389,15 +393,14 @@ function type(d) {
                                 <td>{{ inven.ipAddress }}</td>
                                 <td>{{ inven.firmwareVersion }}</td>
                                 <td>{{ inven.lastModified }}</td>
-                                <!-- <td>{{ inven.desc }}</td> -->
                             </tr>
-                            {% endfor %}
+                            {#% endfor %#}
                         </tbody>
                     </table>
                 </div>
-                <!-- //inner -->
+                //inner -->
 
-                <!-- inner -->
+                <!-- inner
                 <div class="inner">
                     <div class="title_area">
                         <h3>Faults Information</h3>
@@ -440,30 +443,8 @@ function type(d) {
                             </tr>
                         </tbody>
                     </table>
-                    <!--
-                    <div class="paginate">
-                        <p class="total">Total <strong>350</strong></p>
-
-                        <a href="#none" class="first">처음</a>
-                        <a href="#none" class="prev">이전</a>
-                            <span>
-                                <a href="#none">1</a>
-                                <a href="#none">2</a>
-                                <a href="#none">3</a>
-                                <strong>4</strong>
-                                <a href="#none">5</a>
-                                <a href="#none">6</a>
-                                <a href="#none">7</a>
-                                <a href="#none">8</a>
-                                <a href="#none">9</a>
-                                <a href="#none">10</a>
-                            </span>
-                        <a href="#none" class="next">다음</a>
-                        <a href="#none" class="last">마지막</a>
-                    </div>
-                    -->
                 </div>
-                <!-- //inner -->
+                //inner -->
 <script type="text/javascript">
 $(document).ready(function(){
    init();

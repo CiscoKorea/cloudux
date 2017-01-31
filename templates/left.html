@@ -11,13 +11,11 @@
             <ul>
                 <li class="ico00"><a href="{% url 'catalogs' %}">{% trans "menu.catalog" %}</a></li>
                 <li class="ico00"><a href="{% url 'myrequests' %}">{% trans "menu.myrequests" %}</a></li>
-                {% if user.username == 'admin' %}
-            	<li class="ico02"><a href="{% url 'hosts' %}">{% trans "menu.hostlist" %}</a></li>
-                {% endif %}
+                <!-- <li class="ico02"><a href="{% url 'hosts' %}">{% trans "menu.hostlist" %}</a></li>  -->
             	<li class="ico03"><a href="{% url 'vms' %}">{% trans "menu.vmlist" %}</a></li>
             </ul>
 
-            {% if user.username == 'admin' %}
+            <!-- only for end-user 
         	<p>Network</p>
             <ul>
             	<li class="ico04"><a href="{% url 'vnets' %}">{% trans "menu.vnetlist" %}</a></li>
@@ -32,7 +30,7 @@
             <ul>
             	<li class="ico08"><a href="{% url 'users' %}">{% trans "menu.userlist" %}</a></li>
             </ul>
-            {% endif %}
+            -->
             
             <!-- 
             <p>Menu Sample</p>

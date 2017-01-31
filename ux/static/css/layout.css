@@ -88,7 +88,7 @@ html, body{background-color:#f5f5f5;}
 
 .chart_list{margin-bottom:30px;}
 .chart_list:after{display:block;clear:both;content:''}
-.chart_list > .sel_left{float:left; width:800px; margin-left:-30px; margin-top:-20px;}
+.chart_list > .sel_left{float:left; width:1200px; margin-left:-30px; margin-top:-20px;}
 .chart_list > .sel_left:after{display:block;clear:both;content:''}
 .chart_list > .sel_left > li{height:300px; width:370px; background-color:#fff; border:1px solid #eaeaea; float:left; margin-left:30px; margin-top:20px;}
 .chart_list > .sel_left > li > .chart_area{height:249px; padding-top:20px; position:relative;}
@@ -98,8 +98,9 @@ html, body{background-color:#f5f5f5;}
 .chart_list > .sel_left > li > .chart_area.type04{background:url(../img/content/chart_bg04.png) no-repeat 50% 50%;}
 .chart_list > .sel_left > li > .chart_area > .chart{width:240px; height:211px; margin:0 auto;}
 .chart_list > .sel_left > li > .chart_area > .clear{position:absolute; bottom:40px; width:100%;}
-.chart_list > .sel_left > li > .chart_area > .clear > .left{float:left; width:50%; text-align:center; border-right:1px solid #eaeaea;}
-.chart_list > .sel_left > li > .chart_area > .clear > .right{float:right; width:50%; text-align:center;}
+.chart_list > .sel_left > li > .chart_area > .clear > .left{float:left; width:35%; text-align:center; border-right:1px solid #eaeaea;}
+.chart_list > .sel_left > li > .chart_area > .clear > .right{float:right; width:35%; text-align:center;}
+.chart_list > .sel_left > li > .chart_area > .clear > .center{float:left; width:30%; text-align:center;border-right:1px solid #eaeaea;}
 .chart_list > .sel_left > li > .chart_area > .clear p{font-size:13px; font-weight:500;}
 .chart_list > .sel_left > li > .chart_area > .clear p+p{padding-top:20px;}
 .chart_list > .sel_left > li > .chart_area > .clear p+p *{color:#b4b4b4}
@@ -149,6 +150,9 @@ html, body{background-color:#f5f5f5;}
 .content .inner span.box.yellow{background-color: #ede408;}
 .content .inner span.box.major{background-color: #ef4900;}
 .content .inner span.box.minor{background-color: #ede408;}
+.content .inner span.box.complete{background-color: #35a61f;}
+.content .inner span.box.failed{background-color: #ef4900;}
+.content .inner span.box.inprogress{background-color: #f57f17;}
 
 div.paginate {text-align:center; margin-top:20px; position:relative;}
 div.paginate a,

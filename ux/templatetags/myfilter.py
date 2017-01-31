@@ -41,3 +41,12 @@ def desc(value, arg):
         if arg.upper() in val.upper():
            return val
     return ""
+
+@register.assignment_tag
+def get_userrole(value='Regular'):
+    return value
+
+@register.filter
+def remove_space(value):
+    words = value.lower().split(' ')
+    return "".join(words)
