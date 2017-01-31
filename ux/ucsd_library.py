@@ -385,7 +385,6 @@ def catalog_list_all(key_filter=None, result_filter=None):
     r = requests.get(u, headers=headers, verify=False)
 
     j = json.loads(r.text)
-    # print(j)
 
     j['serviceResult']['rows'] = list_search(j['serviceResult']['rows'], result_filter)
 
@@ -513,18 +512,13 @@ def vmware_provision(catalog, vdc, comment="", vmname="", vcpus="0", vram="0", d
         "param6:\"" + param6 + '",' + \
         "param7:\"" + param7 + '"}'
 
-    print u
-
     requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     if username != "":
         myheaders = {"X-Cloupia-Request-Key": ucsd_get_restaccesskey(username)}
         r = requests.get(u, headers=myheaders, verify=False)
     else :
         r = requests.get(u, headers=headers, verify=False)
-    #print r.text
     j = json.loads(r.text)
-    print j
-    # vms = sr_vms()
 
     return j
 
@@ -1143,10 +1137,31 @@ def ucsd_get_service_request_workflow( username=None, reqId='0'):
     print(j)
     rows = []
     try:
+        rows = j['serviceResult']['entries']
+    except KeyError as ke:
+        pass
+    return rows
+
+
+def ucsd_get_vms_per_group( username=None, groupId='0'):
+    apioperation = "userAPIGetTabularReport"
+    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
+        "{param0:\"7\",param1:\"" + groupId + "\",param2:\"VMS-T14\"}"
+
+    myheaders = None
+    if username:
+        myheaders = {"X-Cloupia-Request-Key": ucsd_get_restaccesskey(username)}
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+    r = requests.get(u, headers=myheaders if myheaders else headers, verify=False)
+    j = json.loads(r.text)
+
+    rows = []
+    try:
         rows = j['serviceResult']['rows']
     except KeyError as ke:
         pass
     return rows
+
 if __name__ == '__main__':
     print('test code')
     #print(ucsd_get_userprofile('admin'))
@@ -1154,7 +1169,8 @@ if __name__ == '__main__':
     userinfo = ucsd_get_userprofile('hyungsok')
     grp = ucsd_get_groupbyname( userinfo['groupName'])
     print(len(ucsd_get_service_requests('hyungsok', str(grp[0]['groupId']))))
-    ucsd_get_service_request_workflow( 'hyungsok', '58')
+    print( ucsd_get_vms_per_group('hyungsok', str(grp[0]['groupId'])))
+    #print( ucsd_get_service_request_workflow( 'hyungsok', '56'))
     #ret = ucsd_get_userprofile('admin')
     #print( ret )
     #print( ucsd_get_groupbyname(ret['groupName']))

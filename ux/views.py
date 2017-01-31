@@ -208,8 +208,6 @@ def myrequests(request):
 
     vlist = []
     vlist = ucsd_get_service_requests( str(request.user.username), str(grpId))
-    for req in vlist:
-        print( req['Service_Request_Id'], req['Request_Time'])
     paginator = Paginator(vlist, 10)
     page = request.GET.get('page')
     try:
@@ -224,8 +222,6 @@ def myrequests(request):
 
 @login_required
 def vms(request):
-    # print("vm69:", vm_details(vmid="69"))
-
     # user group
     tenant = None
     db_add_info = None
@@ -235,13 +231,7 @@ def vms(request):
         tenant = db_add_info.tenant
 
 
-    # db_add_info = UserAddInfo.objects.get(user_id=request.user.id)
-    # print(request.user.useraddinfo.tenant.group_name);
-    # print(request.user.useraddinfo.tenant.id);
-
     search = search_form(request)
-    # search.srch_key = request.GET.get("srch_key", "name")
-    # search.srch_txt = request.GET.get("srch_txt", "")
 
     vlist = []
     # admin get all list
@@ -281,54 +271,6 @@ def vms(request):
 
     clist = BiCatalog.objects.filter(catalog_type__in=['Standard', '표준'])
     return render(request, "vmList.html", {'list': plist, 'search': search, 'clist': clist, 'tenant': tenant})
-
-# def vms_old(request):
-#
-#     try:
-#
-#         config = GlobalConfig.objects.all()
-#         context = ssl._create_unverified_context()
-#         service_instance = connect.SmartConnect(host=config[0].vc_host,
-#                                                 user=config[0].vc_user,
-#                                                 pwd=config[0].vc_pass,
-#                                                 port=int(config[0].vc_port), sslContext=context)
-#
-#         atexit.register(connect.Disconnect, service_instance)
-#
-#         content = service_instance.RetrieveContent()
-#
-#         container = content.rootFolder  # starting point to look into
-#         viewType = [vim.VirtualMachine]  # object types to look for
-#         recursive = True  # whether we should look into it recursively
-#         containerView = content.viewManager.CreateContainerView(
-#             container, viewType, recursive)
-#
-#         children = containerView.view
-#         results = []
-#         for child in children:
-#             #print_vm_info(child)
-#             jsonObject = {}
-#             jsonObject['Name'] = child.summary.config.name
-#             jsonObject['IP'] = child.summary.guest.ipAddress
-#             results.append(jsonObject)
-#
-#             vm = BiVirtualMachine()
-#             vm.name = child.summary.config.name
-#             vm.ipAddress = child.summary.guest.ipAddress
-#             vm.macAddress = None
-#             vm.cpuUsage = child.summary.quickStats.overallCpuUsage
-#             vm.memUsage = child.summary.quickStats.guestMemoryUsage
-#             vm.netUsage = None
-#             vm.stgUsage = child.summary.storage.committed
-#             vm.status = None
-#             vm.save()
-#
-#     except vmodl.MethodFault as error:
-#         print("Caught vmodl fault : " + error.msg)
-#
-#     if request.is_ajax():
-#         return HttpResponse(json.dumps(results), 'application/json')
-#     return render(request, 'vmList.html', {'list': children})  # {'list': children}
 
 
 def vms_ajax(request):
@@ -397,43 +339,6 @@ def volumes(request):
     return render(request, 'volumeList.html', {'list': slist})
 
 
-# def volumes_old(request):
-#     try:
-#
-#         config = GlobalConfig.objects.all()
-#         context = ssl._create_unverified_context()
-#         service_instance = connect.SmartConnect(host=config[0].vc_host,
-#                                                 user=config[0].vc_user,
-#                                                 pwd=config[0].vc_pass,
-#                                                 port=int(config[0].vc_port), sslContext=context)
-#
-#         atexit.register(connect.Disconnect, service_instance)
-#
-#         content = service_instance.RetrieveContent()
-#
-#         container = content.rootFolder  # starting point to look into
-#         viewType = [vim.HostSystem]  # object types to look for
-#         recursive = True  # whether we should look into it recursively
-#         containerView = content.viewManager.CreateContainerView(
-#             container, viewType, recursive)
-#
-#         children = containerView.view
-#         results = []
-#         for child in children:
-#             print("mountInfo :", child.configManager.storageSystem.fileSystemVolumeInfo.mountInfo)
-#             # print_vm_info(child)
-#         #     jsonObject = {}
-#         #     jsonObject['Name'] = child.summary.config.name
-#         #     jsonObject['IP'] = child.summary.guest.ipAddress
-#         #     results.append(jsonObject)
-#
-#     except vmodl.MethodFault as error:
-#         print("Caught vmodl fault : " + error.msg)
-#
-#     if request.is_ajax():
-#         return HttpResponse(json.dumps(results), 'application/json')
-#     return render(request, 'volumeList.html', {'list': children})
-
 
 def disks(request):
     dlist = UdVmDisk.objects.all()
@@ -492,8 +397,6 @@ def users(request):
 
     # user list page
     search = search_form(request)
-    # search.srch_key = request.GET.get("srch_key", "username")
-    # search.srch_txt = request.GET.get("srch_txt", "")
 
     if len(search.srch_txt) > 0:
         if search.srch_key == "username":
@@ -651,25 +554,14 @@ def get_network(network):
 
 def get_host(phosts):
     for host in phosts:
-        print("Host Name=%s" % host.name)
+        #print("Host Name=%s" % host.name)
         get_network(host.config.network)
 
 
 def get_cluster(folder):
     for entity in folder.childEntity:
-        print("Cluster name = %s" % entity.name)
+        #print("Cluster name = %s" % entity.name)
         get_host(entity.host)
-
-
-# def get_datacenters(content):
-#     print("Getting all Datacenter...")
-#     dc_view = content.viewManager.CreateContainerView(content.rootFolder, [vim.Datacenter], True)
-#     obj = [ dc for dc in dc_view.view]
-#     for dc in obj:
-#        print("Datacenter %s" %(dc.name))
-#        get_cluster( dc.hostFolder)
-#     dc_view.Destroy()
-#     return obj
 
 
 def get_datacenters(content):
