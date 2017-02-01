@@ -11,36 +11,8 @@
             <ul>
                 <li class="ico00"><a href="{% url 'catalogs' %}">{% trans "menu.catalog" %}</a></li>
                 <li class="ico00"><a href="{% url 'myrequests' %}">{% trans "menu.myrequests" %}</a></li>
-                <!-- <li class="ico02"><a href="{% url 'hosts' %}">{% trans "menu.hostlist" %}</a></li>  -->
             	<li class="ico03"><a href="{% url 'vms' %}">{% trans "menu.vmlist" %}</a></li>
             </ul>
-
-            <!-- only for end-user 
-        	<p>Network</p>
-            <ul>
-            	<li class="ico04"><a href="{% url 'vnets' %}">{% trans "menu.vnetlist" %}</a></li>
-            </ul>
-
-        	<p>Storage</p>
-            <ul>
-            	<li class="ico05"><a href="{% url 'volumes' %}">{% trans "site.volumelist" %}</a></li>
-            	<li class="ico06"><a href="{% url 'disks' %}">{% trans "menu.disklist" %}</a></li>
-            </ul>
-            
-            <ul>
-            	<li class="ico08"><a href="{% url 'users' %}">{% trans "menu.userlist" %}</a></li>
-            </ul>
-            -->
-            
-            <!-- 
-            <p>Menu Sample</p>
-            <ul>
-            	{% if 'r1' in user.useraddinfo.role %}
-                <li class="ico07"><a href="#">Menu 1</a></li>
-                {% endif %}
-                <li class="ico07"><a href="#">Menu 2</a></li>
-                <li class="ico07"><a href="#">Menu 3</a></li>
-            </ul> -->
         </div>
         <!-- //nav -->
 {% endblock %}

@@ -62,19 +62,14 @@ def dashboard(request):
         chart1d = [100, 100, 100, 100]
 
 
-    return render(request, 'dashboard.html', {'chart1': chart1, 'chart1d': chart1d,
-                                              'chart4': json.dumps(chart4) })
+    return render(request, 'dashboard.html', {'chart1': chart1, 'chart1d': chart1d })
+                                              
 
 
 def dashboard_fault_list(request):
     search = search_form(request)
     target_infra = request.GET.get("targetinfra", "")
 
-    # search.srch_key = request.GET.get("srch_key", "name")
-    # search.srch_txt = request.GET.get("srch_txt", "")
-
-    # json_list = []
-    # print("search.srch_key: ", search.srch_key)
     if target_infra == "":
         fault_list = BiFaults.objects.all()
     else:
@@ -92,75 +87,13 @@ def dashboard_fault_list(request):
     # return JsonResponse(json.dumps(json_list), safe=False)
 
 
-@login_required
-def hosts(request):
+#@login_required
+#def hosts(request):
+#
+#    hlist = BiHost.objects.all()
+#    return render(request, "hostList.html", {'list': hlist})
 
-    hlist = BiHost.objects.all()
-    return render(request, "hostList.html", {'list': hlist})
 
-
-# def hosts_old(request):
-#     try:
-#
-#         config = GlobalConfig.objects.all()
-#         context = ssl._create_unverified_context()
-#         service_instance = connect.SmartConnect(host=config[0].vc_host,
-#                                                 user=config[0].vc_user,
-#                                                 pwd=config[0].vc_pass,
-#                                                 port=int(config[0].vc_port), sslContext=context)
-#
-#         atexit.register(connect.Disconnect, service_instance)
-#
-#         content = service_instance.RetrieveContent()
-#
-#         container = content.rootFolder  # starting point to look into
-#         viewType = [vim.HostSystem]  # object types to look for
-#         recursive = True  # whether we should look into it recursively
-#         containerView = content.viewManager.CreateContainerView(
-#             container, viewType, recursive)
-#
-#         children = containerView.view
-#         results = []
-#         for child in children:
-#             print("summary :", child.summary)
-#             h = BiHost()
-#             h.host = child.summary.host
-#             h.os = child.summary.config.product.osType
-#             h.version = child.summary.config.product.version
-#             h.ip = child.summary.managementServerIp
-#             h.status = child.summary.overallStatus
-#             h.save()
-#
-#             for vnic in child.summary.host.configManager.networkSystem.networkConfig.vnic:
-#                 n = BiVnic()
-#                 n.device = vnic.device
-#                 n.ipAddress = vnic.spec.ip.ipAddress
-#                 n.save()
-#                 n.host.add(h)
-#
-#             for vswitch in child.summary.host.configManager.networkSystem.networkConfig.vswitch:
-#                 s = BiVswitch()
-#                 s.name = vswitch.name
-#                 s.save()
-#                 s.host = h
-#
-#             for vol in child.summary.host.configManager.storageSystem.fileSystemVolumeInfo.mountInfo:
-#                 v = BiVolume()
-#                 v.name = vol.volume.name
-#                 v.save()
-#                 v.host.add(h)
-#         # print_vm_info(child)
-#         #     jsonObject = {}
-#         #     jsonObject['Name'] = child.summary.config.name
-#         #     jsonObject['IP'] = child.summary.guest.ipAddress
-#         #     results.append(jsonObject)
-#
-#     except vmodl.MethodFault as error:
-#         print("Caught vmodl fault : " + error.msg)
-#
-#     if request.is_ajax():
-#         return HttpResponse(json.dumps(results), 'application/json')
-#     return render(request, 'hostList.html', {'list': children})
 
 @login_required
 def myrequests(request):
@@ -171,11 +104,13 @@ def myrequests(request):
         db_add_info = UserAddInfo.objects.get(user=request.user)
     if db_add_info:
         tenant = db_add_info.tenant
-    group = tenant.group_name
+    
     grpId = 0
     try:
-        groups = ucsd_get_groupbyname(group)
-        grpId = groups[0]['groupId']
+        if tenant:
+            group = tenant.group_name
+            groups = ucsd_get_groupbyname(group)
+            grpId = groups[0]['groupId']
     except KeyError as ke:
         print(ke)
         pass
@@ -483,13 +418,22 @@ def get_ucsd_vm_list():
     for vm in vlist:
         try:
             dbvm = BiVirtualMachine.objects.get(name=vm["VM_Name"])
+            if not dbvm:
+                dbvm = BiVirtualMachine()
+                dbvm.name = vm["VM_Name"]
+                dbvm.ipAddress = vm["IP_Address"]
+                dbvm.provisionTime = vm["Provisioned_Time"]
+                dbvm.guestOSType = vm["Guest_OS_Type"]
+                dbvm.srId = str(vm["Request_ID"])
+                dbvm.state = str(vm["Power_State"])
+
             dbvm.group_name = vm["Group_Name"]
             dbvm.ucsd_vm_id = vm["VM_ID"]
             db_group = UdGroup.objects.get(group_name=vm["Group_Name"])
             dbvm.tenant = db_group
             dbvm.save()
-        except:
-            print("get_ucsd_vm exception : ", vm["VM_Name"])
+        except Exception as e:
+            print("get_ucsd_vm exception : ", e,  vm["VM_Name"])
 
 
 def get_ucsd_group_list():
@@ -501,7 +445,7 @@ def get_ucsd_group_list():
         else:
             entity = UdGroup.objects.get(group_id=group["groupId"])
 
-        #detail = group_detail_by_id(group["groupId"])
+        detail = group_detail_by_id(group["groupId"])
         entity.group_id = group["groupId"]
         entity.group_name = detail["groupName"]
         entity.description = unicode(detail["description"])
@@ -621,7 +565,6 @@ def get_ucsd_stat2():
         vswtc.portgroup = int(net["Num_Port_Groups"])
         vswtc.switch = net["Switch_Name"]
         vswtc.save()
-'''
 
 def get_ucsd_policy_system():
     all_policy = ucsd_vmware_system_policy()
@@ -682,13 +625,16 @@ def get_ucsd_policy_network():
         policy.status = pol["Status"]
         policy.save()
 
-
-def reload_data_none(request):
-    return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
-
+'''
 
 def reload_data(request):
-
+    ''' 
+    called by celery 
+    '''
+    get_ucsd_group_list()
+    get_ucsd_vdc_list()
+    get_catalog()
+    get_ucsd_vm_list()
     return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
 
 

@@ -160,13 +160,16 @@ class BiVirtualMachine(Audited):
     memUsage = models.CharField(max_length=5, blank=True, null=True)
     netUsage = models.CharField(max_length=5, blank=True, null=True)
     stgUsage = models.CharField(max_length=30, blank=True, null=True)
-    status = models.CharField(max_length=20, blank=True, null=True)
+    status = models.CharField(max_length=50, blank=True, null=True)
     #host = models.ForeignKey(BiHost, blank=True, null=True, on_delete=models.CASCADE)
     #network = models.ManyToManyField(BiPortgroup)
     ucsd_vm_id = models.CharField(max_length=20, blank=True, null=True)
     vcenter_vm_id = models.CharField(max_length=20,blank=True, null=True)
     #group_name = models.CharField(max_length=30, blank=True, null=True)
     tenant = models.ForeignKey(UdGroup, null=True)
+    provisionTime = models.DateTimeField(blank=True, null=True)
+    srId = models.CharField(max_length=10, blank=True, null=True)
+    guestOSType = models.CharField(max_length=30, blank=True, null=True)
 
     def __unicode__(self):
         return self.name
