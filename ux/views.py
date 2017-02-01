@@ -40,6 +40,7 @@ from ucsd_library import catalog_list, catalog_list_all, vm_list, vm_action, ucs
 from ux.ucsd_library import ucsd_verify_user, ucsd_add_user, ucsd_add_group, ucsd_create_vdc, \
     ucsd_vmware_system_policy, ucsd_vmware_computing_policy, ucsd_vmware_storage_policy, ucsd_vmware_network_policy, ucsd_get_groupbyname, ucsd_get_service_requests
 #from patch_db import patch_data_vcenter_datacenter
+from local_config import catalog_type_list
 
 class search_form():
     srch_key = ""
@@ -105,9 +106,11 @@ def myrequests(request):
     if db_add_info:
         tenant = db_add_info.tenant
     
-    #print(tenant, tenant.group_id, tenant.group_name)
     vlist = []
-    vlist = UdServiceRequest.objects.filter( tenant_id=tenant.id)
+    if tenant:
+        vlist = UdServiceRequest.objects.filter( tenant_id=tenant.id)
+    else:
+        vlist = UdServiceRequest.objects.all()
     paginator = Paginator(vlist, 10)
     page = request.GET.get('page')
     try:
@@ -169,7 +172,7 @@ def vms(request):
     except EmptyPage:
         plist = paginator.page(paginator.num_pages)
 
-    clist = BiCatalog.objects.filter(catalog_type__in=['Standard', '표준'])
+    clist = BiCatalog.objects.filter(catalog_type__in=catalog_type_list)
     return render(request, "vmList.html", {'list': plist, 'search': search, 'clist': clist, 'tenant': tenant})
 
 
@@ -203,7 +206,7 @@ def vms_ajax(request):
 
 @login_required
 def catalogs(request):
-    clist = BiCatalog.objects.filter(catalog_type__in=['Standard', '표준'])
+    clist = BiCatalog.objects.filter(catalog_type__in=catalog_type_list)
 
     paginator = Paginator(clist, 4)
     page = request.GET.get('page')

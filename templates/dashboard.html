@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load i18n %}
 {% block content %}
 <script type="text/javascript" src="http://d3js.org/d3.v3.js" ></script>
     <script type="text/javascript">
@@ -89,8 +89,6 @@
          drowArc("#totalmem", "#06a7f7", chart1[2]);
          drowArc("#totalstg", "#dcd8d8", 100);
          drowArc("#totalstg", "#06a7f7", chart1[3]);    // #443cb0
-
-         faults_list('');
      }
     </script>
 
@@ -240,15 +238,15 @@ function type(d) {
                                 </div>
                                 <div class="clear">
                                     <div class="left">
-                                        <p>활성VM</p>
+                                        <p>{% trans "menu.active_vm" %}</p>
                                         <p><strong>{{ chart1.0 }}</strong><span>%</span></p>
                                     </div>
                                     <div class="center">
-                                        <p>VM개수</p>
+                                        <p>{% trans "menu.vm_number" %}</p>
                                         <p><strong>10</strong><span>개</span></p>
                                     </div>
                                     <div class="right">
-                                        <p>비활성VM</p>
+                                        <p>{% trans "menu.inactive_vm" %}</p>
                                         <p><strong>{{ chart1d.0 }}</strong><span>%</span></p>
                                     </div>
                                 </div>
@@ -267,12 +265,12 @@ function type(d) {
                                 </div>
                                 <div class="clear">
                                     <div class="left" style="width: 50%;">
-                                        <p>할당된CPU</p>
+                                        <p>{% trans "menu.allocated_cpu" %}</p>
                                         <p><strong>{{ chart1.1 }}</strong><span>%</span></p>
                                     </div>
 
                                     <div class="right" style="width: 50%;">
-                                        <p>유휴CPU</p>
+                                        <p>{% trans "menu.idle_cpu" %}</p>
                                         <p><strong>{{ chart1d.1 }}</strong><span>%</span></p>
                                     </div>
                                 </div>
@@ -291,12 +289,12 @@ function type(d) {
                                 </div>
                                 <div class="clear">
                                     <div class="left" style="width: 50%;">
-                                        <p>할당된MEM</p>
+                                        <p>{% trans "menu.allocated_memory" %}</p>
                                         <p><strong>{{ chart1.2 }}</strong><span>%</span></p>
                                     </div>
 
                                     <div class="right" style="width: 50%;">
-                                        <p>유휴MEM</p>
+                                        <p>{% trans "menu.idle_memory" %}</p>
                                         <p><strong>{{ chart1d.2 }}</strong><span>%</span></p>
                                     </div>
                                 </div>
@@ -315,178 +313,28 @@ function type(d) {
                                 </div>
                                 <div class="clear">
                                     <div class="left">
-                                        <p>할당된스토리지</p>
+                                        <p>{% trans "menu.allocated_storage" %}</p>
                                         <p><strong>{{ chart1.3 }}</strong><span>%</span></p>
                                     </div>
                                     <div class="center">
-                                        <p>스토리지</p>
+                                        <p>{% trans "menu.storage" %}</p>
                                         <p><strong> </strong><span>GB</span></p>
                                     </div>
                                     <div class="right">
-                                        <p>유휴스토리지</p>
+                                        <p>{% trans "menu.idle_storage" %}</p>
                                         <p><strong>{{ chart1d.3 }}</strong><span>%</span></p>
                                     </div>
                                 </div>
                             </div>
                         </li>
                     </ul>
-                    <!-- //sel_left -->
-
-                    <!-- sel_right 
-                    <div class="sel_right">
-                        <div class="head">
-                            <h3>Total Virtual switch Info</h3>
-                            <a href="{#% url 'vnets' %#}"><span>More</span></a>
-                        </div>
-
-                        <div class="info">
-                            <h4><span>가상스위치</span></h4>
-                            <p><strong>{{ avgport }}</strong> <span>개</span></p>
-                            <p>스위치당포트그룹개수</p>
-                        </div>
-
-                        <div class="chart_area">
-                            <p>Port group</p>
-                            <svg class="chart">
-                                
-                            </svg>
-                            <p class="tr">Switch</p>
-                        </div>
-                    </div>
-                    //sel_right -->
 
                 </div>
                 <!-- //chart_list -->
 
-                <!-- inner 
-                <div class="inner">
-                    <h3>Infra Inventory</h3>
-                    <table>
-                        <colgroup>
-                            <col width="5%">
-                            <col width="14%">
-                            <col width="10%">
-                            <col width="14%">
-                            <col width="14%">
-                            <col width="14%">
-                            <col width="14%">
-                        </colgroup>
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Model</th>
-                                <th>HW Type</th>
-                                <th>Name</th>
-                                <th>MGMT IP</th>
-                                <th>FIRMWARE Ver.</th>
-                                <th>Last Modified</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {# % for inven in inventorylist % #}
-                            <tr onclick="faults_list('{{ inven.name }}')">
-                                <td>{{ forloop.counter }}</td>
-                                <td>{{ inven.model }}</td>
-                                <td>{{ inven.hwtype }}</td>
-                                <td>{{ inven.name }}</td>
-                                <td>{{ inven.ipAddress }}</td>
-                                <td>{{ inven.firmwareVersion }}</td>
-                                <td>{{ inven.lastModified }}</td>
-                            </tr>
-                            {#% endfor %#}
-                        </tbody>
-                    </table>
-                </div>
-                //inner -->
-
-                <!-- inner
-                <div class="inner">
-                    <div class="title_area">
-                        <h3>Faults Information</h3>
-
-                        <div class="search">
-                            <select>
-                                <option value="description">description</option>
-                            </select>
-                            <input type="text" onkeyup="faults_list('')">
-                        </div>
-                    </div>
-
-                    <table id="fault_table">
-                        <colgroup>
-                            <col width="10%">
-                            <col width="15%">
-                            <col width="10%">
-                            <col width="17%">
-                            <col width="6%">
-                            <col width="*">
-                        </colgroup>
-                        <thead>
-                            <tr>
-                                <th>Severity</th>
-                                <th>TargetInfra</th>
-                                <th>FaultType</th>
-                                <th>최근발생시간</th>
-                                <th>발생회수</th>
-                                <th>Description</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                //inner -->
 <script type="text/javascript">
 $(document).ready(function(){
    init();
 });
-
-var selected_inventory = "";
-
-function faults_list(target) {
-    if(target.length > 0) {
-        var targetarr = target.split("/");
-        selected_inventory = targetarr[0];
-    }
-
-    var skey = $(".search select option:selected").val();
-    var stxt = $(".search input[type='text']").val();
-    $.ajax({
-        url : "/dashboard/faults",
-        datatype: "json",
-        data: {
-//                csrfmiddlewaretoken:'{{ csrf_token }}',
-            "srch_key" : skey,
-            "srch_txt" : stxt,
-            "targetinfra" : selected_inventory
-        }
-    }).done(function(msg){
-        console.log(msg);
-        if(msg.list) {
-            $("#fault_table tbody").empty();
-            for(var i=0; i<msg.list.length; i++) {
-                var tr = "<tr>";
-                tr += "<td><span class='box "+msg.list[i].severity+"'>"+msg.list[i].severity+"</span></td>";
-                tr += "<td>"+msg.list[i].target+"</td>";
-                tr += "<td>"+msg.list[i].faultType+"</td>";
-                tr += "<td>"+msg.list[i].created+"</td>";
-                tr += "<td>"+msg.list[i].occur+"</td>";
-                tr += "<td>"+msg.list[i].desc+"</td>";
-                tr += "</tr>";
-                $("#fault_table tbody").append(tr);
-            }
-        }
-    }).fail(function(err){
-        alert(err);
-    });
-}
 </script>
 {% endblock content %}

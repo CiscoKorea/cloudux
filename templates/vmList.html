@@ -90,9 +90,9 @@
                     <div class="paginate">
                         <p class="total">Total <strong>{{ list.paginator.count }}</strong></p>
                         
-                        <a href="javascript:go_page(1);" class="first">처음</a>
+                        <a href="javascript:go_page(1);" class="first">{% trans "menu.first" %}</a>
                         {% if list.has_previous %}
-                        <a href="javascript:go_page({{ list.previous_page_number }})" class="prev">이전</a>
+                        <a href="javascript:go_page({{ list.previous_page_number }})" class="prev">{% trans "menu.previous" %}</a>
                         {% endif %}
                             <span>
                                 {% for p in list.paginator.page_range %}
@@ -103,9 +103,9 @@
                                 {% endfor %}
                             </span>
                         {% if list.has_next %}
-                        <a href="javascript:go_page({{ list.next_page_number }})" class="next">다음</a>
+                        <a href="javascript:go_page({{ list.next_page_number }})" class="next">{% trans "menu.next" %}</a>
                         {% endif %}
-                        <a href="javascript:go_page({{ list.paginator.num_pages }})" class="last">마지막</a>
+                        <a href="javascript:go_page({{ list.paginator.num_pages }})" class="last">{% trans "menu.last" %}</a>
                     </div>
                 </div>
                 <!-- //inner -->

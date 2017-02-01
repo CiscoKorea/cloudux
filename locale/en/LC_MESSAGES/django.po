@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-25 08:00+0000\n"
+"POT-Creation-Date: 2017-02-01 09:01+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: cloudmgmt/settings.py:139 ux/settings.py:126
+#: cloudmgmt/settings.py:139
 msgid "Korean"
 msgstr ""
 
-#: cloudmgmt/settings.py:140 ux/settings.py:127
+#: cloudmgmt/settings.py:140
 msgid "English"
 msgstr ""
 
@@ -31,13 +31,99 @@ msgstr " logined."
 
 #: templates/body.html:6 templates/left.html:5
 msgid "site.title"
-msgstr "CISCO Cloud Management Portal"
+msgstr "Self Service Portal"
 
-#: templates/catalogList.html:10 templates/left.html:12
+#: templates/catalogList.html:8 templates/left.html:12
 msgid "menu.catalog"
-msgstr "Catalog List"
+msgstr "Catalog"
 
-#: templates/hostList.html:7 templates/left.html:15
+#: templates/catalogList.html:63 templates/catalogList.html:76
+#: templates/myRequestsList.html:65 templates/vmList.html:93
+msgid "menu.first"
+msgstr "First"
+msgid "menu.vmlist"
+msgstr "VM List"
+
+#: templates/catalogList.html:65 templates/myRequestsList.html:67
+#: templates/vmList.html:95
+msgid "menu.previous"
+msgstr "Prev"
+
+#: templates/catalogList.html:78 templates/myRequestsList.html:80
+#: templates/vmList.html:108
+msgid "menu.last"
+msgstr "Last"
+
+#: templates/catalogList.html:90
+msgid "menu.catalog.option"
+msgstr "Catalog Order Option"
+
+#: templates/catalogList.html:91
+msgid "menu.close"
+msgstr "Close"
+
+#: templates/catalogList.html:102
+msgid "menu.vmname"
+msgstr "VM Name"
+
+#: templates/catalogList.html:128
+msgid "menu.number"
+msgstr "Count"
+msgid "menu.userlist"
+msgstr "User List"
+
+#: templates/catalogList.html:150
+msgid "menu.myrequests"
+msgstr "My Requests"
+msgid "menu.required"
+msgstr "Required"
+
+
+#: templates/catalogList.html:151
+msgid "menu.catalog.execute"
+msgstr "Order Catalog"
+
+#: templates/dashboard.html:241
+msgid "menu.active_vm"
+msgstr "Active VM"
+
+#: templates/dashboard.html:245
+msgid "menu.vm_number"
+msgstr "Count"
+
+#: templates/dashboard.html:249
+msgid "menu.inactive_vm"
+msgstr "Inactive VM"
+
+#: templates/dashboard.html:268
+msgid "menu.allocated_cpu"
+msgstr "Alloc CPU"
+
+#: templates/dashboard.html:273
+msgid "menu.idle_cpu"
+msgstr "Idle CPU"
+
+#: templates/dashboard.html:292
+msgid "menu.allocated_memory"
+msgstr "Alloc Memory"
+
+#: templates/dashboard.html:297
+msgid "menu.idle_memory"
+msgstr "Idle Memory"
+
+#: templates/dashboard.html:316
+msgid "menu.allocated_storage"
+msgstr "Alloc Storage"
+
+#: templates/dashboard.html:320
+msgid "menu.storage"
+msgstr "Storage"
+
+#: templates/dashboard.html:324
+msgid "menu.idle_storage"
+msgstr "Idle Storage"
+
+#: templates/hostList.html:7
 msgid "menu.hostlist"
 msgstr "Host List"
 
@@ -45,29 +131,10 @@ msgstr "Host List"
 msgid "menu.dashboard"
 msgstr "Dashboard"
 
-#: templates/left.html:13
-msgid "menu.myrequests"
-msgstr "My Service Requests"
+#: templates/myRequestsList.html:78 templates/vmList.html:106
+msgid "menu.next"
+msgstr "Next"
 
-#: templates/left.html:17 templates/vmList.html:7
-msgid "menu.vmlist"
-msgstr "VM List"
-
-#: templates/left.html:23 templates/virtualNetworkList.html:8
-msgid "menu.vnetlist"
-msgstr "Virtual Network List"
-
-#: templates/left.html:28 templates/volumeList.html:9
-msgid "site.volumelist"
-msgstr "Volume List"
-
-#: templates/left.html:29 templates/vmDiskList.html:8
-msgid "menu.disklist"
-msgstr "VM Disk List"
-
-#: templates/left.html:33 templates/test.html:7 templates/userList.html:7
-msgid "menu.userlist"
-msgstr "User List"
 
 #: templates/userList.html:42 templates/userList.html:116
 msgid "userlist.th.name"
@@ -134,3 +201,15 @@ msgstr "Fail User Registration"
 #: templates/userList.html:241
 msgid "msg.idchecked.exist"
 msgstr " is already existed."
+
+#: templates/virtualNetworkList.html:8
+msgid "menu.vnetlist"
+msgstr "Virtual Network List"
+
+#: templates/vmDiskList.html:8
+msgid "menu.disklist"
+msgstr "VM Disk List"
+
+#: templates/volumeList.html:9
+msgid "site.volumelist"
+msgstr "Volume List"

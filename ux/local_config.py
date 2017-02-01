@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
     Site specific configuration details for an implementation.
     Used to store server info, authentication keys, base urls, etc
@@ -7,8 +8,8 @@
 __author__ = 'hapresto'
 
 # UCS Director Access Info  -  Update for your install
-ucsdserver = "198.18.133.112"
-ucsd_key = "629FB012BADE48BCA7492F0068133024"
+ucsdserver = "10.72.86.243"
+ucsd_key = "EF5A6F2BE93046E0936838BA3BC99D96"
 
 # ICF Director Access Info  -  Update for your Install
 icfdserver = "icfd.local.intra"
@@ -18,4 +19,7 @@ icfd_key = "XXXXXXXX"
 url = "http://%s/app/api/rest?"
 getstring = "formatType=json&opName=%s"
 parameter_lead = "&opData="
-headers = {"X-Cloupia-Request-Key": " "}
+headers = {"X-Cloupia-Request-Key": "EF5A6F2BE93046E0936838BA3BC99D96"}
+
+
+catalog_type_list = [ '표준','고급','서비스 컨테이너','Standard', 'Advanced', 'Service Container']

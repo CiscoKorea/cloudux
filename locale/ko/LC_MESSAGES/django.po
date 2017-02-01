@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-25 08:00+0000\n"
+"POT-Creation-Date: 2017-02-01 09:01+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,11 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: cloudmgmt/settings.py:139 ux/settings.py:126
+#: cloudmgmt/settings.py:139
 msgid "Korean"
 msgstr ""
 
-#: cloudmgmt/settings.py:140 ux/settings.py:127
+#: cloudmgmt/settings.py:140
 msgid "English"
 msgstr ""
 
@@ -32,43 +32,118 @@ msgstr " 님이 로그인되었습니다."
 
 #: templates/body.html:6 templates/left.html:5
 msgid "site.title"
-msgstr "CISCO Cloud Management Portal"
+msgstr "사용자 포털"
 
-#: templates/catalogList.html:10 templates/left.html:12
+#: templates/catalogList.html:8 templates/left.html:12
 msgid "menu.catalog"
-msgstr "Catalog List"
+msgstr "카탈로그"
 
-#: templates/hostList.html:7 templates/left.html:15
-msgid "menu.hostlist"
-msgstr "Host List"
+#: templates/catalogList.html:63 templates/catalogList.html:76
+#: templates/myRequestsList.html:65 templates/vmList.html:93
+msgid "menu.first"
+msgstr "처음"
 
-#: templates/left.html:6
-msgid "menu.dashboard"
-msgstr "Dashboard"
+#: templates/catalogList.html:65 templates/myRequestsList.html:67
+#: templates/vmList.html:95
+msgid "menu.previous"
+msgstr "이전"
 
-#: templates/left.html:13
+#: templates/catalogList.html:78 templates/myRequestsList.html:80
+#: templates/vmList.html:108
+
+msgid "menu.last"
+msgstr "마지막"
+
+#: templates/catalogList.html:90
+msgid "menu.catalog.option"
+msgstr "카탈로그 선택 옵션"
+
+#: templates/catalogList.html:91
+msgid "menu.close"
+msgstr "닫기"
+
+#: templates/catalogList.html:102
+#, fuzzy
+msgid "menu.vnetlist"
+msgstr "가상 네트워크 리스트"
+
+msgid "menu.vmname"
+msgstr "가상머신 이름"
+
+#: templates/catalogList.html:128
+msgid "menu.userlist"
+msgstr "사용자관리"
+msgid "menu.number"
+msgstr "개수"
+
+#: templates/catalogList.html:150
+
+msgid "menu.required"
+msgstr "필수항목"
 msgid "menu.myrequests"
 msgstr "서비스 요청 내역"
 
-#: templates/left.html:17 templates/vmList.html:7
-msgid "menu.vmlist"
-msgstr "VM List"
+#: templates/catalogList.html:151
+msgid "menu.catalog.execute"
+msgstr "실행하기"
 
-#: templates/left.html:23 templates/virtualNetworkList.html:8
-msgid "menu.vnetlist"
-msgstr "Virtual Network List"
+#: templates/dashboard.html:241
+msgid "menu.active_vm"
+msgstr "활성 VM"
 
-#: templates/left.html:28 templates/volumeList.html:9
-msgid "site.volumelist"
-msgstr "Volume List"
+#: templates/dashboard.html:245
+msgid "menu.vm_number"
+msgstr "가상머신 개수"
 
-#: templates/left.html:29 templates/vmDiskList.html:8
+#: templates/dashboard.html:249
+msgid "menu.inactive_vm"
+msgstr "비활성 VM"
+
+#: templates/dashboard.html:268
+msgid "menu.allocated_cpu"
+msgstr "할당된 CPU"
+
+#: templates/dashboard.html:273
+msgid "menu.idle_cpu"
+msgstr "유휴 CPU"
+
+#: templates/dashboard.html:292
+msgid "menu.allocated_memory"
+msgstr "할당된 메모리"
+
+#: templates/dashboard.html:297
+msgid "menu.idle_memory"
+msgstr "유휴 메모리"
+
+#: templates/dashboard.html:316
+msgid "menu.allocated_storage"
+msgstr "할당된 스토리지"
+
+msgid "menu.storage"
+msgstr "스토리지"
+
+#: templates/dashboard.html:324
+#, fuzzy
 msgid "menu.disklist"
-msgstr "VM Disk List"
+msgstr "디스크 리스트"
+msgid "menu.idle_storage"
+msgstr "유휴 스토리지"
 
-#: templates/left.html:33 templates/test.html:7 templates/userList.html:7
-msgid "menu.userlist"
-msgstr "사용자관리"
+#: templates/hostList.html:7
+msgid "menu.hostlist"
+msgstr "호스트 리스트"
+
+#: templates/left.html:6
+msgid "menu.dashboard"
+msgstr "대쉬보드"
+
+#: templates/left.html:14 templates/vmList.html:8
+msgid "menu.vmlist"
+msgstr "가상머신 리스트"
+
+#: templates/myRequestsList.html:78 templates/vmList.html:106
+msgid "menu.next"
+msgstr "다음"
 
 #: templates/userList.html:42 templates/userList.html:116
 msgid "userlist.th.name"
@@ -135,3 +210,8 @@ msgstr "사용자 등록에 실패 했습니다"
 #: templates/userList.html:241
 msgid "msg.idchecked.exist"
 msgstr " 가 이미 존재합니다."
+
+
+#: templates/volumeList.html:9
+msgid "site.volumelist"
+msgstr "Volume List"

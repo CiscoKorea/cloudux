@@ -6,7 +6,7 @@
             <div class="title">
                 <div>
                     <h3>{% trans "menu.catalog" %}</h3>
-                    <p>Home > Server > <strong>Catalog List</strong></p>
+                    <p>Home > Resource > <strong>Catalog List</strong></p>
                 </div>
             </div>
             {% endblock %}
@@ -30,10 +30,6 @@
                                             <col width="*">
                                         </colgroup>
                                         <tbody>
-                                       	    <!-- <tr>
-                                            	<th valign="top">OS</th>
-                                                <td>{{ catalog.os }}</td>
-                                            </tr> -->
                                        	    <tr>
                                             	<th valign="top">CPU</th>
                                                 <td>{{ catalog.catalog_description | desc:"CPU"}}</td>
@@ -64,9 +60,9 @@
                     <div class="paginate">
                         <p class="total">Total <strong>{{ list.paginator.count }}</strong></p>
 
-                        <a href="javascript:go_page(1);" class="first">처음</a>
+                        <a href="javascript:go_page(1);" class="first">{% trans "menu.first" %}</a>
                         {% if list.has_previous %}
-                        <a href="javascript:go_page({{ list.previous_page_number }})" class="prev">이전</a>
+                        <a href="javascript:go_page({{ list.previous_page_number }})" class="prev">{% trans "menu.previous" %}</a>
                         {% endif %}
                             <span>
                                 {% for p in list.paginator.page_range %}
@@ -77,9 +73,9 @@
                                 {% endfor %}
                             </span>
                         {% if list.has_next %}
-                        <a href="javascript:go_page({{ list.next_page_number }})" class="next">다음</a>
+                        <a href="javascript:go_page({{ list.next_page_number }})" class="next">{% trans "menu.first" %}</a>
                         {% endif %}
-                        <a href="javascript:go_page({{ list.paginator.num_pages }})" class="last">마지막</a>
+                        <a href="javascript:go_page({{ list.paginator.num_pages }})" class="last">{% trans "menu.last" %}</a>
                     </div>
                 </div>
                 <!-- //inner -->
@@ -91,8 +87,8 @@
         <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
         <input type="hidden" name="catalog_id" value=""/>
         <div class="lay_header">
-            <h1>카탈로그 옵션 선택</h1>
-            <a href="#nond" class="btn_close"><img src="../resources/img/content/lay_closed.png" alt="닫기"></a>
+            <h1>{% trans "menu.catalog.option" %}</h1>
+            <a href="#nond" class="btn_close"><img src="../resources/img/content/lay_closed.png" alt="{% trans "menu.close" %}"></a>
         </div>
 
         <div class="lay_content">
@@ -103,7 +99,7 @@
                 </colgroup>
                 <tbody>
                     <tr>
-                        <th>Name <span class="point">*</span></th>
+                        <th>{% trans "menu.vmname" %} <span class="point">*</span></th>
                         <td><input type="text" name="vmname"></td>
                     </tr>
                     <tr>
@@ -129,59 +125,30 @@
                         </td>
                     </tr>
                     <tr>
-                        <th>Count <span class="point">*</span></th>
+                        <th>{% trans "menu.number" %} <span class="point">*</span></th>
                         <td><select name="vmcount"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
                     </tr>
 
                     <tr>
-                        <th>vcpus <span class="point">*</span></th>
+                        <th>vCPU <span class="point">*</span></th>
                         <td><input type="text" name="vcpus" value="1"></td>
                     </tr>
                     <tr>
-                        <th>vram <span class="point">*</span></th>
+                        <th>RAM(GB)<span class="point">*</span></th>
                         <td><input type="text" name="vram" value="1024"></td>
                     </tr>
-                    <!--
-                    <tr>
-                        <th>datastores <span class="point">*</span></th>
-                        <td><input type="text" name="datastores"></td>
-                    </tr>
-                    <tr>
-                        <th>vnics <span class="point">*</span></th>
-                        <td><input type="text" name="vnics"></td>
-                    </tr>
-                    -->
 
                     <tr>
                         <th>comment </th>
                         <td><input type="text" name="comment"></td>
                     </tr>
-
-                    <!--
-                    <tr class="line">
-                        <th>Type1</th>
-                        <td><select><option></option></select></td>
-                    </tr>
-                    <tr>
-                        <th>Type2</th>
-                        <td><label><input type="checkbox"> 체크박스 항목</label></td>
-                    </tr>
-                    <tr>
-                        <th>Type3</th>
-                        <td><input type="text"></td>
-                    </tr>
-                    <tr>
-                        <th>Type4</th>
-                        <td><label><input type="radio"> 항목</label> <label><input type="radio"> 항목</label></td>
-                    </tr>
-                    -->
                 </tbody>
             </table>
         </div>
 
         <div class="lay_footer">
-            <p><span class="point">*</span> 필수입력</p>
-            <a href="javascript:order_catalog();" class="btn_common01">실행하기</a>
+            <p><span class="point">*</span> {% trans "menu.required" %}</p>
+            <a href="javascript:order_catalog();" class="btn_common01">{% trans "menu.catalog.execute" %}</a>
         </div>
     </form>
     </div>
