@@ -406,25 +406,24 @@ def get_catalog():
 
 
 def get_ucsd_vm_list():
+    #mark all vm as old=true
+    vms = BiVirtualMachine.objects.all()
+    for vm in vms:
+        vm.old = True
+        vm.save()
+
     vlist = vm_list()
-    # print(vlist)
     for vm in vlist:
         dbvm = None
         try:
             dbvm = BiVirtualMachine.objects.get(name=vm["Image_Id"])
-            #dbvm.group_name = vm["Group_Name"]
-            #dbvm.ucsd_vm_id = vm["VM_ID"]
-            #dbvm.provisionTime = vm["Provisioned_Time"]
-            #dbvm.status = vm["Power_State"]
-            #db_group = UdGroup.objects.get(group_name=vm["Group_Name"])
-            #dbvm.tenant = db_group
-            #dbvm.save()
         except Exception as e:
             dbvm = BiVirtualMachine()
             dbvm.imageId = vm["Image_Id"]
             dbvm.created = datetime.datetime.now()
             #print("New VM ", e,  vm["VM_Name"])
         if dbvm:
+            dbvm.old = False
             dbvm.name = vm["VM_Name"]
             dbvm.ipAddress = vm["IP_Address"]
             #dbvm.group_name = vm["Group_Name"]
@@ -437,6 +436,10 @@ def get_ucsd_vm_list():
             db_group = UdGroup.objects.get(group_name=vm["Group_Name"])
             dbvm.tenant = db_group
             dbvm.save()
+    #delete vm marked as old = true
+    vms = BiVirtualMachine.objects.filter(old = True)
+    for vm in vms:
+        vm.delete()
 
 
 def get_ucsd_group_list():
@@ -465,6 +468,11 @@ def get_ucsd_group_list():
 
 def get_ucsd_vdc_list():
     vlist = vdc_list('','')
+    #mark old for deletion 
+    grps = UdGroup.objects.all()
+    for grp in grps:
+        grp.old = True
+        grp.save()
     for vdc in vlist:
         # get group id
         db_group = UdGroup.objects.get(group_name=vdc["Group"])
@@ -474,6 +482,7 @@ def get_ucsd_vdc_list():
                 entity = UdVDC()
             else:
                 entity = UdVDC.objects.get(vdc=vdc["vDC"])
+            entity.old = False
             entity.status = unicode(vdc["Status"]) if vdc.has_key("Status") else None
             entity.tag = vdc["Tag"] if vdc.has_key("Tag") else None
             entity.vdc_id = vdc["vDC_ID"] if vdc.has_key("vDC_ID") else None
@@ -489,6 +498,11 @@ def get_ucsd_vdc_list():
             entity.vdc_description = unicode(vdc["vDC_Description"]) if vdc.has_key("vDC_Description") else None
             entity.tenant = db_group
             entity.save()
+    #remove unmark old as False
+    grps = UdGroup.objects.filter(old = True)
+    for grp in grps:
+        grp.delete()
+
 
 '''
 def get_ucsd_vmdisk_list():
