@@ -170,6 +170,7 @@ class BiVirtualMachine(Audited):
     provisionTime = models.DateTimeField(blank=True, null=True)
     srId = models.CharField(max_length=10, blank=True, null=True)
     guestOSType = models.CharField(max_length=30, blank=True, null=True)
+    imageId = models.CharField(max_length=100, blank=True, null=True)
 
     def __unicode__(self):
         return self.name

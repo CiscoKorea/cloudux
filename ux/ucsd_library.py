@@ -10,13 +10,13 @@ from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 from local_config import ucsdserver, ucsd_key, url, getstring, parameter_lead, headers
 from cloud_library import dict_filter, list_search
-#from models import ConfigUtil
+from models import ConfigUtil
 
 import requests
 import json
 
-#ucsdserver = ConfigUtil.get_val("UCSD.HOST")
-#headers["X-Cloupia-Request-Key"] = ConfigUtil.get_val("UCSD.KEY") #ucsd_key
+ucsdserver = ConfigUtil.get_val("UCSD.HOST")
+headers["X-Cloupia-Request-Key"] = ConfigUtil.get_val("UCSD.KEY") #ucsd_key
 
 def workflow_inputs(workflow):
     """

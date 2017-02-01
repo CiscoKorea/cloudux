@@ -417,7 +417,7 @@ def get_ucsd_vm_list():
     # print(vlist)
     for vm in vlist:
         try:
-            dbvm = BiVirtualMachine.objects.get(name=vm["VM_Name"])
+            dbvm = BiVirtualMachine.objects.get(name=vm["Image_Id"])
             if not dbvm:
                 dbvm = BiVirtualMachine()
                 dbvm.name = vm["VM_Name"]
@@ -425,7 +425,8 @@ def get_ucsd_vm_list():
                 dbvm.provisionTime = vm["Provisioned_Time"]
                 dbvm.guestOSType = vm["Guest_OS_Type"]
                 dbvm.srId = str(vm["Request_ID"])
-                dbvm.state = str(vm["Power_State"])
+                dbvm.state = vm["Power_State"]
+                dbvm.imageId = vm["Image_Id"]
 
             dbvm.group_name = vm["Group_Name"]
             dbvm.ucsd_vm_id = vm["VM_ID"]
