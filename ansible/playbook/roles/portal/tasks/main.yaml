@@ -51,7 +51,17 @@
 
 - name: clone source from git repos
   become: no
-  git: repo=https://github.com/CiscoKorea/cloudux.git dest={{basedir}} clone=yes version=master force=yes
+  git: repo=https://github.com/CiscoKorea/cloudux.git dest={{basedir}} clone=yes version=selfserviceportal force=yes
+  register: git_clone_status
+  ignore_errors: true
+
+
+- name: git pull from remote repos
+  become: no
+  shell: git pull chdir="{{basedir}}"
+  when: git_clone_status.changed != false
+  ignore_errors: true
+
 
 - name: install requirements on portal 
   pip: requirements={{basedir}}/requirements.txt chdir={{ basedir}}

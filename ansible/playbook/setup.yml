@@ -1,7 +1,6 @@
 ---
  - hosts: portal
    gather_facts: yes
-#   connection: local 
    become: yes
    vars:
      user_name : cisco 

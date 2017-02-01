@@ -25,22 +25,20 @@ from pyVmomi import vim
 from cloudmgmt.settings import *
 #######
 
-from models import GlobalConfig, ConfigUtil, BiHost, BiVnic, BiVolume, BiVswitch, BiVirtualMachine, BiPnic, \
-    BiPortgroup, BiCluster, BiDatacenter, UserAddInfo, BiInventory, BiFaults, BiCatalog, \
-    UdCloud, DashboardAlloc, DashboardVswitch, UdGroup, UdVDC, UdVmDisk, UdPolicySystem, UdPolicyComputing, \
-    UdPolicyStorage, UdPolicyNetwork
+from models import GlobalConfig, ConfigUtil, BiVirtualMachine, BiCatalog, \
+    UserAddInfo, DashboardAlloc, UdGroup, UdVDC
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 # import tools.cli as cli
 
 import ssl
-from ucsm_inventory import get_ucsm_info
+#from ucsm_inventory import get_ucsm_info
 from ucsd_library import catalog_list, catalog_list_all, vm_list, vm_action, ucsd_vdcs, ucsd_memory, ucsd_network, \
     ucsd_cloud, ucsd_cpu, ucsd_disk, catalog_order, group_list, group_detail_by_id, vdc_list, vm_details, \
     global_vms, group_vms, available_reports, ucsd_vm_disk, vmware_provision, ucsd_get_all_vms, ucsd_provision_request
 # Create your views here.
 from ux.ucsd_library import ucsd_verify_user, ucsd_add_user, ucsd_add_group, ucsd_create_vdc, \
     ucsd_vmware_system_policy, ucsd_vmware_computing_policy, ucsd_vmware_storage_policy, ucsd_vmware_network_policy, ucsd_get_groupbyname, ucsd_get_service_requests
-from patch_db import patch_data_vcenter_datacenter
+#from patch_db import patch_data_vcenter_datacenter
 
 class search_form():
     srch_key = ""
@@ -53,15 +51,6 @@ class search_form():
 
 @login_required
 def dashboard(request):
-    # ucsd_vdcs()
-    # ucsd_memory()
-    # ucsd_network()
-    # ucsd_cloud()
-
-    # dcs = get_vcenter_info()  # get all data!!
-    # get_ucsm_info()  # get ucsd inventory
-    inventory_list = BiInventory.objects.all()
-    fault_list = BiFaults.objects.all()
 
     dash1 = DashboardAlloc.objects.all()
     if dash1.count() >0 :
@@ -72,24 +61,9 @@ def dashboard(request):
         chart1 = [0,0,0,0]
         chart1d = [100, 100, 100, 100]
 
-    chart3 = DashboardVswitch.objects.all()
-    chart4 = []
-    total_portgroup = 0
-    switch_count = 0
-    for dbswitch in chart3:
-        t = dict()
-        t['name'] = dbswitch.switch
-        t['pgcount'] = int(dbswitch.portgroup)
-        total_portgroup += int(dbswitch.portgroup)
-        switch_count += 1
-        chart4.append(t)
-    if switch_count == 0:
-        switch_count = 1
 
-    return render(request, 'dashboard.html', {'inventorylist': inventory_list, 'faultlist': fault_list,
-                                              'chart1': chart1, 'chart1d': chart1d,
-                                              'chart4': json.dumps(chart4),
-                                              'avgport': round(total_portgroup/switch_count, 1)})
+    return render(request, 'dashboard.html', {'chart1': chart1, 'chart1d': chart1d,
+                                              'chart4': json.dumps(chart4) })
 
 
 def dashboard_fault_list(request):
