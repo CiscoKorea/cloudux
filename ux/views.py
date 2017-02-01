@@ -15,6 +15,7 @@ from django.utils.encoding import force_text
 from django.core.serializers.json import DjangoJSONEncoder
 import json
 import atexit
+import datetime
 
 from pyVim import connect
 from pyVmomi import vmodl
@@ -26,7 +27,7 @@ from cloudmgmt.settings import *
 #######
 
 from models import GlobalConfig, ConfigUtil, BiVirtualMachine, BiCatalog, \
-    UserAddInfo, DashboardAlloc, UdGroup, UdVDC
+    UserAddInfo, DashboardAlloc, UdGroup, UdVDC, UdServiceRequest
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 # import tools.cli as cli
 
@@ -100,23 +101,13 @@ def myrequests(request):
 
     tenant = None
     db_add_info = None
-    if not request.user.is_staff:
-        db_add_info = UserAddInfo.objects.get(user=request.user)
+    db_add_info = UserAddInfo.objects.get(user=request.user)
     if db_add_info:
         tenant = db_add_info.tenant
     
-    grpId = 0
-    try:
-        if tenant:
-            group = tenant.group_name
-            groups = ucsd_get_groupbyname(group)
-            grpId = groups[0]['groupId']
-    except KeyError as ke:
-        print(ke)
-        pass
-
+    #print(tenant, tenant.group_id, tenant.group_name)
     vlist = []
-    vlist = ucsd_get_service_requests( str(request.user.username), str(grpId))
+    vlist = UdServiceRequest.objects.filter( tenant_id=tenant.id)
     paginator = Paginator(vlist, 10)
     page = request.GET.get('page')
     try:
@@ -416,25 +407,34 @@ def get_ucsd_vm_list():
     vlist = vm_list()
     # print(vlist)
     for vm in vlist:
+        dbvm = None
         try:
             dbvm = BiVirtualMachine.objects.get(name=vm["Image_Id"])
-            if not dbvm:
-                dbvm = BiVirtualMachine()
-                dbvm.name = vm["VM_Name"]
-                dbvm.ipAddress = vm["IP_Address"]
-                dbvm.provisionTime = vm["Provisioned_Time"]
-                dbvm.guestOSType = vm["Guest_OS_Type"]
-                dbvm.srId = str(vm["Request_ID"])
-                dbvm.state = vm["Power_State"]
-                dbvm.imageId = vm["Image_Id"]
-
-            dbvm.group_name = vm["Group_Name"]
+            #dbvm.group_name = vm["Group_Name"]
+            #dbvm.ucsd_vm_id = vm["VM_ID"]
+            #dbvm.provisionTime = vm["Provisioned_Time"]
+            #dbvm.status = vm["Power_State"]
+            #db_group = UdGroup.objects.get(group_name=vm["Group_Name"])
+            #dbvm.tenant = db_group
+            #dbvm.save()
+        except Exception as e:
+            dbvm = BiVirtualMachine()
+            dbvm.imageId = vm["Image_Id"]
+            dbvm.created = datetime.datetime.now()
+            #print("New VM ", e,  vm["VM_Name"])
+        if dbvm:
+            dbvm.name = vm["VM_Name"]
+            dbvm.ipAddress = vm["IP_Address"]
+            #dbvm.group_name = vm["Group_Name"]
             dbvm.ucsd_vm_id = vm["VM_ID"]
+            dbvm.guestOSType = vm["Guest_OS_Type"]
+            dbvm.provisionTime = vm["Provisioned_Time"]
+            dbvm.status = vm["Power_State"]
+            dbvm.srId = str(vm["Request_ID"])
+            dbvm.vcenter_vm_id = vm["vCenter_VM_Id"]
             db_group = UdGroup.objects.get(group_name=vm["Group_Name"])
             dbvm.tenant = db_group
             dbvm.save()
-        except Exception as e:
-            print("get_ucsd_vm exception : ", e,  vm["VM_Name"])
 
 
 def get_ucsd_group_list():
@@ -627,6 +627,28 @@ def get_ucsd_policy_network():
         policy.save()
 
 '''
+def get_ucsd_sr_list():
+    udsr_list = ucsd_get_service_requests(None,'')
+    for udsr in udsr_list:
+        sr = None
+        try:
+            sr = UdServiceRequest.objects.get(srId= str(udsr["Service_Request_Id"]))
+            sr.status = udsr["Request_Status"]
+            sr.save()
+        except ObjectDoesNotExist as e:
+            sr = UdServiceRequest()
+            sr.srId = str(udsr["Service_Request_Id"])
+            sr.requestTime = udsr["Request_Time"]
+            sr.requestType = udsr["Request_Type"]
+            sr.requester = udsr["Initiating_User"]
+            sr.catalogWorkflowName = udsr["Catalog_Workflow_Name"]
+            sr.status = udsr["Request_Status"]
+            sr.rollbackType = udsr["Rollback_Type"]
+            try:
+                sr.tenant = UdGroup.objects.get(group_name = udsr["Group"])
+            except ObjectDoesNotExist as e:
+                pass
+            sr.save()
 
 def reload_data(request):
     ''' 
@@ -636,6 +658,7 @@ def reload_data(request):
     get_ucsd_vdc_list()
     get_catalog()
     get_ucsd_vm_list()
+    get_ucsd_sr_list()
     return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
 
 

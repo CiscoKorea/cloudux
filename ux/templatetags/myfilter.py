@@ -50,3 +50,10 @@ def get_userrole(value='Regular'):
 def remove_space(value):
     words = value.lower().split(' ')
     return "".join(words)
+
+@register.filter
+def power_status(value):
+    if value:
+        return value.lower() if value.lower() in [ "on", "off"] else "red"
+    else:
+        return "red"

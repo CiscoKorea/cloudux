@@ -47,13 +47,13 @@
                       <tbody>
                         {% for req in list %}
                           <tr>
-                            <td style="text-align: center;"> {{ req.Service_Request_Id }} </td>
-                            <td>{{ req.Request_Time }}</td>
-                            <td>{{ req.Request_Type }}</td>
-                            <td>{{ req.Initiating_User }}</td>
-                            <td>{{ req.Catalog_Workflow_Name }}</td>
-                            <td><span class="box {{ req.Request_Status | remove_space }}">{{ req.Request_Status }}</td>
-                            <td>{{ req.Rollback_Type }}</td>
+                            <td style="text-align: center;"> {{ req.srId }} </td>
+                            <td>{{ req.requestTime }}</td>
+                            <td>{{ req.requestType }}</td>
+                            <td>{{ req.requester }}</td>
+                            <td>{{ req.catalogWorkflowName }}</td>
+                            <td><span class="box {{ req.status | remove_space }}">{{ req.status }}</td>
+                            <td>{{ req.rollbackType }}</td>
                           </tr>
                         {% endfor %}
                       </tbody>

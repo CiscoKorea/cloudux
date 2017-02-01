@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
+{% load myfilter %}
 
             {% block title %}
             <div class="title">
@@ -60,7 +61,7 @@
                         {% for vm in list %}
                           <tr>
                             <td style="text-align:center;"><label><input type="checkbox" name="chk_vm_name" value="{{ vm.ucsd_vm_id }}" {% if vm.ucsd_vm_id == None %}disabled{% endif %} ></label></td>
-                            <td>{{ vm.group_name}}</td>
+                            <td>{{ vm.tenant.group_name}}</td>
                             <td>{{ vm.name }}</td>
                             <td>{{ vm.ipAddress }}</td>
                             <!-- <td>{{ vm.macAddress }}</td>  -->
@@ -68,7 +69,7 @@
                             <td>{{ vm.memUsage }}</td>
                             <!-- <td>{{ vm.netUsage }}</td> -->
                             <td>{{ vm.stgUsage }}</td>
-                            <td><span class="box {{ vm.status }}">{{ vm.status }}</span></td>
+                            <td><span class="box {{ vm.status | power_status }}">{{ vm.status }}</span></td>
                           </tr>
                         {% endfor %}
 {#                          <tr>#}

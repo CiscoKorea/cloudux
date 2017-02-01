@@ -1105,18 +1105,20 @@ def ucsd_vmware_network_policy():
 
 
 #https://10.72.86.243/app/api/rest?formatType=json&opName=userAPIGetTabularReport&opData={param0:"6",param1:"",param2:"SERVICE-REQUESTS-T10"}
-def ucsd_get_service_requests(username=None, groupId='0'):
+def ucsd_get_service_requests(username=None, groupId=''):
     apioperation = "userAPIGetTabularReport"
-    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
-        "{param0:\"7\",param1:\"" + groupId + "\",param2:\"SERVICE-REQUESTS-T10\"}"
-
+    param0 = "6" #admin-view 
     myheaders = None
     if username:
         myheaders = {"X-Cloupia-Request-Key": ucsd_get_restaccesskey(username)}
+        param0 = "7"
+    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
+        "{param0:\"" + param0 +"\",param1:\"" + groupId + "\",param2:\"SERVICE-REQUESTS-T10\"}"
     requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=myheaders if myheaders else headers, verify=False)
     j = json.loads(r.text)
-
+    print(u)
+    print(j)
     rows = []
     try:
         rows = j['serviceResult']['rows']

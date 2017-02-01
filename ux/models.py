@@ -154,7 +154,7 @@ class UdGroup(Audited):
 
 class BiVirtualMachine(Audited):
     name = models.CharField(max_length=100, blank=True, null=True)
-    ipAddress = models.CharField(max_length=20, blank=True, null=True)
+    ipAddress = models.CharField(max_length=40, blank=True, null=True)
     macAddress = models.CharField(max_length=20, blank=True, null=True)
     cpuUsage = models.CharField(max_length=5, blank=True, null=True)
     memUsage = models.CharField(max_length=5, blank=True, null=True)
@@ -167,7 +167,7 @@ class BiVirtualMachine(Audited):
     vcenter_vm_id = models.CharField(max_length=20,blank=True, null=True)
     #group_name = models.CharField(max_length=30, blank=True, null=True)
     tenant = models.ForeignKey(UdGroup, null=True)
-    provisionTime = models.DateTimeField(blank=True, null=True)
+    provisionTime = models.CharField(max_length=30, blank=True, null=True)
     srId = models.CharField(max_length=10, blank=True, null=True)
     guestOSType = models.CharField(max_length=30, blank=True, null=True)
     imageId = models.CharField(max_length=100, blank=True, null=True)
@@ -316,4 +316,15 @@ class UserAddInfo(Audited):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     contact = models.CharField(max_length=50, blank=True, null=True)
     role = models.CharField(max_length=20, blank=True, null=True)
+    tenant = models.ForeignKey(UdGroup, null=True)
+
+
+class UdServiceRequest(Audited):
+    srId = models.CharField(max_length=10, blank=True, null=True)
+    requestTime = models.CharField(max_length=30, blank=True, null=True)
+    requestType = models.CharField(max_length=20, blank=True, null=True)
+    requester = models.CharField(max_length=20, blank=True, null=True)
+    catalogWorkflowName = models.CharField(max_length=40, blank=True, null=True)
+    status = models.CharField(max_length=10, blank=True, null=True)
+    rollbackType = models.CharField(max_length=20, blank=True, null=True)
     tenant = models.ForeignKey(UdGroup, null=True)

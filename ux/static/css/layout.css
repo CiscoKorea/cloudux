@@ -142,11 +142,13 @@ html, body{background-color:#f5f5f5;}
 
 .content .inner span.box{font-size:12px; color:#fff; font-weight:500; display:block; border-radius:2px; text-align:center; height:20px; line-height:20px;}
 .content .inner span.box.gray{background-color:#666;}
+.content .inner span.box.off{background-color:#666;}
 .content .inner span.box.blue{background-color:#2196f3;}
 .content .inner span.box.orange{background-color:#f57f17;}
 .content .inner span.box.red{background-color:#ef4900;}
 .content .inner span.box.purple{background-color:#3f51b5;}
 .content .inner span.box.green{background-color: #35a61f;}
+.content .inner span.box.on{background-color: #35a61f;}
 .content .inner span.box.yellow{background-color: #ede408;}
 .content .inner span.box.major{background-color: #ef4900;}
 .content .inner span.box.minor{background-color: #ede408;}
