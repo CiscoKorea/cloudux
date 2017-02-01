@@ -62,7 +62,7 @@
                           <tr>
                             <td style="text-align:center;"><label><input type="checkbox" name="chk_vm_name" value="{{ vm.ucsd_vm_id }}" {% if vm.ucsd_vm_id == None %}disabled{% endif %} ></label></td>
                             <td>{{ vm.tenant.group_name}}</td>
-                            <td>{{ vm.name }}</td>
+                            <td><a href="javascript:vmrc_console('{{ vm.vcenter_vm_id }}');">{{ vm.name }}</a></td>
                             <td>{{ vm.ipAddress }}</td>
                             <!-- <td>{{ vm.macAddress }}</td>  -->
                             <td>{{ vm.cpuUsage }}</td>
@@ -186,6 +186,22 @@ function vm_action(action) {
         }).fail(function(err){
             alert(err);
         });
+}
+
+function vmrc_console( vmid) {
+  $.ajax( {
+    url: "/vmrc_console",
+    datatype: "json",
+    data: {
+      "vmid": vmid
+    }
+  }).done( function(msg) {
+      if( msg) {
+        open( msg.url)
+      }
+  }).fail( function(err) {
+    alert(err)
+  });
 }
 </script>
 

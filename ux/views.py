@@ -42,6 +42,8 @@ from ux.ucsd_library import ucsd_verify_user, ucsd_add_user, ucsd_add_group, ucs
 #from patch_db import patch_data_vcenter_datacenter
 from local_config import catalog_type_list
 
+vcenter_content = None
+
 class search_form():
     srch_key = ""
     srch_txt = ""
@@ -325,14 +327,11 @@ def users_modify(request):
 
 
 def get_vcenter_info():
-    # global content, hosts, hostPgDict#
-    # config = GlobalConfig.objects.all()
     host = ConfigUtil.get_val("VC.HOST")
     user = ConfigUtil.get_val("VC.USER")
     pwd = ConfigUtil.get_val("VC.PASS")
     port = ConfigUtil.get_val("VC.PORT")
-    print (host,user,pwd,port)
-    # host, user, password = GetArgs()
+
     context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
     context.verify_mode = ssl.CERT_NONE
     service_instance = connect.SmartConnect(host=host,
@@ -701,6 +700,21 @@ def ucsd_vm_action(request):
         vm_action(vmid=vm, action=action)
     return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
 
+@login_required
+def vmrc_console(request):
+    global vcenter_content
+    VMRC_FORMAT = "vmrc://clone:{0}@{1}/?moid={2}"
+    vmid = request.GET.get("vmid")
+    rsp = {}
+    if vmid:
+        if not vcenter_content:
+            vcenter_content = get_vcenter_info()
+        session = vcenter_content.sessionManager.AcquireCloneTicket()
+        rsp['url'] = VMRC_FORMAT.format( session, ConfigUtil.get_val("VC.HOST"), vmid)
+        print(rsp)
+        return HttpResponse(json.dumps(rsp), 'application/json')
+    else:
+        return HttpResponse(json.dumps(rsp), 'application/json')
 
 def catalog_vm_provision(request):
     p_catalog_id = request.GET.get("catalog_id")
@@ -837,4 +851,3 @@ def my_login(request):
         # form.add_error(error='invalid login')
         variables = {'form': form}
         return render(request, 'registration/login.html', variables)
-

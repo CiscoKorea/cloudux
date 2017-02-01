@@ -73,7 +73,7 @@
                                 {% endfor %}
                             </span>
                         {% if list.has_next %}
-                        <a href="javascript:go_page({{ list.next_page_number }})" class="next">{% trans "menu.first" %}</a>
+                        <a href="javascript:go_page({{ list.next_page_number }})" class="next">{% trans "menu.next" %}</a>
                         {% endif %}
                         <a href="javascript:go_page({{ list.paginator.num_pages }})" class="last">{% trans "menu.last" %}</a>
                     </div>
