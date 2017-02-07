@@ -14,6 +14,9 @@
     - openldap-devel
     - libselinux-python
     - git
+  tags:
+    - database
+    - application
 
 - name: mariadb default character set for mariadb-5.5
   ini_file: dest=/etc/my.cnf.d/server.cnf section=mariadb-5.5 option={{item.name}} value={{item.value}}
@@ -22,18 +25,26 @@
     - {name: init_connect, value: '"SET NAMES utf8"'}
     - {name: character-set-server, value: utf8}
     - {name: collation-server, value: utf8_general_ci}
+  tags:
+    - database
 
 - name: restart mariadb 
   service: name={{item}} state=restarted
   with_items:
     - mariadb
+  tags:
+    - database
 
 - name: drop database on mariadb
   mysql_db: name={{ database_name}} state=absent
   ignore_errors: true
+  tags:
+    - database
 
 - name: create database on mariadb
   mysql_db: name={{ database_name}} state=present
+  tags:
+    - database
 
 - name: make mariadb account 
   mysql_user: host={{ item }} priv="{{database_name}}.*:ALL" login_user=root name={{ database_user}} password={{ database_pass}}
@@ -43,6 +54,8 @@
     - "64.%"
     - "10.72.86.%"
     - "10.139.%"
+  tags:
+    - database
 
 - name: reset for all modification 
   become: no
@@ -75,19 +88,31 @@
     - { name: username, value: "{{database_user}}" }
     - { name: password, value: "{{database_pass}}" }
     - { name: port, value: "{{database_port}}" }
+  tags:
+    - database
 
 - name: django makemigrations
   become: no
   shell: python manage.py makemigrations chdir={{basedir}}
+  tags:
+    - database
+    - application
 
 - name: django migrate
   become: no
   shell: python manage.py migrate chdir={{basedir}}
+  tags:
+    - database
+    - application
 
 - name: copy sql script 
   become: no
   template: src=basic_conf.j2 dest=/tmp/basic_conf.sql force=yes
+  tags:
+    - database
 
 - name: execute sql queries 
   become: no
   shell: /usr/bin/mysql --user={{database_user}} --database={{ database_name}} --password={{database_pass}} < /tmp/basic_conf.sql 
+  tags:
+    - database
