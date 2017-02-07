@@ -23,4 +23,5 @@ urlpatterns = [
     url(r'^login2$', views.my_login, name="my_login"),
     url(r'^myrequests$', views.myrequests, name="myrequests"),
     url(r'^vmrc_console$', views.vmrc_console, name="vmrc_console"),
+    url(r'^update_order$', views.update_service_requests, name="update_order"),
 ]

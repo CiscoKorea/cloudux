@@ -35,10 +35,12 @@ import ssl
 #from ucsm_inventory import get_ucsm_info
 from ucsd_library import catalog_list, catalog_list_all, vm_list, vm_action, ucsd_vdcs, ucsd_memory, ucsd_network, \
     ucsd_cloud, ucsd_cpu, ucsd_disk, catalog_order, group_list, group_detail_by_id, vdc_list, vm_details, \
-    global_vms, group_vms, available_reports, ucsd_vm_disk, vmware_provision, ucsd_get_all_vms, ucsd_provision_request
+    global_vms, group_vms, available_reports, ucsd_vm_disk, vmware_provision, ucsd_get_all_vms, \
+    ucsd_provision_request, ucsd_get_restaccesskey
 # Create your views here.
 from ux.ucsd_library import ucsd_verify_user, ucsd_add_user, ucsd_add_group, ucsd_create_vdc, \
-    ucsd_vmware_system_policy, ucsd_vmware_computing_policy, ucsd_vmware_storage_policy, ucsd_vmware_network_policy, ucsd_get_groupbyname, ucsd_get_service_requests
+    ucsd_vmware_system_policy, ucsd_vmware_computing_policy, ucsd_vmware_storage_policy, \
+    ucsd_vmware_network_policy, ucsd_get_groupbyname, ucsd_get_service_requests
 #from patch_db import patch_data_vcenter_datacenter
 from local_config import catalog_type_list
 
@@ -110,9 +112,9 @@ def myrequests(request):
     
     vlist = []
     if tenant:
-        vlist = UdServiceRequest.objects.filter( group_name = tenant)
+        vlist = UdServiceRequest.objects.order_by('-srId').filter( group_name = tenant)
     else:
-        vlist = UdServiceRequest.objects.all()
+        vlist = UdServiceRequest.objects.order_by('-srId').all()
     paginator = Paginator(vlist, 10)
     page = request.GET.get('page')
     try:
@@ -175,8 +177,7 @@ def vms(request):
     except EmptyPage:
         plist = paginator.page(paginator.num_pages)
 
-    clist = BiCatalog.objects.filter(catalog_type__in=catalog_type_list)
-    return render(request, "vmList.html", {'list': plist, 'search': search, 'clist': clist })
+    return render(request, "vmList.html", {'list': plist, 'search': search})
 
 
 def vms_ajax(request):
@@ -206,11 +207,23 @@ def vms_ajax(request):
 
     return HttpResponse(json.dumps({'list': children}), 'application/json')
 
-
 @login_required
 def catalogs(request):
-    clist = BiCatalog.objects.filter(catalog_type__in=catalog_type_list)
+    clist = None
+    if request.user.useraddinfo.group_name:
+        clist = BiCatalog.objects.filter(catalog_type__in=catalog_type_list)\
+            .filter(status='OK') \
+            .filter(group_name__in=["All Groups", request.user.useraddinfo.group_name])
+        glist = [request.user.useraddinfo.group_name] 
+        vdclist = UdVDC.objects.filter(group_name = request.user.useraddinfo.group_name)
+    else:
+        clist = BiCatalog.objects.filter(catalog_type__in=catalog_type_list) \
+            .filter(status='OK') \
+            .filter(group_name__in=["All Groups"])
+        glist = UdGroup.objects.all()
+        vdclist = UdVDC.objects.all()
 
+    print(glist)
     paginator = Paginator(clist, 4)
     page = request.GET.get('page')
     try:
@@ -219,14 +232,6 @@ def catalogs(request):
         plist = paginator.page(1)
     except EmptyPage:
         plist = paginator.page(paginator.num_pages)
-    #fixme with dedicated group & vdc for login user request.user.useraddinfo.tenant.group_name
-    if request.user.useraddinfo.group_name:
-        glist = [request.user.useraddinfo.group_name] 
-        vdclist = UdVDC.objects.filter(group_name = request.user.useraddinfo.group_name)
-
-    else:
-        glist = UdGroup.objects.all()
-        vdclist = UdVDC.objects.all()
 
     return render(request, "catalogList.html", {'list': plist, 'ucsd_server': ConfigUtil.get_val("UCSD.HOST")
                   , 'group_list': glist, 'vdc_list': vdclist})
@@ -653,6 +658,7 @@ def get_ucsd_sr_list():
         try:
             sr = UdServiceRequest.objects.get(srId= str(udsr["Service_Request_Id"]))
             sr.status = udsr["Request_Status"]
+            sr.group_name = udsr["Group"]
             sr.save()
         except ObjectDoesNotExist as e:
             sr = UdServiceRequest()
@@ -677,6 +683,11 @@ def reload_data(request):
     get_ucsd_sr_list()
     return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
 
+@login_required
+def update_service_requests(request):
+    get_ucsd_sr_list()
+    get_ucsd_vm_list()
+    return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
 
 def ucsd_vm_create(request):
     p_catalog = request.POST.get("catalog")     # catalog_
@@ -711,8 +722,9 @@ def ucsd_vm_create(request):
 def ucsd_vm_action(request):
     action = request.GET.get("action")
     vmid = request.GET.get("vmid").split(",")
+    comment = "n/a" if request.GET.get("comment") == None else request.GET.get("comment")
     for vm in vmid:
-        vm_action(vmid=vm, action=action)
+        vm_action(vmid=vm, action=action, comments=comment, restapikey=request.user.useraddinfo.restapikey)
     return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
 
 @login_required
@@ -834,6 +846,7 @@ def my_login(request):
         addinfo.contact = ''
         addinfo.user = newuser
         addinfo.group_name = ucsd_user["groupName"]
+        addinfo.restapikey = ucsd_get_restaccesskey(p_username)
         addinfo.save()
 
         user = authenticate(username=p_username, password=password)
@@ -847,6 +860,7 @@ def my_login(request):
             addinfo = UserAddInfo()
             addinfo.contact = ''
             addinfo.user = user
+            addinfo.restapikey = ucsd_get_restaccesskey(p_username)
             addinfo.save()
 
         t_id = None
@@ -857,6 +871,7 @@ def my_login(request):
             t_id = db_group.id
 
         addinfo.group_name = ucsd_user["groupName"]
+        addinfo.restapikey = ucsd_get_restaccesskey(p_username)
         addinfo.save()
 
     user = authenticate(username=p_username, password=password)

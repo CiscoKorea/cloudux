@@ -321,6 +321,7 @@ class UserAddInfo(Audited):
     role = models.CharField(max_length=20, blank=True, null=True)
     #tenant = models.ForeignKey(UdGroup, null=True)
     group_name = models.CharField(max_length=30, blank=True, null=True)
+    restapikey = models.CharField(max_length=40, blank=True, null=True)
 
 
 class UdServiceRequest(Audited):

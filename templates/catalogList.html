@@ -107,7 +107,7 @@
                         <td>
                             <select name="group">
                                 {% for group in group_list %}
-                            <option value="{{ group.group_name }}">{{ group.group_name }}</option>
+                            <option value="{{ group }}">{{ group }}</option>
                                 {% endfor %}
 
                             </select>
@@ -178,7 +178,15 @@ function order_catalog() {
         if(msg.result) {
             //alert(msg.result);
             alert("sr_num: " + msg.sr_num);
-            layer_popup_close(".lay_pop")
+            $.ajax({
+                url : "/update_order",
+                datatype: "json"
+            }).done( function(msg) {
+                layer_popup_close(".lay_pop");
+            }).fail( function(err) {
+                alert(err);
+                layer_popup_close(".lay_pop");
+            })
         }
     }).fail(function(err){
         //alert(err);

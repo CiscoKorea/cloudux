@@ -221,7 +221,7 @@ def vm_details(vmid, key_filter=None, result_filter=None):
         return search_results
 
 
-def vm_action(vmid, action, comments=""):
+def vm_action(vmid, action, comments="", restapikey=None):
     """
     Power on the specified Cloud Virtual Machine
     :param vmid:  The ICFD VMID for the Cloud VM
@@ -255,10 +255,15 @@ def vm_action(vmid, action, comments=""):
         "{param0:\"" + vmid + '",' + \
         'param1:"' + action + '"' + \
         ',param2:"' + comments + '"}'
-
+    print(u)
     requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
-    r = requests.get(u, headers=headers, verify=False)
+    if restapikey:
+        myheaders = {"X-Cloupia-Request-Key": restapikey }
+        r = requests.get(u, headers=myheaders, verify=False)
+    else:
+        r = requests.get(u, headers=headers, verify=False)
 
+    print(r.text)
     j = json.loads(r.text)
 
     return j
@@ -760,7 +765,7 @@ def ucsd_vm_disk(p_vm_id):
 
 def ucsd_get_restaccesskey( p_user_id):
     #userAPIGetRESTAccessKey&opData={param0:"sample"}
-    assert isinstance(p_user_id, str)
+    #assert isinstance(p_user_id, str)
     apioperation = "userAPIGetRESTAccessKey"
     u = url % ucsdserver + getstring % apioperation + parameter_lead + \
         "{param0:\"" + p_user_id + '"' \
@@ -768,7 +773,7 @@ def ucsd_get_restaccesskey( p_user_id):
     requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
     j = json.loads(r.text)
-    print(j)
+    #print(j)
     return j['serviceResult']
 
 def ucsd_get_userprofile( p_user_id):

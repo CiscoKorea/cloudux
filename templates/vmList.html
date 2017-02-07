@@ -23,7 +23,9 @@
                             <select name="srch_key">
                                 <option value="name" {% if search.srch_key == 'name' %} selected {% endif %}>Name</option>
                                 <option value="ip" {% if search.srch_key == 'ip' %} selected {% endif %}>IP</option>
+                                <!-- remove mac search option
                                 <option value="mac" {% if search.srch_key == 'mac' %} selected {% endif %}>MAC</option>
+                                -->
                             </select> 
                             <input type="text" id="srch_txt" name="srch_txt" value="{{ search.srch_txt }}"/>
                             <input type="hidden" name="page" value="1" />
@@ -61,7 +63,7 @@
                         {% for vm in list %}
                           <tr>
                             <td style="text-align:center;"><label><input type="checkbox" name="chk_vm_name" value="{{ vm.ucsd_vm_id }}" {% if vm.ucsd_vm_id == None %}disabled{% endif %} ></label></td>
-                            <td>{{ vm.tenant.group_name}}</td>
+                            <td>{{ vm.group_name }}</td>
                             <td><a href="javascript:vmrc_console('{{ vm.vcenter_vm_id }}');">{{ vm.name }}</a></td>
                             <td>{{ vm.ipAddress }}</td>
                             <!-- <td>{{ vm.macAddress }}</td>  -->
