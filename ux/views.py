@@ -131,10 +131,11 @@ def vms(request):
     tenant = None
     db_add_info = None
     if not request.user.is_staff:
-        db_add_info = UserAddInfo.objects.get(user=request.user)
-    if db_add_info:
-        tenant = db_add_info.tenant
-
+        try:
+            db_add_info = UserAddInfo.objects.get(user=request.user)
+            tenant = db_add_info.tenant
+        except ObjectDoesNotExist as odne:
+            pass
 
     search = search_form(request)
 
@@ -417,7 +418,7 @@ def get_ucsd_vm_list():
         dbvm = None
         try:
             dbvm = BiVirtualMachine.objects.get(name=vm["Image_Id"])
-        except Exception as e:
+        except ObjectDoesNotExist as e:
             dbvm = BiVirtualMachine()
             dbvm.imageId = vm["Image_Id"]
             dbvm.created = datetime.datetime.now()
@@ -433,12 +434,16 @@ def get_ucsd_vm_list():
             dbvm.status = vm["Power_State"]
             dbvm.srId = str(vm["Request_ID"])
             dbvm.vcenter_vm_id = vm["vCenter_VM_Id"]
-            db_group = UdGroup.objects.get(group_name=vm["Group_Name"])
-            dbvm.tenant = db_group
+            try:
+                db_group = UdGroup.objects.get(group_name=vm["Group_Name"])
+                dbvm.tenant = db_group
+            except ObjectDoesNotExist as dne:
+                pass
             dbvm.save()
     #delete vm marked as old = true
     vms = BiVirtualMachine.objects.filter(old = True)
     for vm in vms:
+        print('delete vm %s' %vm.name)
         vm.delete()
 
 
@@ -463,16 +468,17 @@ def get_ucsd_group_list():
         entity.address = unicode(detail["address"])
         entity.group_type = detail["groupType"]
         entity.enable_budget = detail["enableBudget"]
+        entity.old = False
         entity.save()
 
 
 def get_ucsd_vdc_list():
     vlist = vdc_list('','')
     #mark old for deletion 
-    grps = UdGroup.objects.all()
-    for grp in grps:
-        grp.old = True
-        grp.save()
+    vdcs = UdVDC.objects.all()
+    for vdc in vdcs:
+        vdc.old = True
+        vdc.save()
     for vdc in vlist:
         # get group id
         db_group = UdGroup.objects.get(group_name=vdc["Group"])
@@ -499,9 +505,10 @@ def get_ucsd_vdc_list():
             entity.tenant = db_group
             entity.save()
     #remove unmark old as False
-    grps = UdGroup.objects.filter(old = True)
-    for grp in grps:
-        grp.delete()
+    vdcs = UdVDC.objects.filter(old = True)
+    for vdc in vdcs:
+        print("delete removed vdc %s" %vdc.vdc)
+        #vdc.delete()
 
 
 '''
@@ -840,7 +847,13 @@ def my_login(request):
         # user in DB
         # update tenant_id
         user = authenticate(username=p_username, password=password)
-        addinfo = UserAddInfo.objects.get(user=user)
+        try:
+            addinfo = UserAddInfo.objects.get(user=user)
+        except ObjectDoesNotExist as odne:
+            addinfo = UserAddInfo()
+            addinfo.contact = ''
+            addinfo.user = user
+            addinfo.save()
 
         t_id = None
         if UdGroup.objects.filter(group_name=ucsd_user["groupName"]).count() == 0:
