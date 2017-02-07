@@ -106,11 +106,11 @@ def myrequests(request):
     db_add_info = None
     db_add_info = UserAddInfo.objects.get(user=request.user)
     if db_add_info:
-        tenant = db_add_info.tenant
+        tenant = db_add_info.group_name
     
     vlist = []
     if tenant:
-        vlist = UdServiceRequest.objects.filter( tenant_id=tenant.id)
+        vlist = UdServiceRequest.objects.filter( group_name = tenant)
     else:
         vlist = UdServiceRequest.objects.all()
     paginator = Paginator(vlist, 10)
@@ -133,7 +133,7 @@ def vms(request):
     if not request.user.is_staff:
         try:
             db_add_info = UserAddInfo.objects.get(user=request.user)
-            tenant = db_add_info.tenant
+            tenant = db_add_info.group_name
         except ObjectDoesNotExist as odne:
             pass
 
@@ -156,15 +156,15 @@ def vms(request):
     else:
         if len(search.srch_txt) > 0:
             if search.srch_key == "name":
-                vlist = BiVirtualMachine.objects.filter(name__icontains=search.srch_txt, tenant=tenant)
+                vlist = BiVirtualMachine.objects.filter(name__icontains=search.srch_txt, group_name=tenant)
             elif search.srch_key == "ip":
-                vlist = BiVirtualMachine.objects.filter(ipAddress__icontains=search.srch_txt, tenant=tenant)
+                vlist = BiVirtualMachine.objects.filter(ipAddress__icontains=search.srch_txt, group_name=tenant)
             elif search.srch_key == "mac":
-                vlist = BiVirtualMachine.objects.filter(macAddress__icontains=search.srch_txt, tenant=tenant)
+                vlist = BiVirtualMachine.objects.filter(macAddress__icontains=search.srch_txt, group_name=tenant)
             else:
-                vlist = BiVirtualMachine.objects.filter(tenant=tenant)
+                vlist = BiVirtualMachine.objects.filter(group_name=tenant)
         else:
-            vlist = BiVirtualMachine.objects.filter(tenant=tenant)
+            vlist = BiVirtualMachine.objects.filter(group_name=tenant)
 
     paginator = Paginator(vlist, 10)
     page = request.GET.get('page')
@@ -176,7 +176,7 @@ def vms(request):
         plist = paginator.page(paginator.num_pages)
 
     clist = BiCatalog.objects.filter(catalog_type__in=catalog_type_list)
-    return render(request, "vmList.html", {'list': plist, 'search': search, 'clist': clist, 'tenant': tenant})
+    return render(request, "vmList.html", {'list': plist, 'search': search, 'clist': clist })
 
 
 def vms_ajax(request):
@@ -220,9 +220,10 @@ def catalogs(request):
     except EmptyPage:
         plist = paginator.page(paginator.num_pages)
     #fixme with dedicated group & vdc for login user request.user.useraddinfo.tenant.group_name
-    if request.user.useraddinfo.tenant:
-        glist = [request.user.useraddinfo.tenant] #UdGroup.objects.all()
-        vdclist = [UdVDC.objects.get(tenant = request.user.useraddinfo.tenant)]
+    if request.user.useraddinfo.group_name:
+        glist = [request.user.useraddinfo.group_name] 
+        vdclist = UdVDC.objects.filter(group_name = request.user.useraddinfo.group_name)
+
     else:
         glist = UdGroup.objects.all()
         vdclist = UdVDC.objects.all()
@@ -392,7 +393,7 @@ def get_catalog():
             entity = BiCatalog.objects.get(catalog_id=catalog["Catalog_ID"])
 
         entity.status = catalog["Status"]
-        entity.gruop = catalog["Group"]
+        entity.group_name = catalog["Group"]
         entity.template_name = catalog["Template_Name"]
         entity.image = catalog["Image"]
         entity.catalog_name = catalog["Catalog_Name"]
@@ -427,18 +428,13 @@ def get_ucsd_vm_list():
             dbvm.old = False
             dbvm.name = vm["VM_Name"]
             dbvm.ipAddress = vm["IP_Address"]
-            #dbvm.group_name = vm["Group_Name"]
+            dbvm.group_name = vm["Group_Name"]
             dbvm.ucsd_vm_id = vm["VM_ID"]
             dbvm.guestOSType = vm["Guest_OS_Type"]
             dbvm.provisionTime = vm["Provisioned_Time"]
             dbvm.status = vm["Power_State"]
             dbvm.srId = str(vm["Request_ID"])
             dbvm.vcenter_vm_id = vm["vCenter_VM_Id"]
-            try:
-                db_group = UdGroup.objects.get(group_name=vm["Group_Name"])
-                dbvm.tenant = db_group
-            except ObjectDoesNotExist as dne:
-                pass
             dbvm.save()
     #delete vm marked as old = true
     vms = BiVirtualMachine.objects.filter(old = True)
@@ -502,13 +498,13 @@ def get_ucsd_vdc_list():
             entity.type = vdc["Type"] if vdc.has_key("Type") else None
             entity.cloud = vdc["Cloud"] if vdc.has_key("Type") else None
             entity.vdc_description = unicode(vdc["vDC_Description"]) if vdc.has_key("vDC_Description") else None
-            entity.tenant = db_group
+            entity.group_name = db_group.group_name
             entity.save()
     #remove unmark old as False
     vdcs = UdVDC.objects.filter(old = True)
     for vdc in vdcs:
         print("delete removed vdc %s" %vdc.vdc)
-        #vdc.delete()
+        vdc.delete()
 
 
 '''
@@ -667,10 +663,7 @@ def get_ucsd_sr_list():
             sr.catalogWorkflowName = udsr["Catalog_Workflow_Name"]
             sr.status = udsr["Request_Status"]
             sr.rollbackType = udsr["Rollback_Type"]
-            try:
-                sr.tenant = UdGroup.objects.get(group_name = udsr["Group"])
-            except ObjectDoesNotExist as e:
-                pass
+            sr.group_name = udsr["Group"]
             sr.save()
 
 def reload_data(request):
@@ -692,6 +685,7 @@ def ucsd_vm_create(request):
     p_cpu = resource[0]
     p_mem = resource[1]
     p_disk = ""  # FIXME resource[2]
+    p_comment = request.POST.get("comment")
 
     group_name = request.POST.get("group_name")
     # group_name = "Sales"
@@ -705,7 +699,7 @@ def ucsd_vm_create(request):
     if not request.user.is_staff:
         username = str(request.user.username)
 
-    rtn = vmware_provision(p_catalog, p_vdc, comment="", vmname="", vcpus=p_cpu, vram=p_mem,
+    rtn = vmware_provision(p_catalog, p_vdc, comment=p_comment, vmname="", vcpus=p_cpu, vram=p_mem,
                      datastores=p_disk, vnics="", username=username)
 
     if rtn["serviceError"]:
@@ -839,7 +833,7 @@ def my_login(request):
         addinfo = UserAddInfo()
         addinfo.contact = ''
         addinfo.user = newuser
-        addinfo.tenant_id = t_id
+        addinfo.group_name = ucsd_user["groupName"]
         addinfo.save()
 
         user = authenticate(username=p_username, password=password)
@@ -862,7 +856,7 @@ def my_login(request):
             db_group = UdGroup.objects.get(group_name=ucsd_user["groupName"])
             t_id = db_group.id
 
-        addinfo.tenant_id = t_id
+        addinfo.group_name = ucsd_user["groupName"]
         addinfo.save()
 
     user = authenticate(username=p_username, password=password)

@@ -18,6 +18,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+
+msgid "menu.choice"
+msgstr "선택하기"
+
 #: cloudmgmt/settings.py:139
 msgid "Korean"
 msgstr ""
