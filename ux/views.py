@@ -20,6 +20,7 @@ import datetime
 from pyVim import connect
 from pyVmomi import vmodl
 from pyVmomi import vim
+from tools import pchelper
 #######
 # from requests.packages.urllib3 import request
 
@@ -45,6 +46,17 @@ from ux.ucsd_library import ucsd_verify_user, ucsd_add_user, ucsd_add_group, ucs
 from local_config import catalog_type_list
 
 vcenter_content = None
+service_instance = None
+
+vm_properties = ["name", "config.uuid", "config.hardware.numCPU",
+                 "config.hardware.memoryMB", "guest.guestState",
+                 "config.guestFullName", "config.guestId",
+                 "guest.disk",
+                 "config.version", "summary.quickStats.uptimeSeconds",
+                 "summary.quickStats.guestMemoryUsage", "summary.quickStats.overallCpuUsage",
+                 "summary.quickStats.sharedMemory", "summary.quickStats.staticCpuEntitlement",
+                 "summary.quickStats.staticMemoryEntitlement", "summary.quickStats.uptimeSeconds",
+                 "summary.storage.committed", "summary.storage.timestamp", "summary.storage.uncommitted", "summary.storage.unshared"]
 
 class search_form():
     srch_key = ""
@@ -348,7 +360,7 @@ def get_vcenter_info():
     atexit.register(connect.Disconnect, service_instance)
     content = service_instance.RetrieveContent()
 
-    return content
+    return (content, service_instance)
 
 
 def get_uplink(uplinks):
@@ -423,12 +435,14 @@ def get_ucsd_vm_list():
     for vm in vlist:
         dbvm = None
         try:
-            dbvm = BiVirtualMachine.objects.get(name=vm["Image_Id"])
+            dbvm = BiVirtualMachine.objects.get(name=vm["vCenter_VM_Id"])
         except ObjectDoesNotExist as e:
             dbvm = BiVirtualMachine()
             dbvm.imageId = vm["Image_Id"]
             dbvm.created = datetime.datetime.now()
             #print("New VM ", e,  vm["VM_Name"])
+        except MultipleObjectsReturned as e:
+            continue
         if dbvm:
             dbvm.old = False
             dbvm.name = vm["VM_Name"]
@@ -681,7 +695,66 @@ def reload_data(request):
     get_catalog()
     get_ucsd_vm_list()
     get_ucsd_sr_list()
+    update_vm_stats()
+    update_dashboard()
     return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
+
+
+def update_dashboar():
+    pass
+    
+def update_vm_stats():
+    global vcenter_content,service_instance
+    if not vcenter_content:
+        (vcenter_content,service_instance) = get_vcenter_info()
+    try:
+        root_folder = vcenter_content.rootFolder
+        view = pchelper.get_container_view(service_instance,
+                                       obj_type=[vim.VirtualMachine])
+        vm_data = pchelper.collect_properties(service_instance, view_ref=view,
+                                          obj_type=vim.VirtualMachine,
+                                          path_set=vm_properties,
+                                          include_mors=True)
+    except :
+        (vcenter_content,service_instance) = get_vcenter_info()
+        root_folder = vcenter_content.rootFolder
+        view = pchelper.get_container_view(service_instance,
+                                       obj_type=[vim.VirtualMachine])
+        vm_data = pchelper.collect_properties(service_instance, view_ref=view,
+                                          obj_type=vim.VirtualMachine,
+                                          path_set=vm_properties,
+                                          include_mors=True)
+    dashboard = {}
+    #after get all vm 
+    for vm in vm_data:
+        capa = 0
+        free = 0
+        for disk in vm["guest.disk"]:
+            capa += disk.capacity
+            free += disk.freeSpace
+        try:
+            bivm = BiVirtualMachine.objects.get( vcenter_vm_id = vm["obj"]._moId)
+            bivm.cpuUsage = str( vm["summary.quickStats.overallCpuUsage"])
+            bivm.memUsage = str( vm["summary.quickStats.guestMemoryUsage"])
+            bivm.stgUsage = str( ((capa-free)/1024)/1024)
+
+            bivm.cpuAlloc = str( vm["summary.quickStats.staticCpuEntitlement"])
+            bivm.memAlloc = str( vm["summary.quickStats.staticMemoryEntitlement"])
+            bivm.stgAlloc = str( (capa/1024)/1024)
+            bivm.save()
+            '''
+            bivm.group_name
+            if dashbaord.has_key( bivm.group_name):
+                dashboard[ bivm.group_name]['vm.active'] = int(dashboard[ bivm.group_name]['vm.active']) \
+                                                        + 1 if bivm.status is 'ON' else 0
+                dashboard[ bivm.group_name]['vm.inactive'] = int(dashboard[ bivm.group_name]['vm.inactive']) \
+                                                        + 0 if bivm.status is 'ON' else 1
+                dashboard[ bivm.group_name]['stg.alloc'] = int(dashboard[ bivm.group_name]['stg.alloc'])                                       
+            '''
+        except Exception as e:
+            print (e)
+            pass
+
 
 @login_required
 def update_service_requests(request):
@@ -729,18 +802,24 @@ def ucsd_vm_action(request):
 
 @login_required
 def vmrc_console(request):
-    global vcenter_content
+    global vcenter_content, service_instance
     VMRC_FORMAT = "vmrc://clone:{0}@{1}/?moid={2}"
     vmid = request.GET.get("vmid")
     rsp = {}
     if vmid:
         if not vcenter_content:
-            vcenter_content = get_vcenter_info()
-        session = vcenter_content.sessionManager.AcquireCloneTicket()
+            (vcenter_content,service_instance) = get_vcenter_info()
+        try:
+            session = vcenter_content.sessionManager.AcquireCloneTicket()
+        except:
+            (vcenter_content,service_instance) = get_vcenter_info()
+            session = vcenter_content.sessionManager.AcquireCloneTicket()
         rsp['url'] = VMRC_FORMAT.format( session, ConfigUtil.get_val("VC.HOST"), vmid)
-        print(rsp)
+        rsp['status'] = 'OK'
+        #print(rsp)
         return HttpResponse(json.dumps(rsp), 'application/json')
     else:
+        rsp['status'] = 'Error'
         return HttpResponse(json.dumps(rsp), 'application/json')
 
 def catalog_vm_provision(request):

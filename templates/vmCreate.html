@@ -21,15 +21,14 @@
             <h3><a href="#">VM Resource</a></h3>
             <div class="sub">
             	<ul>
-                	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="0|0|20"> CPU 0. 0G Memory. 20G Disk</label></li>
                     <li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="1|1024|20"> CPU 1. 1G Memory. 20G Disk</label></li>
                 	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="1|2048|20"> CPU 1. 2G Memory. 20G Disk</label></li>
                 	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="1|4096|20"> CPU 1. 4G Memory. 20G Disk</label></li>
                 	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="1|8192|20"> CPU 1. 8G Memory. 20G Disk</label></li>
-                	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="2|1024|20"> CPU 2. 1G Memory. 20G Disk</label></li>
-                	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="2|2048|20"> CPU 2. 2G Memory. 20G Disk</label></li>
-                	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="2|4096|20"> CPU 2. 4G Memory. 20G Disk</label></li>
-                	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="2|8192|20"> CPU 2. 8G Memory. 20G Disk</label></li>
+                	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="2|1024|40"> CPU 2. 1G Memory. 20G Disk</label></li>
+                	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="2|2048|40"> CPU 2. 2G Memory. 20G Disk</label></li>
+                	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="2|4096|40"> CPU 2. 4G Memory. 20G Disk</label></li>
+                	<li><label><input type="radio" name="resource"  onchange="changeResource(this)" value="2|8192|40"> CPU 2. 8G Memory. 20G Disk</label></li>
                 </ul>
             </div>
 
@@ -54,10 +53,7 @@
                     <h5>인터페이스포트그룹</h5>
                 	<div class="main_group">
                         <p>
-                            <input type="text" value="eth0" style="width: 50px">
-                            <select>
-                            	<option>Web</option>
-                            </select>
+                            <input type="text" name="intf" value="eth0" style="width: 50px">
                             <a href="#none"><em>DHCP</em> <span></span> <em>Static</em></a>
                         </p>
                     </div>
@@ -71,23 +67,23 @@
                             <tbody>
                             	<tr>
                                 	<th>IP Address</th>
-                                    <td><input type="text"></td>
+                                    <td><input name="ipaddr" type="text"></td>
                                 </tr>
                             	<tr>
                                 	<th>Subnet Mask</th>
-                                    <td><input type="text"></td>
+                                    <td><input name="subnetmask" type="text"></td>
                                 </tr>
                             	<tr>
                                 	<th>Default Gateway</th>
-                                    <td><input type="text"></td>
+                                    <td><input name="gateway" type="text"></td>
                                 </tr>
                             	<tr>
                                 	<th>Primary DNS Server</th>
-                                    <td><input type="text"></td>
+                                    <td><input name="dns1" type="text"></td>
                                 </tr>
                             	<tr>
                                 	<th>Secondary DNS Server</th>
-                                    <td><input type="text"></td>
+                                    <td><input name="dns2"type="text"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -123,10 +119,12 @@
 
     function change_eth(cnt) {
         //alert($("input[name='eth']:checked").val());
+        var nic = $("nic")
         var box = $($(".create_list div.sub")[2]).children('div');
         var maing = $($(".create_list div.sub")[2]).children('div').children('div')[0];
         var subg = $($(".create_list div.sub")[2]).children('div').children('div')[1];
         var ahtml = "";
+        
         for(i=0; i< cnt; i++) {
             ahtml += maing.outerHTML + subg.outerHTML;
         }

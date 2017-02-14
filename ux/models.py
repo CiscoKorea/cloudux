@@ -156,8 +156,8 @@ class BiVirtualMachine(Audited):
     name = models.CharField(max_length=100, blank=True, null=True)
     ipAddress = models.CharField(max_length=40, blank=True, null=True)
     macAddress = models.CharField(max_length=20, blank=True, null=True)
-    cpuUsage = models.CharField(max_length=5, blank=True, null=True)
-    memUsage = models.CharField(max_length=5, blank=True, null=True)
+    cpuUsage = models.CharField(max_length=10, blank=True, null=True)
+    memUsage = models.CharField(max_length=10, blank=True, null=True)
     netUsage = models.CharField(max_length=5, blank=True, null=True)
     stgUsage = models.CharField(max_length=30, blank=True, null=True)
     status = models.CharField(max_length=50, blank=True, null=True)
@@ -171,7 +171,9 @@ class BiVirtualMachine(Audited):
     srId = models.CharField(max_length=10, blank=True, null=True)
     guestOSType = models.CharField(max_length=30, blank=True, null=True)
     imageId = models.CharField(max_length=100, blank=True, null=True)
-
+    cpuAlloc = models.CharField(max_length=10, blank=True, null=True) # unit mhz
+    memAlloc = models.CharField(max_length=10, blank=True, null=True) # unit MB
+    stgAlloc = models.CharField(max_length=30, blank=True, null=True) # unit byte
     def __unicode__(self):
         return self.name
 
