@@ -43,7 +43,7 @@ from ux.ucsd_library import ucsd_verify_user, ucsd_add_user, ucsd_add_group, ucs
     ucsd_vmware_system_policy, ucsd_vmware_computing_policy, ucsd_vmware_storage_policy, \
     ucsd_vmware_network_policy, ucsd_get_groupbyname, ucsd_get_service_requests
 #from patch_db import patch_data_vcenter_datacenter
-from local_config import catalog_type_list
+from local_config import catalog_type_list, catalog_type_mapper
 
 vcenter_content = None
 service_instance = None
@@ -414,7 +414,10 @@ def get_catalog():
         entity.template_name = catalog["Template_Name"]
         entity.image = catalog["Image"]
         entity.catalog_name = catalog["Catalog_Name"]
-        entity.catalog_type = catalog["Catalog_Type"]
+        try:
+            entity.catalog_type = catalog_type_mapper[catalog["Catalog_Type"]]
+        except:
+            entity.catalog_type = catalog["Catalog_Type"]
         entity.catalog_id = catalog["Catalog_ID"]
         entity.folder = catalog["Folder"]
         entity.os = catalog["OS"]

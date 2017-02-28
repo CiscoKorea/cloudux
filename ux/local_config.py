@@ -24,3 +24,5 @@ headers = {"X-Cloupia-Request-Key": "EF5A6F2BE93046E0936838BA3BC99D96"}
 
 #catalog_type_list = [ '표준','고급','서비스 컨테이너','Standard', 'Advanced', 'Service Container']
 catalog_type_list = [ 'Standard']
+
+catalog_type_mapper = { u'표준':'Standard', u'고급':'Advanced', u'서비스 컨테이너':'Service Container'}
