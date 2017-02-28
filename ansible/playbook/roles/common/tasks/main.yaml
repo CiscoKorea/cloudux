@@ -1,0 +1,61 @@
+---
+- name: package repo update 
+  yum: name="*" 
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+- name: install required package for admin job
+  package: name=libselinux-python 
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+- name: create group -- {{ user_name}}
+  group: name={{ user_name }}
+
+- name: create user -- {{ user_name}}
+  user: name={{ user_name }} append=yes groups="{{user_name}},wheel" shell=/bin/bash generate_ssh_key=true 
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+- name: create user -- {{ user_name}}
+  user: name={{ user_name}} append=yes groups={{user_name}},sudo shell=/bin/bash generate_ssh_key=true 
+  when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
+
+- name: sudo privilige without password 
+  lineinfile: "dest=/etc/sudoers state=present regexp='^%{{item}}' line='%{{item}} ALL=(ALL) NOPASSWD: ALL'"
+  with_items: 
+    - wheel
+    - sudo 
+
+- name: authorized key 
+  authorized_key: user={{user_name}} key="{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
+
+- name: copy private key 
+  copy: src='{{ lookup('env', 'HOME') + '/.ssh/id_rsa' }}' dest='/home/{{ user_name}}/{{user_name}}.key' mode=600 owner={{ user_name}}
+
+- name: check pip
+  become: false
+  shell: which pip 
+  register: pip_status
+  ignore_errors: true
+
+- debug: msg={{ pip_status }}
+
+- name: download get-pip
+  become : false
+  get_url: url=https://bootstrap.pypa.io/get-pip.py dest=/tmp/get-pip.py mode=0550
+  ignore_errors: true
+  when: pip_status.rc != 0
+
+- name: check file
+  stat: path=/tmp/get-pip.py 
+  register: get_pip
+  when: pip_status.rc != 0
+
+- name: copy get-pip.py 
+  copy: src=get-pip.py dest=/tmp/get-pip.py mode=0750
+  when: pip_status.rc != 0 and get_pip.stat.exists == false
+
+- name: execute get-pip.py
+  shell: /tmp/get-pip.py
+  when: pip_status.rc != 0
+
+- selinux: policy=targeted state=permissive
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'

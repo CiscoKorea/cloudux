@@ -59,11 +59,13 @@
 
 - name: reset for all modification 
   become: no
+  remote_user: "{{ user_name}}"
   shell: git checkout -- * chdir="{{basedir}}"
   ignore_errors: true
 
 - name: clone source from git repos
   become: no
+  remote_user: "{{ user_name}}"
   git: repo=https://github.com/CiscoKorea/cloudux.git dest={{basedir}} clone=yes version=selfserviceportal force=yes
   register: git_clone_status
   ignore_errors: true
@@ -71,6 +73,7 @@
 
 - name: git pull from remote repos
   become: no
+  remote_user: "{{ user_name}}"
   shell: git pull chdir="{{basedir}}"
   when: git_clone_status.changed != false
   ignore_errors: true
@@ -81,6 +84,7 @@
 
 - name: update mysql ini file
   become: no
+  remote_user: "{{ user_name}}"
   ini_file: dest={{ dbconfig}} section=mysql option={{item.name}} value={{item.value}}
   with_items:
     - { name: hostname, value: "{{ database_host}}" }
@@ -93,6 +97,7 @@
 
 - name: django makemigrations
   become: no
+  remote_user: "{{ user_name}}"
   shell: python manage.py makemigrations chdir={{basedir}}
   tags:
     - database
@@ -100,6 +105,7 @@
 
 - name: django migrate
   become: no
+  remote_user: "{{ user_name}}"
   shell: python manage.py migrate chdir={{basedir}}
   tags:
     - database
@@ -107,12 +113,14 @@
 
 - name: copy sql script 
   become: no
+  remote_user: "{{ user_name}}"
   template: src=basic_conf.j2 dest=/tmp/basic_conf.sql force=yes
   tags:
     - database
 
 - name: execute sql queries 
   become: no
+  remote_user: "{{ user_name}}"
   shell: /usr/bin/mysql --user={{database_user}} --database={{ database_name}} --password={{database_pass}} < /tmp/basic_conf.sql 
   tags:
     - database

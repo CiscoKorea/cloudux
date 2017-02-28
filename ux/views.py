@@ -696,11 +696,11 @@ def reload_data(request):
     get_ucsd_vm_list()
     get_ucsd_sr_list()
     update_vm_stats()
-    update_dashboard()
+    #update_dashboard()
     return HttpResponse(json.dumps({'result': 'OK'}), 'application/json')
 
 
-def update_dashboar():
+def update_dashboard():
     pass
     
 def update_vm_stats():

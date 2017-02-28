@@ -22,9 +22,4 @@ urlpatterns = [
     url(r'', include('ux.urls')),
     url(r'^login', auth_views.login, name='login'),
     url(r'^logout', auth_views.logout, name='logout'),
-    # url(
-    #     '^change-password/$',
-    #     auth_views.views.password_change, name=''
-    # ),
-    # url(r'^accounts/logout/', 'django.contrib.auth.views.logout', name='logout'),
 ]

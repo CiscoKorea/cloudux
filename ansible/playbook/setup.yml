@@ -8,5 +8,5 @@
      app_dir : /home/cisco
 #     ansible_python_interpreter: /Users/hyungsok/mypy/bin/python
    roles:
+     - common
      - portal
-#     - nxapi
