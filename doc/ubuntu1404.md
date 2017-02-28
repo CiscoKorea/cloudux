@@ -41,6 +41,8 @@ python manage.py createsuperuser
 # Run
 python manage.py runserver 0.0.0.0:8080
 
+# start celery for background sync
+celery -A cloudmgmt worker -B -l info & 
 
 # show reload button
 Developer Tools(F12) - console
