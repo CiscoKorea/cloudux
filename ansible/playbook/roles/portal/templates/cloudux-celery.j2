@@ -1,0 +1,13 @@
+[Unit]
+Description=CloudUX Celery Service
+After=mariadb.service
+
+[Service]
+Type=simple
+User=cisco
+ExecStart=/usr/bin/celery --workdir={{basedir}} -A cloudmgmt worker -B -l info 
+Restart=on-abort
+
+
+[Install]
+WantedBy=multi-user.target

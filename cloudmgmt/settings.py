@@ -181,7 +181,7 @@ t2 = 10
 CELERYBEAT_SCHEDULE = {
     'update-all': {
         'task': 'cloudmgmt.tasks.update_all',
-        'schedule': timedelta(minutes=5),  # minutes=10
+        'schedule': timedelta(minutes=2),  # minutes=10
         'args': ()
     },
 }
