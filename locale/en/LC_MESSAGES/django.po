@@ -216,3 +216,7 @@ msgstr "VM Disk List"
 #: templates/volumeList.html:9
 msgid "site.volumelist"
 msgstr "Volume List"
+
+
+msgid "menu.approval"
+msgstr "Approval Requests"

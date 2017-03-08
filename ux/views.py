@@ -41,7 +41,8 @@ from ucsd_library import catalog_list, catalog_list_all, vm_list, vm_action, ucs
 # Create your views here.
 from ux.ucsd_library import ucsd_verify_user, ucsd_add_user, ucsd_add_group, ucsd_create_vdc, \
     ucsd_vmware_system_policy, ucsd_vmware_computing_policy, ucsd_vmware_storage_policy, \
-    ucsd_vmware_network_policy, ucsd_get_groupbyname, ucsd_get_service_requests
+    ucsd_vmware_network_policy, ucsd_get_groupbyname, ucsd_get_service_requests, ucsd_get_approval_list, \
+    ucsd_update_approval
 #from patch_db import patch_data_vcenter_datacenter
 from local_config import catalog_type_list, catalog_type_mapper
 
@@ -79,8 +80,7 @@ def dashboard(request):
         chart1 = [0,0,0,0]
         chart1d = [100, 100, 100, 100]
 
-
-    return render(request, 'dashboard.html', {'chart1': chart1, 'chart1d': chart1d })
+    return render(request, "dashboard.html", {'chart1': chart1, 'chart1d': chart1d })
                                               
 
 
@@ -248,6 +248,29 @@ def catalogs(request):
     return render(request, "catalogList.html", {'list': plist, 'ucsd_server': ConfigUtil.get_val("UCSD.HOST")
                   , 'group_list': glist, 'vdc_list': vdclist})
 
+
+@login_required
+def approvals(request):
+    myapps = []
+    apps = ucsd_get_approval_list( restapikey=request.user.useraddinfo.restapikey)
+    for app in apps:
+        try:
+            app['requestType'] = UdServiceRequest.objects.get( srId = str(app['requestId'])).requestType
+            app['catalogName'] = UdServiceRequest.objects.get( srId = str(app['requestId'])).catalogWorkflowName
+        except: 
+            pass
+        myapps.append( app)
+
+    paginator = Paginator(myapps, 10)
+    page = request.GET.get('page')
+    try:
+        plist = paginator.page(page)
+    except PageNotAnInteger:
+        plist = paginator.page(1)
+    except EmptyPage:
+        plist = paginator.page(paginator.num_pages)
+
+    return render(request, "approvalList.html", { 'list': plist })
 
 def users(request):
 
@@ -673,13 +696,13 @@ def get_ucsd_sr_list():
     for udsr in udsr_list:
         sr = None
         try:
-            sr = UdServiceRequest.objects.get(srId= str(udsr["Service_Request_Id"]))
+            sr = UdServiceRequest.objects.get(srId= int(udsr["Service_Request_Id"]))
             sr.status = udsr["Request_Status"]
             sr.group_name = udsr["Group"]
             sr.save()
         except ObjectDoesNotExist as e:
             sr = UdServiceRequest()
-            sr.srId = str(udsr["Service_Request_Id"])
+            sr.srId = int(udsr["Service_Request_Id"])
             sr.requestTime = udsr["Request_Time"]
             sr.requestType = udsr["Request_Type"]
             sr.requester = udsr["Initiating_User"]
@@ -787,7 +810,7 @@ def ucsd_vm_create(request):
         username = str(request.user.username)
 
     rtn = vmware_provision(p_catalog, p_vdc, comment=p_comment, vmname="", vcpus=p_cpu, vram=p_mem,
-                     datastores=p_disk, vnics="", username=username)
+                     datastores=p_disk, vnics="", restapikey=request.user.useraddinfo.restapikey)
 
     if rtn["serviceError"]:
         return HttpResponse(json.dumps({'result': 'NO', 'serviceError': rtn["serviceError"]}), 'application/json')
@@ -857,7 +880,7 @@ def catalog_vm_provision(request):
         # order_status = catalog_order(db_catalog.catalog_name, vdc=p_vdc, group=p_group, comment=p_comment, vmname=vmname,
         #                vcpus=p_vcpus, vram=p_vram, datastores=p_datastores, vnics=p_vnics, username=username)
         order_status = ucsd_provision_request(db_catalog.catalog_name, vdc=p_vdc, comment=p_comment, vmname=vmname,
-                       vcpus=p_vcpus, vram=p_vram, datastores=p_datastores, vnics=p_vnics, username=username)
+                       vcpus=p_vcpus, vram=p_vram, datastores=p_datastores, vnics=p_vnics, username=username, restapikey=request.user.useraddinfo.restapikey)
 
 
         cnt += 1
@@ -897,9 +920,9 @@ def testpage(request):
     # print("result:", result)
     print("userid :", request.user.username)
 
-    vdc_list('','')
+    #vdc_list('','')
 
-    return render(request, 'test.html', {})
+    return render(request, 'test.html', { 'user': request.user})
 
 
 def my_login(request):

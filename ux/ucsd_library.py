@@ -7,6 +7,8 @@
 
 # import standard variables and configuration info
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
+import requests.packages.urllib3
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 from local_config import ucsdserver, ucsd_key, url, getstring, parameter_lead, headers
 from cloud_library import dict_filter, list_search
@@ -453,7 +455,7 @@ def catalog_type(catalog, group):
     return c[0]["Catalog_Type"]
 
 
-def catalog_order(catalog, vdc, group, comment="", vmname="", vcpus="0", vram="0", datastores="", vnics="", username=""):
+def catalog_order(catalog, vdc, group, comment="", vmname="", vcpus="0", vram="0", datastores="", vnics="", restapikey=""):
     """
     Order a Standard Catalog Item
     :param catalog:
@@ -478,13 +480,13 @@ def catalog_order(catalog, vdc, group, comment="", vmname="", vcpus="0", vram="0
 
     # Only support vCenter so far
     if catalog_cloud_type == "VMware":
-        order = vmware_provision(catalog, vdc, comment, vmname, vcpus, vram, datastores, vnics, username)
+        order = vmware_provision(catalog, vdc, comment, vmname, vcpus, vram, datastores, vnics, restapikey)
         return order
 
     return "Invalid Request Provided"
 
 
-def vmware_provision(catalog, vdc, comment="", vmname="", vcpus="0", vram="0", datastores="", vnics="0", username=""):
+def vmware_provision(catalog, vdc, comment="", vmname="", vcpus="0", vram="0", datastores="", vnics="0", restapikey=""):
     """
     Order a VMware based standard catalog
     :param catalog: Name of the catalog
@@ -518,8 +520,8 @@ def vmware_provision(catalog, vdc, comment="", vmname="", vcpus="0", vram="0", d
         "param7:\"" + param7 + '"}'
 
     requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
-    if username != "":
-        myheaders = {"X-Cloupia-Request-Key": ucsd_get_restaccesskey(username)}
+    if restapikey != "":
+        myheaders = {"X-Cloupia-Request-Key": restapikey}
         r = requests.get(u, headers=myheaders, verify=False)
     else :
         r = requests.get(u, headers=headers, verify=False)
@@ -945,7 +947,7 @@ def ucsd_verify_user(user_id="", password=""):
 #     headers["X-Cloupia-Request-Key"] = key
 
 
-def ucsd_provision_request(catalog, vdc, comment="", vmname="", vcpus="0", vram="0", datastores="", vnics="0", username=""):
+def ucsd_provision_request(catalog, vdc, comment="", vmname="", vcpus="0", vram="0", datastores="", vnics="0", username="admin", restapikey=None):
     """
     Order a VMware based standard catalog
     :param catalog: Name of the catalog
@@ -966,10 +968,7 @@ def ucsd_provision_request(catalog, vdc, comment="", vmname="", vcpus="0", vram=
     # param5 = vram if vram else "0"
     # param6 = datastores if datastores else ""
     # param7 = vnics if vnics else "0"
-    param0 = {"catalogName": catalog, "vdcName": vdc, "userID": 'test3'}
 
-    if username == "":
-        username = 'admin'
 
     apioperation = "userAPIProvisionRequest"
     u = url % ucsdserver + getstring % apioperation + parameter_lead + \
@@ -986,8 +985,8 @@ def ucsd_provision_request(catalog, vdc, comment="", vmname="", vcpus="0", vram=
     print u
 
     requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
-    if username != "":
-        myheaders = {"X-Cloupia-Request-Key": ucsd_get_restaccesskey(username)}
+    if restapikey != "":
+        myheaders = {"X-Cloupia-Request-Key": restapikey}
         r = requests.get(u, headers=myheaders, verify=False)
     else :
         r = requests.get(u, headers=headers, verify=False)
@@ -1023,8 +1022,6 @@ def ucsd_create_vdc(vdcName,  group_id,  cloudName, systemPolicy, computingPolic
         + ',"selfServiceEndUserPolicy":"' + '' + '"' \
                                                  '}}'
 
-    print(u)
-    print(headers)
     requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=headers, verify=False)
     print r
@@ -1110,12 +1107,12 @@ def ucsd_vmware_network_policy():
 
 
 #https://10.72.86.243/app/api/rest?formatType=json&opName=userAPIGetTabularReport&opData={param0:"6",param1:"",param2:"SERVICE-REQUESTS-T10"}
-def ucsd_get_service_requests(username=None, groupId=''):
+def ucsd_get_service_requests(restapikey=None, groupId=''):
     apioperation = "userAPIGetTabularReport"
     param0 = "6" #admin-view 
     myheaders = None
-    if username:
-        myheaders = {"X-Cloupia-Request-Key": ucsd_get_restaccesskey(username)}
+    if restapikey:
+        myheaders = {"X-Cloupia-Request-Key": restapikey}
         param0 = "7"
     u = url % ucsdserver + getstring % apioperation + parameter_lead + \
         "{param0:\"" + param0 +"\",param1:\"" + groupId + "\",param2:\"SERVICE-REQUESTS-T10\"}"
@@ -1131,13 +1128,13 @@ def ucsd_get_service_requests(username=None, groupId=''):
         pass
     return rows
 
-def ucsd_get_service_request_workflow( username=None, reqId='0'):
+def ucsd_get_service_request_workflow( restapikey=None, reqId='0'):
     apioperation = "userAPIGetServiceRequestWorkFlow"
     u = url % ucsdserver + getstring % apioperation + parameter_lead + \
         "{param0:\"" + reqId+"\"}"
     myheaders = None
-    if username:
-        myheaders = {"X-Cloupia-Request-Key": ucsd_get_restaccesskey(username)}
+    if restapikey:
+        myheaders = {"X-Cloupia-Request-Key": restapikey}
     requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=myheaders if myheaders else headers, verify=False)
     j = json.loads(r.text)
@@ -1150,14 +1147,14 @@ def ucsd_get_service_request_workflow( username=None, reqId='0'):
     return rows
 
 
-def ucsd_get_vms_per_group( username=None, groupId='0'):
+def ucsd_get_vms_per_group( restapikey=None, groupId='0'):
     apioperation = "userAPIGetTabularReport"
     u = url % ucsdserver + getstring % apioperation + parameter_lead + \
         "{param0:\"7\",param1:\"" + groupId + "\",param2:\"VMS-T14\"}"
 
     myheaders = None
-    if username:
-        myheaders = {"X-Cloupia-Request-Key": ucsd_get_restaccesskey(username)}
+    if restapikey:
+        myheaders = {"X-Cloupia-Request-Key": restapikey}
     requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     r = requests.get(u, headers=myheaders if myheaders else headers, verify=False)
     j = json.loads(r.text)
@@ -1169,11 +1166,48 @@ def ucsd_get_vms_per_group( username=None, groupId='0'):
         pass
     return rows
 
+
+def ucsd_get_approval_list(restapikey=None):
+    apioperation = "userAPIGetMyApprovalList"
+    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
+        "{}"
+
+    myheaders = None
+    if restapikey:
+        myheaders = {"X-Cloupia-Request-Key": restapikey}
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+    r = requests.get(u, headers=myheaders if myheaders else headers, verify=False)
+    j = json.loads(r.text)
+    rows = []
+    try:
+        rows = j['serviceResult']['approvalDetails']
+    except KeyError as ke:
+        pass
+    return rows 
+
+def ucsd_update_approval( restapikey, reqId, entityId, isApproved, comment):
+    apioperation = "userAPIUpdateMyApproval"
+    u = url % ucsdserver + getstring % apioperation + parameter_lead + \
+        "{param0:"+str(reqId)+",param1:"+str(entityId)+",param2:'"+str(isApproved)+"',param3:\""+comment+"\"}"
+
+    myheaders = None
+    if restapikey:
+        myheaders = {"X-Cloupia-Request-Key": restapikey}
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+    r = requests.get(u, headers=myheaders if myheaders else headers, verify=False)
+    j = json.loads(r.text)
+    rows = []
+    try:
+        rows = j['serviceResult']['approvalDetails']
+    except KeyError as ke:
+        pass
+    return rows      
+
 if __name__ == '__main__':
     print('test code')
-    print( group_list())
-    print( vdc_list())
-    print( vm_list())
+    restapi = ucsd_get_restaccesskey('hyungsok')
+    print( ucsd_get_approval_list( None))
+
     #print(ucsd_get_userprofile('admin'))
     #print(ucsd_verify_user('hyungsok', '1234Qwer'))
     #userinfo = ucsd_get_userprofile('hyungsok')

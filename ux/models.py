@@ -327,7 +327,7 @@ class UserAddInfo(Audited):
 
 
 class UdServiceRequest(Audited):
-    srId = models.CharField(max_length=10, blank=True, null=True)
+    srId = models.IntegerField(default=0)
     requestTime = models.CharField(max_length=30, blank=True, null=True)
     requestType = models.CharField(max_length=20, blank=True, null=True)
     requester = models.CharField(max_length=20, blank=True, null=True)
@@ -336,3 +336,4 @@ class UdServiceRequest(Audited):
     rollbackType = models.CharField(max_length=20, blank=True, null=True)
     #tenant = models.ForeignKey(UdGroup, null=True)
     group_name = models.CharField(max_length=30, blank=True, null=True)
+

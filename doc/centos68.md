@@ -61,6 +61,9 @@ service iptables restart
 # Run
 python2.7 manage.py runserver 0.0.0.0:8080
 
+# start celery for background sync
+celery --workdir=/home/cisco/cloudux -A cloudmgmt worker -B -l info & 
+
 
 # show reload button
 Developer Tools(F12) - console

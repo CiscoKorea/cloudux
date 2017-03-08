@@ -219,3 +219,7 @@ msgstr " 가 이미 존재합니다."
 #: templates/volumeList.html:9
 msgid "site.volumelist"
 msgstr "Volume List"
+
+
+msgid "menu.approval"
+msgstr "승인 요청"
