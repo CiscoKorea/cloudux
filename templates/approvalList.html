@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load myfilter %}
+
+            {% block title %}
+            <div class="title">
+                <div>
+                    <h3>{% trans "menu.approval" %}</h3>
+                    <p>Home > Resource > <strong>My Approval List</strong></p>
+                </div>
+            </div>
+            {% endblock %}
+                
+            {% block content %}
+
+                <!-- inner -->
+                <div class="inner">
+                    <div class="title_area">
+                        <h4>My Approval</h4>
+                    </div>
+                        <div class="search">
+                            <form name="search_form" method="get" action="">
+                            <input type="hidden" name="page" value="1" />
+                            </form>
+                        </div>
+                    <table id="approval">
+                      <colgroup>
+                          <col width="5%">
+                          <col width="5%">
+                          <col width="18%">
+                          <col width="14%">
+                          <col width="10%">
+                          <col width="10%">
+                          <col width="*%">
+                          <col width="10%">
+                      </colgroup>
+                      <thead>
+                          <tr>
+                              <th>SR</th>
+                              <th>EntryId</th>
+                              <th>Request Time</th>
+                              <th>Request Type</th>
+                              <th>Requester</th>
+                              <th>Group Name</th>
+                              <th>Catalog Name</th>
+                              <th>Status</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                        {% for req in list %}
+                          <tr>
+                            <td style="text-align: center;"> {{ req.requestId }} </td>
+                            <td>{{ req.entryId }}</td>
+                            <td>{{ req.requestTime | to_localtime }}</td>
+                            <td>{{ req.requestType }}</td>
+                            <td>{{ req.initiatingUser }}</td>
+                            <td>{{ req.groupName }}</td>
+                            <td>{{ req.catalogName }}</td>
+                            <td><span class="box {{ req.status | remove_space }}">{{ req.status }}</td>
+                          </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                
+                    <div class="paginate">
+                        <p class="total">Total <strong>{{ list.paginator.count }}</strong></p>
+                        
+                        <a href="javascript:go_page(1);" class="first">{% trans "menu.first" %}</a>
+                        {% if list.has_previous %}
+                        <a href="javascript:go_page({{ list.previous_page_number }})" class="prev">{% trans "menu.previous" %}</a>
+                        {% endif %}
+                            <span>
+                                {% for p in list.paginator.page_range %}
+                                    {% if p == list.number %}
+                                        <strong>{{ p }}</strong>
+                                    {% else %}<a href="javascript:go_page({{ p }})">{{ p }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            </span>
+                        {% if list.has_next %}
+                        <a href="javascript:go_page({{ list.next_page_number }})" class="next">{% trans "menu.next" %}</a>
+                        {% endif %}
+                        <a href="javascript:go_page({{ list.paginator.num_pages }})" class="last">{% trans "menu.last" %}</a>
+                    </div>
+                </div>
+                <!-- //inner -->
+
+<script type="text/javascript">
+
+function approve_it( srid, eid) {
+  $.ajax( {
+    url: "/approve",
+    datatype: "json",
+    data: {
+      "srId": srid,
+      "entryId" : eid,
+      "approve": true
+    }
+  }).done( function(msg) {
+    alert('approved !!!')
+  }).fail( function(err) {
+    alert(err)
+  });
+}
+
+function addRowHandlers() {
+    var table = document.getElementById("approval");
+    var rows = table.getElementsByTagName("tr");
+    var status = 'Pending'
+    for (i = 0; i < rows.length; i++) {
+        var currentRow = table.rows[i];
+        var createClickHandler = 
+            function(row) 
+            {
+                return function() { 
+                      var cell = row.getElementsByTagName("td")[0];
+                      var srid = cell.innerHTML;
+                      cell = row.getElementsByTagName("td")[1];
+                      eid = cell.innerHTML;
+                      var span = row.getElementsByTagName("td")[7];
+                      status = span.getElementsByTagName("span")[0].innerHTML
+                      if ( status == 'Pending' && confirm('Do you approve it ?')) {
+                        approve_it( srid, eid)
+                      }
+                                        
+                  };
+            };
+
+        currentRow.onclick = createClickHandler(currentRow);
+    }
+}
+function go_page(page) {
+    $("input[name='page']").val(page);
+    $("form[name='search_form']").submit();
+}
+
+$(document).ready(function() {
+  addRowHandlers();
+});
+
+</script>
+
+            {% endblock %}
+            <!-- //content -->
+        

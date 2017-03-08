@@ -1185,10 +1185,10 @@ def ucsd_get_approval_list(restapikey=None):
         pass
     return rows 
 
-def ucsd_update_approval( restapikey, reqId, entityId, isApproved, comment):
+def ucsd_update_approval( restapikey, reqId, entryId, isApproved, comment):
     apioperation = "userAPIUpdateMyApproval"
     u = url % ucsdserver + getstring % apioperation + parameter_lead + \
-        "{param0:"+str(reqId)+",param1:"+str(entityId)+",param2:'"+str(isApproved)+"',param3:\""+comment+"\"}"
+        "{param0:"+str(reqId)+",param1:"+str(entryId)+",param2:'"+str(isApproved)+"',param3:\""+comment+"\"}"
 
     myheaders = None
     if restapikey:

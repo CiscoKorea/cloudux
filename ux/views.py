@@ -45,6 +45,7 @@ from ux.ucsd_library import ucsd_verify_user, ucsd_add_user, ucsd_add_group, ucs
     ucsd_update_approval
 #from patch_db import patch_data_vcenter_datacenter
 from local_config import catalog_type_list, catalog_type_mapper
+from operator import itemgetter, attrgetter, methodcaller
 
 vcenter_content = None
 service_instance = None
@@ -261,7 +262,9 @@ def approvals(request):
             pass
         myapps.append( app)
 
-    paginator = Paginator(myapps, 10)
+    sortedapps = sorted( myapps, key=itemgetter('requestId', 'entryId'), reverse=True)
+
+    paginator = Paginator(sortedapps, 10)
     page = request.GET.get('page')
     try:
         plist = paginator.page(page)
@@ -271,6 +274,13 @@ def approvals(request):
         plist = paginator.page(paginator.num_pages)
 
     return render(request, "approvalList.html", { 'list': plist })
+
+@login_required
+def approve(request):
+    resp = ucsd_update_approval(restapikey=request.user.useraddinfo.restapikey, \
+                 reqId=request.GET.get("srId"), entryId=request.GET.get("entryId"), \
+                 isApproved=request.GET.get("approve"), comment="confirmed")
+    return HttpResponse( resp, 'application/json')
 
 def users(request):
 

@@ -1,5 +1,6 @@
 from django import template
 from django.template.defaultfilters import stringfilter
+from datetime import datetime
 
 register = template.Library()
 
@@ -57,3 +58,9 @@ def power_status(value):
         return value.lower() if value.lower() in [ "on", "off"] else "red"
     else:
         return "red"
+
+
+@register.filter
+def to_localtime(value):
+    tick = float(value)/1000
+    return datetime.fromtimestamp(tick).strftime("%b %d, %Y %H:%M:%S %Z")
