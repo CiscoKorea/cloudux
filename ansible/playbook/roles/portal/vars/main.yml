@@ -6,7 +6,7 @@ database_host: localhost
 database_name: cloudportal
 database_user: portal
 database_pass: 1234Qwer
-database_port: 3306
+database_port: 8080
 
 #VMWare vcenter information 
 vcenter_host: 10.72.86.43
@@ -14,15 +14,13 @@ vcenter_user: "administrator@vsphere.local"
 vcenter_pass: "!234Qwer"
 vcenter_port: 443
 
-#Cisco UCSM information 
-ucsm_host: 10.72.86.4
-ucsm_user: admin
-ucsm_pass: 1234Qwer
-ucsm_port: 443
-
 #Cisco UCS Director information 
 ucsd_host: 10.72.86.243
 ucsd_apikey: EF5A6F2BE93046E0936838BA3BC99D96
 
 #database configuration file path 
 dbconfig: "{{basedir}}/cloudmgmt/connection.cfg"
+
+#repo
+repo_url: https://github.com/CiscoKorea/cloudux
+repo_branch: selfserviceportal

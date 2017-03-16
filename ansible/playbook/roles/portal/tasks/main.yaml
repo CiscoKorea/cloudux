@@ -17,6 +17,21 @@
   tags:
     - database
     - application
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'    
+
+- name: install required packages on ubuntu
+  package: name={{item}} state=present
+  with_items:
+    - git 
+    - gcc
+    - mariadb-server
+    - libmysqlclient-dev
+    - python-dev
+    - screen
+  tags:
+    - database
+    - application
+  when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
 
 - name: mariadb default character set for mariadb-5.5
   ini_file: dest=/etc/my.cnf.d/server.cnf section=mariadb-5.5 option={{item.name}} value={{item.value}}
@@ -34,6 +49,15 @@
     - mariadb
   tags:
     - database
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+- name: restart mariadb 
+  service: name={{item}} state=restarted
+  with_items:
+    - mysql
+  tags:
+    - database
+  when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
 
 - name: drop database on mariadb
   mysql_db: name={{ database_name}} state=absent
@@ -50,10 +74,7 @@
   mysql_user: host={{ item }} priv="{{database_name}}.*:ALL" login_user=root name={{ database_user}} password={{ database_pass}}
   with_items:
     - "{{ database_host}}"
-    - localhost
-    - "64.%"
-    - "10.72.86.%"
-    - "10.139.%"
+ #   - "10.139.%"
   tags:
     - database
 
@@ -68,12 +89,11 @@
 - name: clone source from git repos
   become: no
   remote_user: "{{ user_name}}"
-  git: repo=https://github.com/CiscoKorea/cloudux.git dest={{basedir}} clone=yes version=selfserviceportal force=yes
+  git: repo={{repo_url}} dest={{basedir}} clone=yes version={{repo_branch}} force=yes
   register: git_clone_status
   ignore_errors: true
   tags:
     - application  
-
 
 - name: git pull from remote repos
   become: no
@@ -83,7 +103,6 @@
   ignore_errors: true
   tags:
     - application  
-
 
 - name: install requirements on portal 
   pip: requirements={{basedir}}/requirements.txt chdir={{ basedir}}
@@ -130,11 +149,25 @@
   template: src=cloudux-celery.j2 dest=/usr/lib/systemd/system/cloudux-celery.service force=yes
   tags:
     - application
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
 
 - name: enable systemctl daemon-reload & enable cloudux-celery
   shell: systemctl daemon-reload && systemctl enable cloudux-celery && systemctl start cloudux-celery
   tags:
-    - application 
+    - application
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+- name: copy archon service (ubuntu)
+  template: src=cloudx-celery.sh dest=/etc/init.d mode="0755" force=yes
+  tags:
+    - application
+  when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
+
+- name: register as service
+  shell: update-rc.d cloudx-celery.sh defaults && service cloudx-celery.sh start
+  tags:
+    - application
+  when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'  
 
 - name: execute sql queries 
   become: no

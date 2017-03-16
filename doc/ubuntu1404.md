@@ -27,10 +27,6 @@ INSERT INTO cloudportal.ux_config (`key`, val, type, is_used) VALUES ('VC.HOST',
 INSERT INTO cloudportal.ux_config (`key`, val, type, is_used) VALUES ('VC.USER', 'root', '1', 'Y');
 INSERT INTO cloudportal.ux_config (`key`, val, type, is_used) VALUES ('VC.PASS', 'C1sco12345!', '1', 'Y');
 INSERT INTO cloudportal.ux_config (`key`, val, type, is_used) VALUES ('VC.PORT', '443', '1', 'Y');
-INSERT INTO cloudportal.ux_config (`key`, val, type, is_used) VALUES ('UCSM.HOST', '198.18.133.90', '1', 'Y');
-INSERT INTO cloudportal.ux_config (`key`, val, type, is_used) VALUES ('UCSM.USER', 'admin', '1', 'Y');
-INSERT INTO cloudportal.ux_config (`key`, val, type, is_used) VALUES ('UCSM.PASS', 'C1sco12345', '1', 'Y');
-INSERT INTO cloudportal.ux_config (`key`, val, type, is_used) VALUES ('UCSM.PORT', '443', '1', 'Y');
 INSERT INTO cloudportal.ux_config (`key`, val, type, is_used) VALUES ('UCSD.HOST', '198.18.133.112', '1', 'Y');
 INSERT INTO cloudportal.ux_config (`key`, val, type, is_used) VALUES ('UCSD.KEY', '629FB012BADE48BCA7492F0068133024', '1', 'Y');
 
@@ -44,6 +40,3 @@ python manage.py runserver 0.0.0.0:8080
 # start celery for background sync
 celery -A cloudmgmt worker -B -l info & 
 
-# show reload button
-Developer Tools(F12) - console
-$(".header p").show()
